@@ -20,7 +20,7 @@
                                         <label for="name" class="form-label">Nama Lengkap</label>
                                         <input type="hidden" name="id" id="id" value="{{ $pasien->id }}">
                                         <input type="text" id="name" name="name" class="form-control"
-                                            value={{ $pasien->name }}>
+                                            value="{{ $pasien->name }}">
                                         <div class="invalid-feedback errorName">
                                         </div>
                                     </div>

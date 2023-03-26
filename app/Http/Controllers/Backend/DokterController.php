@@ -106,7 +106,7 @@ class DokterController extends Controller
 
     public function edit($id)
     {
-        $dokter = User::where('type', 3)->find($id);
+        $dokter = User::find($id);
         return view('backend.dokter.edit', compact('dokter'));
     }
 
