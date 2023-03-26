@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DokterController;
+use App\Http\Controllers\Backend\PasienController;
+use App\Http\Controllers\Backend\PerawatController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +56,24 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/dokter/{dokter}/edit', [DokterController::class, 'edit'])->name('dokter.edit');
     Route::post('/dokter/{dokter}', [DokterController::class, 'update'])->name('dokter.update');
     Route::delete('dokter/{dokter}', [DokterController::class, 'destroy'])->name('dokter.destroy');
+
+    //Perawat
+    Route::post('/perawat/delete-multiple-perawat', [PerawatController::class, 'deleteMultiple'])->name('delete-multiple-perawat');
+    Route::get('/perawat', [PerawatController::class, 'index'])->name('perawat.index');
+    Route::get('/perawat/tambah', [PerawatController::class, 'create'])->name('perawat.create');
+    Route::post('/perawat', [PerawatController::class, 'store'])->name('perawat.store');
+    Route::get('/perawat/{perawat}/edit', [PerawatController::class, 'edit'])->name('perawat.edit');
+    Route::post('/perawat/{perawat}', [PerawatController::class, 'update'])->name('perawat.update');
+    Route::delete('perawat/{perawat}', [PerawatController::class, 'destroy'])->name('perawat.destroy');
+
+    //Pasien
+    Route::post('/pasien/delete-multiple-pasien', [PasienController::class, 'deleteMultiple'])->name('delete-multiple-pasien');
+    Route::get('/pasien', [PasienController::class, 'index'])->name('pasien.index');
+    Route::get('/pasien/tambah', [PasienController::class, 'create'])->name('pasien.create');
+    Route::post('/pasien', [PasienController::class, 'store'])->name('pasien.store');
+    Route::get('/pasien/{pasien}/edit', [PasienController::class, 'edit'])->name('pasien.edit');
+    Route::post('/pasien/{pasien}', [PasienController::class, 'update'])->name('pasien.update');
+    Route::delete('pasien/{pasien}', [PasienController::class, 'destroy'])->name('pasien.destroy');
 });
 
 /*------------------------------------------

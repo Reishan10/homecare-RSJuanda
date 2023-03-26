@@ -2,29 +2,27 @@
 
 namespace App\Http\Controllers\Backend;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
-
-
-class DokterController extends Controller
+class PerawatController extends Controller
 {
     public function index()
     {
         if (request()->ajax()) {
-            $dokter = User::where('type', 3)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
-            return DataTables::of($dokter)
+            $perawat = User::where('type', 2)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
+            return DataTables::of($perawat)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
                     $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->id . "'>";
                     return $comboBox;
                 })
                 ->addColumn('aksi', function ($data) {
-                    $btn = '<a class="btn btn-warning btn-sm me-1" href="' . route('dokter.edit', $data->id) . '" ><i
+                    $btn = '<a class="btn btn-warning btn-sm me-1" href="' . route('perawat.edit', $data->id) . '" ><i
                     class="mdi mdi-pencil"></i></a>';
                     $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
@@ -33,12 +31,12 @@ class DokterController extends Controller
                 ->rawColumns(['aksi', 'comboBox'])
                 ->make(true);
         }
-        return view('backend.dokter.index');
+        return view('backend.perawat.index');
     }
 
     public function create()
     {
-        return view('backend.dokter.add');
+        return view('backend.perawat.add');
     }
 
     public function store(Request $request)
@@ -80,13 +78,13 @@ class DokterController extends Controller
                         'email' => $request->email,
                         'no_telepon' => $request->no_telepon,
                         'password' => bcrypt($request->no_telepon),
-                        'type' => 3,
+                        'type' => 2,
                         'gender' => $request->gender,
                         'address' => $request->address,
                         'avatar' => $request->name . '.' . $guessExtension,
                     ];
-                    $dokter = User::create($data);
-                    return response()->json($dokter);
+                    $perawat = User::create($data);
+                    return response()->json($perawat);
                 }
             } else {
                 $data = [
@@ -94,20 +92,20 @@ class DokterController extends Controller
                     'email' => $request->email,
                     'no_telepon' => $request->no_telepon,
                     'password' => bcrypt($request->no_telepon),
-                    'type' => 3,
+                    'type' => 2,
                     'gender' => $request->gender,
                     'address' => $request->address,
                 ];
-                $dokter = User::create($data);
-                return response()->json($dokter);
+                $perawat = User::create($data);
+                return response()->json($perawat);
             }
         }
     }
 
     public function edit($id)
     {
-        $dokter = User::where('type', 3)->find($id);
-        return view('backend.dokter.edit', compact('dokter'));
+        $perawat = User::where('type', 2)->find($id);
+        return view('backend.perawat.edit', compact('perawat'));
     }
 
     public function update(Request $request)
@@ -142,10 +140,10 @@ class DokterController extends Controller
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');
                 if ($file->isValid()) {
-                    $dokter = User::findOrFail($id);
+                    $perawat = User::findOrFail($id);
 
-                    if ($dokter->avatar !== 'avatar.png') {
-                        Storage::delete('users-avatar/' . $dokter->avatar);
+                    if ($perawat->avatar !== 'avatar.png') {
+                        Storage::delete('users-avatar/' . $perawat->avatar);
                     }
 
                     $guessExtension = $request->file('avatar')->guessExtension();
@@ -158,8 +156,8 @@ class DokterController extends Controller
                         'address' => $request->address,
                         'avatar' => $request->name . '.' . $guessExtension,
                     ];
-                    $dokter = User::where('id', $id)->update($data);
-                    return response()->json($dokter);
+                    $perawat = User::where('id', $id)->update($data);
+                    return response()->json($perawat);
                 }
             } else {
                 $data = [
@@ -169,32 +167,31 @@ class DokterController extends Controller
                     'gender' => $request->gender,
                     'address' => $request->address,
                 ];
-                $dokter = User::where('id', $id)->update($data);
-                return response()->json($dokter);
+                $perawat = User::where('id', $id)->update($data);
+                return response()->json($perawat);
             }
         }
     }
 
     public function destroy(Request $request)
     {
-        $dokter = User::findOrFail($request->id);
+        $perawat = User::findOrFail($request->id);
 
-        if ($dokter->avatar !== 'avatar.png') {
-            Storage::delete('users-avatar/' . $dokter->avatar);
-            $dokter->delete();
+        if ($perawat->avatar !== 'avatar.png') {
+            Storage::delete('users-avatar/' . $perawat->avatar);
+            $perawat->delete();
         } else {
-            $dokter->delete();
+            $perawat->delete();
         }
 
-        return Response()->json(['dokter' => $dokter, 'success' => 'Data berhasil dihapus']);
+        return Response()->json(['perawat' => $perawat, 'success' => 'Data berhasil dihapus']);
     }
-
 
     public function deleteMultiple(Request $request)
     {
-        $dokter = User::whereIn('id', explode(",", $request->id))->get();
+        $perawat = User::whereIn('id', explode(",", $request->id))->get();
 
-        foreach ($dokter as $row) {
+        foreach ($perawat as $row) {
             if ($row->avatar !== 'avatar.png') {
                 Storage::delete('users-avatar/' . $row->avatar);
                 $row->delete();

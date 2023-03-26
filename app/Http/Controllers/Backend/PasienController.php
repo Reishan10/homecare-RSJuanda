@@ -6,25 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
-
-
-class DokterController extends Controller
+class PasienController extends Controller
 {
     public function index()
     {
         if (request()->ajax()) {
-            $dokter = User::where('type', 3)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
-            return DataTables::of($dokter)
+            $pasien = User::where('type', 0)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
+            return DataTables::of($pasien)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
                     $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->id . "'>";
                     return $comboBox;
                 })
                 ->addColumn('aksi', function ($data) {
-                    $btn = '<a class="btn btn-warning btn-sm me-1" href="' . route('dokter.edit', $data->id) . '" ><i
+                    $btn = '<a class="btn btn-warning btn-sm me-1" href="' . route('pasien.edit', $data->id) . '" ><i
                     class="mdi mdi-pencil"></i></a>';
                     $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
@@ -33,12 +31,12 @@ class DokterController extends Controller
                 ->rawColumns(['aksi', 'comboBox'])
                 ->make(true);
         }
-        return view('backend.dokter.index');
+        return view('backend.pasien.index');
     }
 
     public function create()
     {
-        return view('backend.dokter.add');
+        return view('backend.pasien.add');
     }
 
     public function store(Request $request)
@@ -46,7 +44,7 @@ class DokterController extends Controller
         $validated = Validator::make(
             $request->all(),
             [
-                'name' => 'required|string',
+                'name' => 'required',
                 'email' => 'required|email|unique:users,email',
                 'no_telepon' => 'required|unique:users,no_telepon|min:11|max:15',
                 'gender' => 'required',
@@ -80,13 +78,13 @@ class DokterController extends Controller
                         'email' => $request->email,
                         'no_telepon' => $request->no_telepon,
                         'password' => bcrypt($request->no_telepon),
-                        'type' => 3,
+                        'type' => 0,
                         'gender' => $request->gender,
                         'address' => $request->address,
                         'avatar' => $request->name . '.' . $guessExtension,
                     ];
-                    $dokter = User::create($data);
-                    return response()->json($dokter);
+                    $pasien = User::create($data);
+                    return response()->json($pasien);
                 }
             } else {
                 $data = [
@@ -94,20 +92,20 @@ class DokterController extends Controller
                     'email' => $request->email,
                     'no_telepon' => $request->no_telepon,
                     'password' => bcrypt($request->no_telepon),
-                    'type' => 3,
+                    'type' => 0,
                     'gender' => $request->gender,
                     'address' => $request->address,
                 ];
-                $dokter = User::create($data);
-                return response()->json($dokter);
+                $pasien = User::create($data);
+                return response()->json($pasien);
             }
         }
     }
 
     public function edit($id)
     {
-        $dokter = User::where('type', 3)->find($id);
-        return view('backend.dokter.edit', compact('dokter'));
+        $pasien = User::where('type', 0)->find($id);
+        return view('backend.pasien.edit', compact('pasien'));
     }
 
     public function update(Request $request)
@@ -116,7 +114,7 @@ class DokterController extends Controller
         $validated = Validator::make(
             $request->all(),
             [
-                'name' => 'required|string',
+                'name' => 'required',
                 'email' => 'required|email|unique:users,email,' . $id . ',id',
                 'no_telepon' => 'required|unique:users,no_telepon,' . $id . ',id|min:11|max:15',
                 'gender' => 'required',
@@ -142,10 +140,10 @@ class DokterController extends Controller
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');
                 if ($file->isValid()) {
-                    $dokter = User::findOrFail($id);
+                    $pasien = User::findOrFail($id);
 
-                    if ($dokter->avatar !== 'avatar.png') {
-                        Storage::delete('users-avatar/' . $dokter->avatar);
+                    if ($pasien->avatar !== 'avatar.png') {
+                        Storage::delete('users-avatar/' . $pasien->avatar);
                     }
 
                     $guessExtension = $request->file('avatar')->guessExtension();
@@ -158,8 +156,8 @@ class DokterController extends Controller
                         'address' => $request->address,
                         'avatar' => $request->name . '.' . $guessExtension,
                     ];
-                    $dokter = User::where('id', $id)->update($data);
-                    return response()->json($dokter);
+                    $pasien = User::where('id', $id)->update($data);
+                    return response()->json($pasien);
                 }
             } else {
                 $data = [
@@ -169,32 +167,31 @@ class DokterController extends Controller
                     'gender' => $request->gender,
                     'address' => $request->address,
                 ];
-                $dokter = User::where('id', $id)->update($data);
-                return response()->json($dokter);
+                $pasien = User::where('id', $id)->update($data);
+                return response()->json($pasien);
             }
         }
     }
 
     public function destroy(Request $request)
     {
-        $dokter = User::findOrFail($request->id);
+        $pasien = User::findOrFail($request->id);
 
-        if ($dokter->avatar !== 'avatar.png') {
-            Storage::delete('users-avatar/' . $dokter->avatar);
-            $dokter->delete();
+        if ($pasien->avatar !== 'avatar.png') {
+            Storage::delete('users-avatar/' . $pasien->avatar);
+            $pasien->delete();
         } else {
-            $dokter->delete();
+            $pasien->delete();
         }
 
-        return Response()->json(['dokter' => $dokter, 'success' => 'Data berhasil dihapus']);
+        return Response()->json(['pasien' => $pasien, 'success' => 'Data berhasil dihapus']);
     }
-
 
     public function deleteMultiple(Request $request)
     {
-        $dokter = User::whereIn('id', explode(",", $request->id))->get();
+        $pasien = User::whereIn('id', explode(",", $request->id))->get();
 
-        foreach ($dokter as $row) {
+        foreach ($pasien as $row) {
             if ($row->avatar !== 'avatar.png') {
                 Storage::delete('users-avatar/' . $row->avatar);
                 $row->delete();

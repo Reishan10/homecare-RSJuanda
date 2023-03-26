@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Tambah Dokter</h4>
+                    <h4 class="page-title">@yield('title')</h4>
                 </div>
                 <form action="{{ route('dokter.store') }}" method="post" id="form" enctype="multipart/form-data">
                     @csrf

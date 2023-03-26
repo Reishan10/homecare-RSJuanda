@@ -1,5 +1,5 @@
 @extends('layouts.backend_main')
-@section('title', 'Dokter')
+@section('title', 'Pasien')
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
@@ -24,8 +24,8 @@
                                     <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
                                         <i class="mdi mdi-trash-can"></i> Hapus Banyak
                                     </button>
-                                    <a href="{{ route('dokter.create') }}" class="btn btn-primary mb-2 btn-sm"><i
-                                            class="mdi mdi-plus-circle"></i> Tambah Dokter</a>
+                                    <a href="{{ route('pasien.create') }}" class="btn btn-primary mb-2 btn-sm"><i
+                                            class="mdi mdi-plus-circle"></i> Tambah Pasien</a>
                                 </div>
                             </div><!-- end col-->
                         </div>
@@ -66,7 +66,7 @@
             $('#datatable').DataTable({
                 processing: true,
                 serverside: true,
-                ajax: "{{ route('dokter.index') }}",
+                ajax: "{{ route('pasien.index') }}",
                 columns: [{
                         data: 'comboBox',
                         orderable: false,
@@ -114,7 +114,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('dokter/"+id+"') }}",
+                        url: "{{ url('pasien/"+id+"') }}",
                         data: {
                             id: id
                         },
@@ -172,7 +172,7 @@
                     let strId = idArr.join(",");
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: "{{ route('delete-multiple-dokter') }}",
+                            url: "{{ route('delete-multiple-pasien') }}",
                             type: 'POST',
                             data: 'id=' + strId,
                             success: function(response) {

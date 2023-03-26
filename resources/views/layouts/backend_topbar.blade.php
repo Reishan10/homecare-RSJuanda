@@ -4,7 +4,7 @@
             <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#"
                 role="button" aria-haspopup="false" aria-expanded="false">
                 <span class="account-user-avatar">
-                    <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="user-image"
+                    <img src="{{ asset('storage/users-avatar/' . auth()->user()->avatar) }}" alt="user-image"
                         class="rounded-circle">
                 </span>
                 <span>

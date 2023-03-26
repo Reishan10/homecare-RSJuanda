@@ -38,14 +38,14 @@
                     <span> Dokter </span>
                 </a>
             </li>
-            <li class="side-nav-item">
-                <a href="apps-chat.html" class="side-nav-link">
+            <li class="side-nav-item {{ request()->segment(1) == 'perawat' ? 'active' : '' }}">
+                <a href="{{ route('perawat.index') }}" class="side-nav-link">
                     <i class="fa-sharp fa-solid fa-user-nurse"></i>
                     <span> Perawat </span>
                 </a>
             </li>
-            <li class="side-nav-item">
-                <a href="apps-chat.html" class="side-nav-link">
+            <li class="side-nav-item {{ request()->segment(1) == 'pasien' ? 'active' : '' }}">
+                <a href="{{ route('pasien.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-notes-medical"></i>
                     <span> Pasien </span>
                 </a>

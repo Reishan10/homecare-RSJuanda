@@ -1,5 +1,5 @@
 @extends('layouts.backend_main')
-@section('title', 'Edit Dokter')
+@section('title', 'Edit Pasien')
 @section('content')
     <div class="container-fluid">
 
@@ -9,7 +9,7 @@
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('dokter.update', $dokter->id) }}" method="post" id="form"
+                <form action="{{ route('pasien.update', $pasien->id) }}" method="post" id="form"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="card">
@@ -18,23 +18,23 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Nama Lengkap</label>
-                                        <input type="hidden" name="id" id="id" value="{{ $dokter->id }}">
+                                        <input type="hidden" name="id" id="id" value="{{ $pasien->id }}">
                                         <input type="text" id="name" name="name" class="form-control"
-                                            value={{ $dokter->name }}>
+                                            value={{ $pasien->name }}>
                                         <div class="invalid-feedback errorName">
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Email</label>
                                         <input type="email" id="email" name="email" class="form-control"
-                                            value={{ $dokter->email }}>
+                                            value={{ $pasien->email }}>
                                         <div class="invalid-feedback errorEmail">
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="no_telepon" class="form-label">No Telepon</label>
                                         <input type="number" id="no_telepon" name="no_telepon" class="form-control"
-                                            placeholder="6285...." value={{ $dokter->no_telepon }}>
+                                            placeholder="6285...." value={{ $pasien->no_telepon }}>
                                         <div class="invalid-feedback errorNoTelepon">
                                         </div>
                                     </div>
@@ -42,9 +42,9 @@
                                         <label for="gender" class="form-label">Jenis Kelamin</label>
                                         <select name="gender" id="gender" class="form-control">
                                             <option value="">-- Pilih Jenis Kelamin --</option>
-                                            <option value="L" {{ $dokter->gender == 'L' ? 'selected' : '' }}>Laki-laki
+                                            <option value="L" {{ $pasien->gender == 'L' ? 'selected' : '' }}>Laki-laki
                                             </option>
-                                            <option value="P" {{ $dokter->gender == 'P' ? 'selected' : '' }}>Perempuan
+                                            <option value="P" {{ $pasien->gender == 'P' ? 'selected' : '' }}>Perempuan
                                             </option>
                                         </select>
                                         <div class="invalid-feedback errorGender">
@@ -54,14 +54,14 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="address" class="form-label">ALamat</label>
-                                        <textarea name="address" id="address" rows="5" class="form-control">{{ $dokter->address }}</textarea>
+                                        <textarea name="address" id="address" rows="5" class="form-control">{{ $pasien->address }}</textarea>
                                         <div class="invalid-feedback errorAddress">
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <img src="{{ asset('storage/users-avatar/' . $dokter->avatar) }}"
+                                                <img src="{{ asset('storage/users-avatar/' . $pasien->avatar) }}"
                                                     alt=""class="img-thumbnail img-preview">
                                             </div>
                                             <div class="col-sm-8">
@@ -76,7 +76,7 @@
                                 </div>
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <button type="button" class="btn btn-secondary mb-3"
-                                        onclick="window.location='{{ route('dokter.index') }}'">Kembali</button>
+                                        onclick="window.location='{{ route('pasien.index') }}'">Kembali</button>
                                     <button type="submit" class="btn btn-primary mb-3" id="simpan">Simpan</button>
                                 </div>
                             </div>
@@ -113,7 +113,7 @@
 
                 $.ajax({
                     data: new FormData(this),
-                    url: "{{ url('dokter/"+id+"') }}",
+                    url: "{{ url('pasien/"+id+"') }}",
                     type: "POST",
                     dataType: 'json',
                     processData: false,
@@ -182,7 +182,7 @@
                                 title: 'Sukses',
                                 text: 'Data berhasil disimpan',
                             }).then(function() {
-                                top.location.href = "{{ route('dokter.index') }}";
+                                top.location.href = "{{ route('pasien.index') }}";
                             });
                         }
                     },
