@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Ramsey\Uuid\Uuid;
 
 class CreateUsersSeeder extends Seeder
 {
@@ -15,6 +16,7 @@ class CreateUsersSeeder extends Seeder
     {
         $users = [
             [
+                'id' => Uuid::uuid4()->toString(),
                 'name' => 'Pasien',
                 'email' => 'pasien@pasien.com',
                 'no_telepon' => '62895617545305',
@@ -22,6 +24,7 @@ class CreateUsersSeeder extends Seeder
                 'password' => bcrypt('123456'),
             ],
             [
+                'id' => Uuid::uuid4()->toString(),
                 'name' => 'Administrator',
                 'email' => 'admin@admin.com',
                 'no_telepon' => '62895617545306',
@@ -29,6 +32,7 @@ class CreateUsersSeeder extends Seeder
                 'password' => bcrypt('123456'),
             ],
             [
+                'id' => Uuid::uuid4()->toString(),
                 'name' => 'Perawat',
                 'email' => 'perawat@perawat.com',
                 'no_telepon' => '62895617545307',
@@ -36,6 +40,7 @@ class CreateUsersSeeder extends Seeder
                 'password' => bcrypt('123456'),
             ],
             [
+                'id' => Uuid::uuid4()->toString(),
                 'name' => 'Dokter',
                 'email' => 'dokter@dokter.com',
                 'no_telepon' => '62895617545308',

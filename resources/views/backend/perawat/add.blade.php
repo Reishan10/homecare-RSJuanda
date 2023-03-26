@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
-                                        <label for="address" class="form-label">ALamat</label>
+                                        <label for="address" class="form-label">Alamat</label>
                                         <textarea name="address" id="address" rows="5" class="form-control"></textarea>
                                         <div class="invalid-feedback errorAddress">
                                         </div>
