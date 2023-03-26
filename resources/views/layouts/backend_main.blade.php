@@ -18,8 +18,8 @@
     <link href="{{ asset('assets') }}/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets') }}/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css" />
 
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
-        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -79,8 +79,6 @@
     <script src="{{ asset('assets') }}/js/vendor/dataTables.bootstrap5.js"></script>
     <script src="{{ asset('assets') }}/js/vendor/dataTables.responsive.min.js"></script>
     <script src="{{ asset('assets') }}/js/vendor/responsive.bootstrap5.min.js"></script>
-    <!-- Datatable Init js -->
-    <script src="assets/js/pages/demo.datatable-init.js"></script>
 </body>
 
 </html>

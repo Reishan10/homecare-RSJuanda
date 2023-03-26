@@ -65,15 +65,15 @@ class LoginController extends Controller
         if ($user && Hash::check($credentials['password'], $user->password)) {
             Auth::loginUsingId($user->id);
             if ($user->type == 'Pasien') {
-                return redirect()->route('home');
+                return redirect()->route('dashboard.index');
             } elseif ($user->type == 'Perawat') {
-                return redirect()->route('home');
+                return redirect()->route('dashboard.index');
             } elseif ($user->type == 'Dokter') {
-                return redirect()->route('home');
+                return redirect()->route('dashboard.index');
             } elseif ($user->type == 'Administrator') {
                 return redirect()->route('dashboard.index');
             } else {
-                return redirect('/home');
+                return redirect('/dashboard.index');
             }
         } else {
             return redirect()->back()->with(['message' => 'Password salah.']);

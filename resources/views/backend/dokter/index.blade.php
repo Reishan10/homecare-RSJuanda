@@ -21,40 +21,28 @@
                         <div class="row mb-2">
                             <div class="col-sm-12">
                                 <div class="text-sm-end">
-                                    <a href="javascript:void(0);" class="btn btn-primary mb-2"><i
-                                            class="mdi mdi-plus-circle me-2"></i> Tambah Dokter</a>
+                                    <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
+                                        <i class="mdi mdi-trash-can"></i> Hapus Banyak
+                                    </button>
+                                    <a href="{{ route('dokter.create') }}" class="btn btn-primary mb-2 btn-sm"><i
+                                            class="mdi mdi-plus-circle"></i> Tambah Dokter</a>
                                 </div>
                             </div><!-- end col-->
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-centered table-striped dt-responsive nowrap w-100"
-                                id="basic-datatable">
+                            <table id="datatable" class="table dt-responsive nowrap w-100">
                                 <thead>
                                     <tr>
+                                        <th width="1px"><input type="checkbox" id="check_all"></th>
                                         <th>No</th>
                                         <th>Nama</th>
                                         <th>Email</th>
                                         <th>No Telepon</th>
+                                        <th>Alamat</th>
                                         <th style="width: 75px;">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @foreach ($dokter as $row)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $row->name }}</td>
-                                            <td>{{ $row->email }}</td>
-                                            <td>{{ $row->no_telepon }}</td>
-                                            <td>
-                                                <a href="javascript:void(0);" class="action-icon"> <i
-                                                        class="fa-solid fa-pen-to-square"></i></a>
-                                                <a href="javascript:void(0);" class="action-icon"> <i
-                                                        class="fa-solid fa-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
                             </table>
                         </div>
                     </div> <!-- end card-body-->
@@ -68,6 +56,146 @@
     </div> <!-- content -->
 
     <script>
-        let table = new DataTable('#table');
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#datatable').DataTable({
+                processing: true,
+                serverside: true,
+                ajax: "{{ route('dokter.index') }}",
+                columns: [{
+                        data: 'comboBox',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'name',
+                        name: 'Nama'
+                    }, {
+                        data: 'email',
+                        name: 'Email'
+                    }, {
+                        data: 'no_telepon',
+                        name: 'No Telepon'
+                    }, {
+                        data: 'address',
+                        name: 'Alamat'
+                    }, {
+                        data: 'aksi',
+                        name: 'Aksi'
+                    }
+                ]
+            });
+        });
+
+        // Hapus Data
+        $('body').on('click', '#btnHapus', function() {
+            let id = $(this).data('id');
+            Swal.fire({
+                title: 'Hapus',
+                text: "Apakah anda yakin?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "{{ url('dokter/"+id+"') }}",
+                        data: {
+                            id: id
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.success,
+                                });
+                                $('#datatable').DataTable().ajax.reload()
+                            }
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                                thrownError);
+                        }
+                    })
+                }
+            })
+        })
+
+        // Ceklis Checkbox Hapus Banyak
+        $('#check_all').on('click', function(e) {
+            if ($(this).is(':checked', true)) {
+                $(".checkbox").prop('checked', true);
+            } else {
+                $(".checkbox").prop('checked', false);
+            }
+        });
+
+        $('#btnHapusBanyak').on('click', function(e) {
+            let idArr = [];
+            $(".checkbox:checked").each(function() {
+                idArr.push($(this).attr('data-id'));
+            });
+            if (idArr.length <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Silakan pilih data terlebih dahulu untuk dihapus!',
+                })
+            } else {
+                Swal.fire({
+                    title: 'Hapus',
+                    text: "Apakah anda yakin?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    let strId = idArr.join(",");
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('delete-multiple-dokter') }}",
+                            type: 'POST',
+                            data: 'id=' + strId,
+                            success: function(response) {
+                                console.log(response);
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Sukses',
+                                        text: response.success,
+                                    });
+                                    $('#datatable').DataTable().ajax.reload();
+                                    $("#check_all").prop('checked', false);
+                                    $(".checkbox").prop('checked', false);
+                                }
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                                    thrownError);
+                            }
+                        })
+                    }
+                })
+            }
+        });
     </script>
 @endsection
