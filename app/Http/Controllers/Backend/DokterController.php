@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dokter;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
-
 
 
 class DokterController extends Controller
@@ -51,6 +51,9 @@ class DokterController extends Controller
                 'no_telepon' => 'required|unique:users,no_telepon|min:11|max:15',
                 'gender' => 'required',
                 'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
+                'spesialis' => 'required',
+                'pengalaman' => 'required|numeric|max:50',
+                'deskripsi' => 'required',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
@@ -63,6 +66,10 @@ class DokterController extends Controller
                 'gender.required' => 'Silakan isi jenis kelamin terlebih dahulu!',
                 'avatar.image' => 'File harus berupa gambar!',
                 'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
+                'spesialis.required' => 'Silakan isi spesialis terlebih dahulu!',
+                'pengalaman.required' => 'Silakan isi pengalaman terlebih dahulu!',
+                'pengalaman.max' => 'Maksimal pengisian pengalaman :max tahun.',
+                'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
             ]
         );
 
@@ -75,39 +82,54 @@ class DokterController extends Controller
                 if ($file->isValid()) {
                     $guessExtension = $request->file('avatar')->guessExtension();
                     $request->file('avatar')->storeAs('users-avatar/', $request->name . '.' . $guessExtension, 'public');
-                    $data = [
-                        'name' => $request->name,
-                        'email' => $request->email,
-                        'no_telepon' => $request->no_telepon,
-                        'password' => bcrypt($request->no_telepon),
-                        'type' => 3,
-                        'gender' => $request->gender,
-                        'address' => $request->address,
-                        'avatar' => $request->name . '.' . $guessExtension,
-                    ];
-                    $dokter = User::create($data);
-                    return response()->json($dokter);
+
+                    $user = new User();
+                    $user->name = $request->name;
+                    $user->email = $request->email;
+                    $user->no_telepon = $request->no_telepon;
+                    $user->password = bcrypt($request->no_telepon);
+                    $user->type = 3;
+                    $user->gender = $request->gender;
+                    $user->address = $request->address;
+                    $user->avatar = $request->name . '.' . $guessExtension;
+                    $user->save();
+
+                    $dokter = new Dokter();
+                    $dokter->user_id = $user->id;
+                    $dokter->spesialis = $request->spesialis;
+                    $dokter->pengalaman_tahun = $request->pengalaman;
+                    $dokter->deskripsi = $request->deskripsi;
+                    $dokter->save();
+                    return response()->json(['success' => 'Data barhasil ditambahkan']);
                 }
             } else {
-                $data = [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'no_telepon' => $request->no_telepon,
-                    'password' => bcrypt($request->no_telepon),
-                    'type' => 3,
-                    'gender' => $request->gender,
-                    'address' => $request->address,
-                ];
-                $dokter = User::create($data);
-                return response()->json($dokter);
+                $user = new User();
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->no_telepon = $request->no_telepon;
+                $user->password = bcrypt($request->no_telepon);
+                $user->type = 3;
+                $user->gender = $request->gender;
+                $user->address = $request->address;
+                $user->save();
+
+                $dokter = new Dokter();
+                $dokter->user_id = $user->id;
+                $dokter->spesialis = $request->spesialis;
+                $dokter->pengalaman_tahun = $request->pengalaman;
+                $dokter->deskripsi = $request->deskripsi;
+                $dokter->save();
+
+                return response()->json(['success' => 'Data barhasil ditambahkan']);
             }
         }
     }
 
     public function edit($id)
     {
-        $dokter = User::find($id);
-        return view('backend.dokter.edit', compact('dokter'));
+        $user = User::with('dokter')->find($id);
+        $dokter = $user->dokter;
+        return view('backend.dokter.edit', compact('user', 'dokter'));
     }
 
     public function update(Request $request)
@@ -121,6 +143,9 @@ class DokterController extends Controller
                 'no_telepon' => 'required|unique:users,no_telepon,' . $id . ',id|min:11|max:15',
                 'gender' => 'required',
                 'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
+                'spesialis' => 'required',
+                'pengalaman' => 'required|numeric|max:50',
+                'deskripsi' => 'required',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
@@ -133,6 +158,10 @@ class DokterController extends Controller
                 'gender.required' => 'Silakan isi jenis kelamin terlebih dahulu!',
                 'avatar.image' => 'File harus berupa gambar!',
                 'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
+                'spesialis.required' => 'Silakan isi spesialis terlebih dahulu!',
+                'pengalaman.required' => 'Silakan isi pengalaman terlebih dahulu!',
+                'pengalaman.max' => 'Maksimal pengisian pengalaman :max tahun.',
+                'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
             ]
         );
 
@@ -150,27 +179,50 @@ class DokterController extends Controller
 
                     $guessExtension = $request->file('avatar')->guessExtension();
                     $request->file('avatar')->storeAs('users-avatar/', $request->name . '.' . $guessExtension, 'public');
-                    $data = [
+
+                    $user = User::find($id);
+                    $dokter = $user->dokter;
+
+                    // Mengupdate data pada tabel users
+                    $user->update([
                         'name' => $request->name,
                         'email' => $request->email,
                         'no_telepon' => $request->no_telepon,
                         'gender' => $request->gender,
                         'address' => $request->address,
                         'avatar' => $request->name . '.' . $guessExtension,
-                    ];
-                    $dokter = User::where('id', $id)->update($data);
-                    return response()->json($dokter);
+                    ]);
+
+                    // Mengupdate data pada tabel dokter
+                    $dokter->update([
+                        'spesialis' => $request->spesialis,
+                        'pengalaman_tahun' => $request->pengalaman,
+                        'deskripsi' =>  $request->deskripsi,
+                    ]);
+
+                    return response()->json(['success' => 'Data barhasil diubah']);
                 }
             } else {
-                $data = [
+                $user = User::find($id);
+                $dokter = $user->dokter;
+
+                // Mengupdate data pada tabel users
+                $user->update([
                     'name' => $request->name,
                     'email' => $request->email,
                     'no_telepon' => $request->no_telepon,
                     'gender' => $request->gender,
                     'address' => $request->address,
-                ];
-                $dokter = User::where('id', $id)->update($data);
-                return response()->json($dokter);
+                ]);
+
+                // Mengupdate data pada tabel dokter
+                $dokter->update([
+                    'spesialis' => $request->spesialis,
+                    'pengalaman_tahun' => $request->pengalaman,
+                    'deskripsi' =>  $request->deskripsi,
+                ]);
+
+                return response()->json(['success' => 'Data barhasil diubah']);
             }
         }
     }

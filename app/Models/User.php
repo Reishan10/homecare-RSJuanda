@@ -80,4 +80,9 @@ class User extends Authenticatable
             get: fn ($value) => ["Pasien", "Administrator", "Perawat", "Dokter"][$value],
         );
     }
+
+    public function dokter()
+    {
+        return $this->hasOne(Dokter::class);
+    }
 }

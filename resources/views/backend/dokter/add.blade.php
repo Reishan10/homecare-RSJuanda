@@ -44,12 +44,31 @@
                                         <div class="invalid-feedback errorGender">
                                         </div>
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label">Alamat</label>
+                                        <textarea name="address" id="address" rows="1" class="form-control"></textarea>
+                                        <div class="invalid-feedback errorAddress">
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
-                                        <label for="address" class="form-label">Alamat</label>
-                                        <textarea name="address" id="address" rows="5" class="form-control"></textarea>
-                                        <div class="invalid-feedback errorAddress">
+                                        <label for="spesialis" class="form-label">Spesialis</label>
+                                        <input type="text" id="spesialis" name="spesialis" class="form-control">
+                                        <div class="invalid-feedback errorSpesialis">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="pengalaman" class="form-label">Pengalaman (Tahun)</label>
+                                        <input type="number" id="pengalaman" name="pengalaman" class="form-control">
+                                        <div class="invalid-feedback errorPengalaman">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                                        <textarea name="deskripsi" id="deskripsi" rows="1" class="form-control"></textarea>
+                                        <div class="invalid-feedback errorDeskripsi">
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -67,16 +86,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {{-- <div class="mb-3">
-                                        <label for="avatar" class="form-label">Foto</label>
-                                        <div class="col-sm-4">
-                                            <img src="{{ asset('storage/users-avatar/avatar.png') }}"
-                                                alt=""class="img-thumbnail img-preview">
-                                        </div>
-                                        <input type="file" id="avatar" name="avatar" class="form-control">
-                                        <div class="invalid-feedback errorAvatar">
-                                        </div>
-                                    </div> --}}
                                 </div>
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <button type="button" class="btn btn-secondary mb-2"
@@ -178,6 +187,30 @@
                             } else {
                                 $('#avatar').removeClass('is-invalid');
                                 $('.errorAvatar').html('');
+                            }
+
+                            if (response.errors.spesialis) {
+                                $('#spesialis').addClass('is-invalid');
+                                $('.errorSpesialis').html(response.errors.spesialis);
+                            } else {
+                                $('#spesialis').removeClass('is-invalid');
+                                $('.errorSpesialis').html('');
+                            }
+
+                            if (response.errors.pengalaman) {
+                                $('#pengalaman').addClass('is-invalid');
+                                $('.errorPengalaman').html(response.errors.pengalaman);
+                            } else {
+                                $('#pengalaman').removeClass('is-invalid');
+                                $('.errorPengalaman').html('');
+                            }
+
+                            if (response.errors.deskripsi) {
+                                $('#deskripsi').addClass('is-invalid');
+                                $('.errorDeskripsi').html(response.errors.deskripsi);
+                            } else {
+                                $('#deskripsi').removeClass('is-invalid');
+                                $('.errorDeskripsi').html('');
                             }
                         } else {
                             Swal.fire({

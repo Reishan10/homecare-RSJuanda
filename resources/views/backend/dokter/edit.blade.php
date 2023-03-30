@@ -9,7 +9,7 @@
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('dokter.update', $dokter->id) }}" method="post" id="form"
+                <form action="{{ route('dokter.update', $user->id) }}" method="post" id="form"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="card">
@@ -18,23 +18,23 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Nama Lengkap</label>
-                                        <input type="hidden" name="id" id="id" value="{{ $dokter->id }}">
+                                        <input type="hidden" name="id" id="id" value="{{ $user->id }}">
                                         <input type="text" id="name" name="name" class="form-control"
-                                            value="{{ $dokter->name }}">
+                                            value="{{ $user->name }}">
                                         <div class="invalid-feedback errorName">
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Email</label>
                                         <input type="email" id="email" name="email" class="form-control"
-                                            value={{ $dokter->email }}>
+                                            value={{ $user->email }}>
                                         <div class="invalid-feedback errorEmail">
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="no_telepon" class="form-label">No Telepon</label>
                                         <input type="number" id="no_telepon" name="no_telepon" class="form-control"
-                                            placeholder="6285...." value={{ $dokter->no_telepon }}>
+                                            placeholder="6285...." value={{ $user->no_telepon }}>
                                         <div class="invalid-feedback errorNoTelepon">
                                         </div>
                                     </div>
@@ -42,26 +42,46 @@
                                         <label for="gender" class="form-label">Jenis Kelamin</label>
                                         <select name="gender" id="gender" class="form-control">
                                             <option value="">-- Pilih Jenis Kelamin --</option>
-                                            <option value="L" {{ $dokter->gender == 'L' ? 'selected' : '' }}>Laki-laki
+                                            <option value="L" {{ $user->gender == 'L' ? 'selected' : '' }}>Laki-laki
                                             </option>
-                                            <option value="P" {{ $dokter->gender == 'P' ? 'selected' : '' }}>Perempuan
+                                            <option value="P" {{ $user->gender == 'P' ? 'selected' : '' }}>Perempuan
                                             </option>
                                         </select>
                                         <div class="invalid-feedback errorGender">
                                         </div>
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label">Alamat</label>
+                                        <textarea name="address" id="address" rows="1" class="form-control">{{ $user->address }}</textarea>
+                                        <div class="invalid-feedback errorAddress">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
-                                        <label for="address" class="form-label">Alamat</label>
-                                        <textarea name="address" id="address" rows="5" class="form-control">{{ $dokter->address }}</textarea>
-                                        <div class="invalid-feedback errorAddress">
+                                        <label for="spesialis" class="form-label">Spesialis</label>
+                                        <input type="text" id="spesialis" name="spesialis" class="form-control"
+                                            value="{{ $dokter->spesialis }}">
+                                        <div class="invalid-feedback errorSpesialis">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="pengalaman" class="form-label">Pengalaman (Tahun)</label>
+                                        <input type="number" id="pengalaman" name="pengalaman" class="form-control"
+                                            value="{{ $dokter->pengalaman_tahun }}">
+                                        <div class="invalid-feedback errorPengalaman">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                                        <textarea name="deskripsi" id="deskripsi" rows="1" class="form-control">{{ $dokter->deskripsi }}</textarea>
+                                        <div class="invalid-feedback errorDeskripsi">
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <img src="{{ asset('storage/users-avatar/' . $dokter->avatar) }}"
+                                                <img src="{{ asset('storage/users-avatar/' . $user->avatar) }}"
                                                     alt=""class="img-thumbnail img-preview">
                                             </div>
                                             <div class="col-sm-8">
@@ -175,6 +195,30 @@
                             } else {
                                 $('#avatar').removeClass('is-invalid');
                                 $('.errorAvatar').html('');
+                            }
+
+                            if (response.errors.spesialis) {
+                                $('#spesialis').addClass('is-invalid');
+                                $('.errorSpesialis').html(response.errors.spesialis);
+                            } else {
+                                $('#spesialis').removeClass('is-invalid');
+                                $('.errorSpesialis').html('');
+                            }
+
+                            if (response.errors.pengalaman) {
+                                $('#pengalaman').addClass('is-invalid');
+                                $('.errorPengalaman').html(response.errors.pengalaman);
+                            } else {
+                                $('#pengalaman').removeClass('is-invalid');
+                                $('.errorPengalaman').html('');
+                            }
+
+                            if (response.errors.deskripsi) {
+                                $('#deskripsi').addClass('is-invalid');
+                                $('.errorDeskripsi').html(response.errors.deskripsi);
+                            } else {
+                                $('#deskripsi').removeClass('is-invalid');
+                                $('.errorDeskripsi').html('');
                             }
                         } else {
                             Swal.fire({

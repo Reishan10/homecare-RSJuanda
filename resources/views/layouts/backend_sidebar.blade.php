@@ -27,8 +27,8 @@
 
             <li class="side-nav-item">
                 <a href="apps-chat.html" class="side-nav-link">
-                    <i class="fa-solid fa-comment"></i>
-                    <span> Chat </span>
+                    <i class="fa-solid fa-house"></i>
+                    <span> Homecare </span>
                 </a>
             </li>
 

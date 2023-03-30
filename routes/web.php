@@ -4,6 +4,10 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DokterController;
 use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PerawatController;
+use App\Http\Controllers\Frontend\BerandaController;
+use App\Http\Controllers\Frontend\DokterController as FrontendDokterController;
+use App\Http\Controllers\Frontend\FisioterapiController;
+use App\Http\Controllers\Frontend\PerawatController as FrontendPerawatController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -19,13 +23,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [BerandaController::class, 'index'])->name('beranda');
+Route::get('/layanan/perawat', [FrontendPerawatController::class, 'index'])->name('frontend.perawat');
+Route::get('/layanan/fisioterapi', [FisioterapiController::class, 'index'])->name('frontend.fisioterapi');
 
-Route::get('/test', function () {
-    return view('backend.dashboard');
-});
+Route::get('/layanan/dokter', [FrontendDokterController::class, 'index'])->name('frontend.dokter');
+Route::get('/dokter/detail/{dokter}', [FrontendDokterController::class, 'detail'])->name('frontend.dokter.detail');
 
 
 Auth::routes();
