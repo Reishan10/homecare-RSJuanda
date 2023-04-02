@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\KotaController;
 use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PelayananController;
 use App\Http\Controllers\Backend\PerawatController;
+use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\BerandaController;
 use App\Http\Controllers\Frontend\DokterController as FrontendDokterController;
 use App\Http\Controllers\Frontend\FisioterapiController;
@@ -100,6 +101,15 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     // Ganti Password
     Route::get('/ganti-password', [GantiPasswordController::class, 'index'])->name('ganti-password.index');
     Route::post('/ganti-password', [GantiPasswordController::class, 'update'])->name('ganti-password.update');
+
+    // User
+    Route::post('/pengguna/delete-multiple-user', [UserController::class, 'deleteMultiple'])->name('delete-multiple-user');
+    Route::get('/pengguna', [UserController::class, 'index'])->name('user.index');
+    Route::get('/pengguna/tambah', [UserController::class, 'create'])->name('user.create');
+    Route::post('/pengguna', [UserController::class, 'store'])->name('user.store');
+    Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])->name('user.edit');
+    Route::post('/pengguna/{user}', [UserController::class, 'update'])->name('user.update');
+    Route::delete('pengguna/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 });
 
 /*------------------------------------------

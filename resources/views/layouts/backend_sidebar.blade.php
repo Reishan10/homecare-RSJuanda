@@ -56,8 +56,8 @@
                     <span> Kota </span>
                 </a>
             </li>
-            <li class="side-nav-item {{ request()->segment(1) == 'kota' ? 'active' : '' }}">
-                <a href="{{ route('kota.index') }}" class="side-nav-link">
+            <li class="side-nav-item {{ request()->segment(1) == 'pengguna' ? 'active' : '' }}">
+                <a href="{{ route('user.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-users"></i>
                     <span> Pengguna </span>
                 </a>
