@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DokterController;
+use App\Http\Controllers\Backend\HomecareController;
+use App\Http\Controllers\Backend\KotaController;
 use App\Http\Controllers\Backend\PasienController;
+use App\Http\Controllers\Backend\PelayananController;
 use App\Http\Controllers\Backend\PerawatController;
 use App\Http\Controllers\Frontend\BerandaController;
 use App\Http\Controllers\Frontend\DokterController as FrontendDokterController;
@@ -77,6 +80,22 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/pasien/{pasien}/edit', [PasienController::class, 'edit'])->name('pasien.edit');
     Route::post('/pasien/{pasien}', [PasienController::class, 'update'])->name('pasien.update');
     Route::delete('pasien/{pasien}', [PasienController::class, 'destroy'])->name('pasien.destroy');
+
+    //Pelayanan
+    Route::post('/pelayanan/delete-multiple-pelayanan', [PelayananController::class, 'deleteMultiple'])->name('delete-multiple-pelayanan');
+    Route::get('/pelayanan', [PelayananController::class, 'index'])->name('pelayanan.index');
+    Route::get('/pelayanan/hitungHarga', [PelayananController::class, 'hitungHarga'])->name('pelayanan.hitung');
+    Route::get('/pelayanan/tambah', [PelayananController::class, 'create'])->name('pelayanan.create');
+    Route::get('/pelayanan/{pelayanan}', [PelayananController::class, 'show'])->name('pelayanan.show');
+    Route::post('/pelayanan', [PelayananController::class, 'store'])->name('pelayanan.store');
+    Route::delete('pelayanan/{pelayanan}', [PelayananController::class, 'destroy'])->name('pelayanan.destroy');
+
+    //Kota
+    Route::post('/kota/delete-multiple-kota', [KotaController::class, 'deleteMultiple'])->name('delete-multiple-kota');
+    Route::get('/kota', [KotaController::class, 'index'])->name('kota.index');
+    Route::post('/kota', [KotaController::class, 'store'])->name('kota.store');
+    Route::get('/kota/{kota}/edit', [KotaController::class, 'edit'])->name('kota.edit');
+    Route::delete('kota/{kota}', [KotaController::class, 'destroy'])->name('kota.destroy');
 });
 
 /*------------------------------------------

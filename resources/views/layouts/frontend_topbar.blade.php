@@ -17,8 +17,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Layanan</a>
                     <ul class="nav-dropdown">
-                        <li class="nav-dropdown-item"><a class="nav-dropdown-link"
-                                href="{{ route('frontend.perawat') }}">Perawat</a></li>
+                        {{-- <li class="nav-dropdown-item"><a class="nav-dropdown-link"
+                                href="{{ route('frontend.perawat') }}">Perawat</a></li> --}}
                         <li class="nav-dropdown-item"><a class="nav-dropdown-link"
                                 href="{{ route('frontend.fisioterapi') }}">Fisioterapi</a></li>
                         <li class="nav-dropdown-item"><a class="nav-dropdown-link" href="#">Telemedicine</a></li>

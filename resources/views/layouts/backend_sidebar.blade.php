@@ -25,10 +25,10 @@
                 </a>
             </li>
 
-            <li class="side-nav-item">
-                <a href="apps-chat.html" class="side-nav-link">
+            <li class="side-nav-item {{ request()->segment(1) == 'pelayanan' ? 'active' : '' }}">
+                <a href="{{ route('pelayanan.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-house"></i>
-                    <span> Homecare </span>
+                    <span> Pelayanan </span>
                 </a>
             </li>
 
@@ -48,6 +48,12 @@
                 <a href="{{ route('pasien.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-notes-medical"></i>
                     <span> Pasien </span>
+                </a>
+            </li>
+            <li class="side-nav-item {{ request()->segment(1) == 'kota' ? 'active' : '' }}">
+                <a href="{{ route('kota.index') }}" class="side-nav-link">
+                    <i class="fa-solid fa-city"></i>
+                    <span> Kota </span>
                 </a>
             </li>
             <li class="side-nav-item">

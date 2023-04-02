@@ -20,10 +20,6 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            ProvincesSeeder::class,
-            CitiesSeeder::class,
-            DistrictsSeeder::class,
-            VillagesSeeder::class,
             CreateUsersSeeder::class,
         ]);
     }

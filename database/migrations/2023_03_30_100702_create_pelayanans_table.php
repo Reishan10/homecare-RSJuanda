@@ -11,17 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('homecare', function (Blueprint $table) {
+        Schema::create('pelayanan', function (Blueprint $table) {
             $table->id();
+            $table->string('kode_pelayanan');
             $table->uuid('user_id')->nullable();
+            $table->uuid('dokter_id')->nullable();
             $table->string('layanan');
             $table->string('paket');
             $table->text('alamat');
+            $table->unsignedBigInteger('kota_id');
+            $table->foreign('kota_id')->references('id')->on('kota')->onDelete('cascade');
             $table->text('riwayat_penyakit')->nullable();
             $table->string('no_telepon', 20)->nullable();
             $table->dateTime('waktu_mulai');
             $table->dateTime('waktu_selesai');
-            $table->string('total', 100)->nullable();
+            $table->string('harga', 100)->nullable();
             $table->string('status');
             $table->timestamps();
         });
@@ -32,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('homecare');
+        Schema::dropIfExists('pelayanan');
     }
 };

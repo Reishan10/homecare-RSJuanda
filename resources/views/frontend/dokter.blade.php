@@ -132,8 +132,10 @@
                 @forelse($user as $row)
                     <div class="col-12 col-md-4">
                         <div class="border-radius-05 bg-white border-all padding-20 padding-lg-30">
-                            <img src="{{ asset('storage/users-avatar/' . $row->avatar) }}" alt=""
-                                class="img-preview">
+                            <a href="{{ route('frontend.dokter.detail', $row->id) }}">
+                                <img src="{{ asset('storage/users-avatar/' . $row->avatar) }}" alt=""
+                                    class="img-preview">
+                            </a>
                             <div class="d-lg-flex justify-content-between margin-bottom-10 margin-top-20">
                                 <div class="d-block d-lg-inline-block margin-bottom-10">
                                     <a href="{{ route('frontend.dokter.detail', $row->id) }}">
@@ -151,7 +153,7 @@
                                     <i class="bi bi-star-fill"></i>
                                 </div> --}}
                             </div>
-                            <p>{{ $row->dokter->deskripsi }}</p>
+                            <p>{{ \Illuminate\Support\Str::limit($row->dokter->deskripsi, $limit = 100, $end = '...') }}</p>
                             <a class="button button-reveal-right-dark button-lg margin-top-10"
                                 href="{{ url('chat-RSJuanda/' . $row->id) }}" target="_blank"><i
                                     class="bi bi-arrow-right"></i><span>CHAT</span></a>
