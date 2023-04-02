@@ -13,7 +13,6 @@
             </div>
         </div>
         <!-- end page title -->
-
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -40,7 +39,7 @@
                                         <th>No Telepon</th>
                                         <th>Alamat</th>
                                         <th>Waktu Selesai</th>
-                                        <th>Status</th>
+                                        <th>Sisa Waktu</th>
                                         <th style="width: 75px;">Aksi</th>
                                     </tr>
                                 </thead>
@@ -90,13 +89,58 @@
                     data: 'waktu_selesai',
                     name: 'Waktu selesai'
                 }, {
-                    data: 'status',
-                    orderable: false,
-                    searchable: false
+                    data: 'countdown',
+                    name: 'countdown',
                 }, {
                     data: 'aksi',
                     name: 'Aksi'
-                }]
+                }],
+                initComplete: function() {
+                    // Calculate the countdown timer for each row
+                    $('#datatable tbody tr').each(function() {
+                        var countdown_id = $(this).find('td:first').text();
+                        var countdown_time = $(this).find('td:eq(5)').text();
+
+                        // Set the date we're counting down to
+                        var countDownDate = new Date(countdown_time).getTime();
+
+                        // Get the countdown element
+                        var countdown_element = $(this).find('td:eq(6)');
+
+                        // Update the count down every 1 second
+                        var x = setInterval(function() {
+                            // Get today's date and time
+                            var now = new Date().getTime();
+
+                            // Find the distance between now and the count down date
+                            var distance = countDownDate - now;
+
+                            // Time calculations for days, hours, minutes and seconds
+                            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) /
+                                (1000 * 60 * 60));
+                            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (
+                                1000 * 60));
+                            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                            // Format the output with leading zeros
+                            days = ("0" + days).slice(-2);
+                            hours = ("0" + hours).slice(-2);
+                            minutes = ("0" + minutes).slice(-2);
+                            seconds = ("0" + seconds).slice(-2);
+
+                            // Output the result in the countdown element
+                            countdown_element.text(days + " Hari " + hours + " Jam " +
+                                minutes + " Menit " + seconds + " Detik ");
+
+                            // If the count down is over, write some text
+                            if (distance < 0) {
+                                clearInterval(x);
+                                countdown_element.text("Waktu Habis");
+                            }
+                        }, 1000);
+                    });
+                },
             });
         });
 
@@ -127,8 +171,10 @@
                                     icon: 'success',
                                     title: 'Sukses',
                                     text: response.success,
+                                }).then(function() {
+                                    top.location.href =
+                                        "{{ route('pelayanan.index') }}";
                                 });
-                                $('#datatable').DataTable().ajax.reload()
                             }
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
@@ -184,10 +230,10 @@
                                         icon: 'success',
                                         title: 'Sukses',
                                         text: response.success,
+                                    }).then(function() {
+                                        top.location.href =
+                                            "{{ route('pelayanan.index') }}";
                                     });
-                                    $('#datatable').DataTable().ajax.reload();
-                                    $("#check_all").prop('checked', false);
-                                    $(".checkbox").prop('checked', false);
                                 }
                             },
                             error: function(xhr, ajaxOptions, thrownError) {

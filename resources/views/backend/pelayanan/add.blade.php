@@ -159,6 +159,23 @@
     </div>
 
     <script>
+        $('#waktu_selesai').on('change', function() {
+            let waktu_mulai = new Date(document.getElementById("waktu_mulai").value);
+            let waktu_selesai = new Date(document.getElementById("waktu_selesai").value);
+
+            if (waktu_selesai <= waktu_mulai) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Waktu selesai harus lebih besar dari waktu mulai!!',
+                });
+                $('#waktu_selesai').val('');
+                return false;
+            }
+
+            return true;
+        });
+
         $(document).ready(function() {
             $('#pasien').change(function() {
                 let id = $(this).val();

@@ -67,13 +67,13 @@ class LoginController extends Controller
             if ($user->type == 'Pasien') {
                 return redirect()->route('beranda');
             } elseif ($user->type == 'Perawat') {
-                return redirect()->route('dashboard.index');
+                return redirect()->route('beranda');
             } elseif ($user->type == 'Dokter') {
-                return redirect()->route('dashboard.index');
+                return redirect()->route('beranda');
             } elseif ($user->type == 'Administrator') {
                 return redirect()->route('dashboard.index');
             } else {
-                return redirect('/dashboard.index');
+                return redirect()->route('beranda');
             }
         } else {
             return redirect()->back()->with(['message' => 'Password salah.']);

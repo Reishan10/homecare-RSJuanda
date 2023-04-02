@@ -2,6 +2,10 @@
 
 namespace App\Http;
 
+use App\Models\Dokter;
+use App\Models\Pelayanan;
+use Carbon\Carbon;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

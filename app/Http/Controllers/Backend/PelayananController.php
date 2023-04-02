@@ -7,6 +7,7 @@ use App\Models\Dokter;
 use App\Models\Kota;
 use App\Models\Pelayanan;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -31,9 +32,17 @@ class PelayananController extends Controller
                     $address = $data->user->address;
                     return $address;
                 })
-                ->addColumn('status', function ($data) {
-                    $status = $data->status == 0 ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-danger">Tidak Aktif</span>';
-                    return $status;
+                ->addColumn('countdown', function ($data) {
+                    $waktu_selesai = Carbon::parse($data->waktu_selesai);
+                    $now = Carbon::now();
+                    $diff = $waktu_selesai->diffInSeconds($now);
+
+                    $days = floor($diff / (3600 * 24));
+                    $hours = floor(($diff - $days * 3600 * 24) / 3600);
+                    $minutes = floor(($diff - $days * 3600 * 24 - $hours * 3600) / 60);
+                    $seconds = $diff - $days * 3600 * 24 - $hours * 3600 - $minutes * 60;
+
+                    return sprintf("%02d Hari %02d Jam %02d Menit %02d Detik", $days, $hours, $minutes, $seconds);
                 })
                 ->addColumn('comboBox', function ($data) {
                     $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->id . "'>";
@@ -44,7 +53,7 @@ class PelayananController extends Controller
                     class="mdi mdi-trash-can"></i></button>';
                     return $btn;
                 })
-                ->rawColumns(['aksi', 'comboBox', 'status'])
+                ->rawColumns(['aksi', 'comboBox', 'countdown'])
                 ->make(true);
         }
         return view('backend.pelayanan.index');
@@ -169,6 +178,11 @@ class PelayananController extends Controller
     public function destroy(Request $request)
     {
         $pelayanan = Pelayanan::findOrFail($request->id);
+        $dokter = Dokter::find($pelayanan->dokter_id);
+        $dokter->update([
+            'status' => 0,
+        ]);
+
         $pelayanan->delete();
 
         return Response()->json(['pelayanan' => $pelayanan, 'success' => 'Data berhasil dihapus']);
@@ -176,10 +190,13 @@ class PelayananController extends Controller
 
     public function deleteMultiple(Request $request)
     {
-        $pelayanan = Pelayanan::whereIn('id', explode(",", $request->id))->get();
-
+        $pelayanan = Pelayanan::select('pelayanan.*', 'dokter.status')
+            ->join('dokter', 'dokter.id', '=', 'pelayanan.dokter_id')
+            ->whereIn('pelayanan.id', explode(",", $request->id))
+            ->get();
         foreach ($pelayanan as $row) {
-            $row->delete();
+            Pelayanan::where('id', $row->id)->delete();
+            Dokter::where('id', $row->dokter_id)->update(['status' => 0]);
         }
 
         return response()->json(['success' => "Data berhasil dihapus"]);

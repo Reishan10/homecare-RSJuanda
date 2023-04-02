@@ -26,7 +26,6 @@ return new class extends Migration
             $table->dateTime('waktu_mulai');
             $table->dateTime('waktu_selesai');
             $table->string('harga', 100)->nullable();
-            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }
