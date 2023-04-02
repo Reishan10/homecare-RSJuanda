@@ -91,7 +91,8 @@
                     name: 'Waktu selesai'
                 }, {
                     data: 'status',
-                    name: 'Status'
+                    orderable: false,
+                    searchable: false
                 }, {
                     data: 'aksi',
                     name: 'Aksi'

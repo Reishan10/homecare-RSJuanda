@@ -36,8 +36,8 @@
             </div>
 
             <div class="mb-3">
-                <a href="#" class="text-muted float-end"><small>Lupa
-                        password?</small></a>
+                {{-- <a href="#" class="text-muted float-end"><small>Lupa
+                        password?</small></a> --}}
                 <label for="password" class="form-label">Password</label>
                 <input type="password" id="password" name="password"
                     class="form-control @error('password') is-invalid @enderror">

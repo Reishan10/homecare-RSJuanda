@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DokterController;
+use App\Http\Controllers\Backend\GantiPasswordController;
 use App\Http\Controllers\Backend\HomecareController;
 use App\Http\Controllers\Backend\KotaController;
 use App\Http\Controllers\Backend\PasienController;
@@ -32,7 +33,6 @@ Route::get('/layanan/fisioterapi', [FisioterapiController::class, 'index'])->nam
 
 Route::get('/layanan/dokter', [FrontendDokterController::class, 'index'])->name('frontend.dokter');
 Route::get('/dokter/detail/{dokter}', [FrontendDokterController::class, 'detail'])->name('frontend.dokter.detail');
-
 
 Auth::routes();
 
@@ -96,6 +96,10 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/kota', [KotaController::class, 'store'])->name('kota.store');
     Route::get('/kota/{kota}/edit', [KotaController::class, 'edit'])->name('kota.edit');
     Route::delete('kota/{kota}', [KotaController::class, 'destroy'])->name('kota.destroy');
+
+    // Ganti Password
+    Route::get('/ganti-password', [GantiPasswordController::class, 'index'])->name('ganti-password.index');
+    Route::post('/ganti-password', [GantiPasswordController::class, 'update'])->name('ganti-password.update');
 });
 
 /*------------------------------------------
@@ -115,6 +119,3 @@ All Dokter Routes List
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:Dokter'])->group(function () {
 });
-
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pelayanan', function (Blueprint $table) {
             $table->id();
             $table->string('kode_pelayanan');
-            $table->uuid('user_id')->nullable();
+            $table->uuid('pasien_id')->nullable();
             $table->uuid('dokter_id')->nullable();
             $table->string('layanan');
             $table->string('paket');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->dateTime('waktu_mulai');
             $table->dateTime('waktu_selesai');
             $table->string('harga', 100)->nullable();
-            $table->string('status');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

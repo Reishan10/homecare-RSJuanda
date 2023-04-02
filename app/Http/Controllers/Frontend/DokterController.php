@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class DokterController extends Controller
 {
     public function index()
     {
-        $user = User::with('dokter')->where('type', 3)->orderBy('created_at', 'asc')->paginate(9);
+        $user = User::where('type', 3)
+            ->join('dokter', 'users.id', '=', 'dokter.user_id')
+            ->where('dokter.status', '=', '0')
+            ->orderBy('users.created_at', 'asc')
+            ->paginate(9, ['users.*']);
+
         return view('frontend.dokter', compact('user'));
     }
 

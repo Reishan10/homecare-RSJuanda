@@ -56,6 +56,18 @@
                     <span> Kota </span>
                 </a>
             </li>
+            <li class="side-nav-item {{ request()->segment(1) == 'kota' ? 'active' : '' }}">
+                <a href="{{ route('kota.index') }}" class="side-nav-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span> Pengguna </span>
+                </a>
+            </li>
+            <li class="side-nav-item {{ request()->segment(1) == 'ganti-password' ? 'active' : '' }}">
+                <a href="{{ route('ganti-password.index') }}" class="side-nav-link">
+                    <i class="fa-solid fa-lock"></i>
+                    <span> Ganti Password </span>
+                </a>
+            </li>
             <li class="side-nav-item">
                 <a href="{{ route('logout') }}" class="side-nav-link"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

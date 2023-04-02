@@ -38,6 +38,7 @@ class Dokter extends Model
         'spesialis',
         'pengalaman_tahun',
         'deskripsi',
+        'status'
     ];
 
     public function user()

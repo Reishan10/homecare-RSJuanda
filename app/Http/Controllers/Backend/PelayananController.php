@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dokter;
 use App\Models\Kota;
 use App\Models\Pelayanan;
 use App\Models\User;
@@ -31,7 +32,7 @@ class PelayananController extends Controller
                     return $address;
                 })
                 ->addColumn('status', function ($data) {
-                    $status = $data->status == 0 ? 'Aktif' : 'Tidak Aktif';
+                    $status = $data->status == 0 ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-danger">Tidak Aktif</span>';
                     return $status;
                 })
                 ->addColumn('comboBox', function ($data) {
@@ -43,7 +44,7 @@ class PelayananController extends Controller
                     class="mdi mdi-trash-can"></i></button>';
                     return $btn;
                 })
-                ->rawColumns(['aksi', 'comboBox'])
+                ->rawColumns(['aksi', 'comboBox', 'status'])
                 ->make(true);
         }
         return view('backend.pelayanan.index');
@@ -89,7 +90,11 @@ class PelayananController extends Controller
     public function create()
     {
         $pasien = User::where('type', 0)->orderBy('name', 'asc')->get();
-        $dokter = User::where('type', 3)->orderBy('name', 'asc')->get();
+        $dokter = User::where('type', 3)
+            ->join('dokter', 'users.id', '=', 'dokter.user_id')
+            ->where('dokter.status', '=', '0')
+            ->orderBy('users.name', 'asc')->get();
+
         $kota = Kota::orderBy('name', 'asc')->get();
 
         $lastLayanan = Pelayanan::orderByDesc('created_at')->first();
@@ -104,7 +109,7 @@ class PelayananController extends Controller
         $validated = Validator::make(
             $request->all(),
             [
-                'pasien' => 'required|string|unique:pelayanan,user_id',
+                'pasien' => 'required|string|unique:pelayanan,pasien_id',
                 'no_telepon' => 'required|min:11|max:15',
                 'alamat' => 'required|string',
                 'riwayat_penyakit' => 'required|string',
@@ -137,7 +142,7 @@ class PelayananController extends Controller
         } else {
             $pelayanan = new Pelayanan();
             $pelayanan->kode_pelayanan = $request->kode_pelayanan;
-            $pelayanan->user_id = $request->pasien;
+            $pelayanan->pasien_id = $request->pasien;
             $pelayanan->dokter_id = $request->dokter;
             $pelayanan->layanan = $request->layanan;
             $pelayanan->paket = $request->paket;
@@ -148,8 +153,14 @@ class PelayananController extends Controller
             $pelayanan->waktu_mulai = $request->waktu_mulai;
             $pelayanan->waktu_selesai = $request->waktu_selesai;
             $pelayanan->harga = $request->harga;
-            $pelayanan->status = 0;
             $pelayanan->save();
+
+            $dokter_id = $request->dokter;
+            $dokter = Dokter::find($dokter_id);
+
+            $dokter->update([
+                'status' => 1,
+            ]);
 
             return response()->json(['success' => 'Data barhasil ditambahkan']);
         }
