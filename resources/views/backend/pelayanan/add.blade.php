@@ -112,13 +112,6 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="waktu_mulai" class="form-label">Waktu Mulai</label>
-                                        <input type="datetime-local" name="waktu_mulai" id="waktu_mulai"
-                                            class="form-control">
-                                        <div class="invalid-feedback errorWaktuMulai">
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
                                         <label for="waktu_selesai" class="form-label">Waktu Selesai</label>
                                         <input type="datetime-local" name="waktu_selesai" id="waktu_selesai"
                                             class="form-control">
@@ -159,23 +152,6 @@
     </div>
 
     <script>
-        $('#waktu_selesai').on('change', function() {
-            let waktu_mulai = new Date(document.getElementById("waktu_mulai").value);
-            let waktu_selesai = new Date(document.getElementById("waktu_selesai").value);
-
-            if (waktu_selesai <= waktu_mulai) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Waktu selesai harus lebih besar dari waktu mulai!!',
-                });
-                $('#waktu_selesai').val('');
-                return false;
-            }
-
-            return true;
-        });
-
         $(document).ready(function() {
             $('#pasien').change(function() {
                 let id = $(this).val();
@@ -208,130 +184,6 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
-            /*$('#form').submit(function(e) {
-                let form_data = new FormData();
-
-                let kode_pelayanan = document.getElementById('kode_pelayanan').innerHTML;
-                let harga = document.getElementById('harga').innerHTML;
-                form_data.append('kode_pelayanan', kode_pelayanan);
-                form_data.append('harga', harga);
-
-                e.preventDefault();
-                $.ajax({
-                    data: form_data,
-                    url: "{{ route('pelayanan.store') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    cache: false,
-                    beforeSend: function() {
-                        $('#simpan').attr('disable', 'disabled');
-                        $('#simpan').text('Proses...');
-                    },
-                    complete: function() {
-                        $('#simpan').removeAttr('disable');
-                        $('#simpan').html('Simpan');
-                    },
-                    success: function(response) {
-                        if (response.errors) {
-                            if (response.errors.pasien) {
-                                $('#pasien').addClass('is-invalid');
-                                $('.errorPasien').html(response.errors.pasien);
-                            } else {
-                                $('#pasien').removeClass('is-invalid');
-                                $('.errorPasien').html('');
-                            }
-
-                            if (response.errors.no_telepon) {
-                                $('#no_telepon').addClass('is-invalid');
-                                $('.errorNoTelepon').html(response.errors.no_telepon);
-                            } else {
-                                $('#no_telepon').removeClass('is-invalid');
-                                $('.errorNoTelepon').html('');
-                            }
-
-                            if (response.errors.alamat) {
-                                $('#alamat').addClass('is-invalid');
-                                $('.errorAlamat').html(response.errors.alamat);
-                            } else {
-                                $('#alamat').removeClass('is-invalid');
-                                $('.errorAlamat').html('');
-                            }
-
-                            if (response.errors.riwayat_penyakit) {
-                                $('#riwayat_penyakit').addClass('is-invalid');
-                                $('.errorRiwayatPenyakit').html(response.errors
-                                    .riwayat_penyakit);
-                            } else {
-                                $('#riwayat_penyakit').removeClass('is-invalid');
-                                $('.errorRiwayatPenyakit').html('');
-                            }
-
-                            if (response.errors.dokter) {
-                                $('#dokter').addClass('is-invalid');
-                                $('.errorDokter').html(response.errors.dokter);
-                            } else {
-                                $('#dokter').removeClass('is-invalid');
-                                $('.errorDokter').html('');
-                            }
-
-                            if (response.errors.layanan) {
-                                $('#layanan').addClass('is-invalid');
-                                $('.errorLayanan').html(response.errors.layanan);
-                            } else {
-                                $('#layanan').removeClass('is-invalid');
-                                $('.errorLayanan').html('');
-                            }
-
-                            if (response.errors.paket) {
-                                $('#paket').addClass('is-invalid');
-                                $('.errorPaket').html(response.errors.paket);
-                            } else {
-                                $('#paket').removeClass('is-invalid');
-                                $('.errorPaket').html('');
-                            }
-
-                            if (response.errors.kota) {
-                                $('#kota').addClass('is-invalid');
-                                $('.errorKota').html(response.errors.kota);
-                            } else {
-                                $('#kota').removeClass('is-invalid');
-                                $('.errorKota').html('');
-                            }
-
-                            if (response.errors.waktu_mulai) {
-                                $('#waktu_mulai').addClass('is-invalid');
-                                $('.errorWaktuMulai').html(response.errors.waktu_mulai);
-                            } else {
-                                $('#waktu_mulai').removeClass('is-invalid');
-                                $('.errorWaktuMulai').html('');
-                            }
-
-                            if (response.errors.waktu_selesai) {
-                                $('#waktu_selesai').addClass('is-invalid');
-                                $('.errorWaktuSelesai').html(response.errors.waktu_selesai);
-                            } else {
-                                $('#waktu_selesai').removeClass('is-invalid');
-                                $('.errorWaktuSelesai').html('');
-                            }
-                        } else {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sukses',
-                                text: 'Data berhasil disimpan',
-                            }).then(function() {
-                                top.location.href = "{{ route('pelayanan.index') }}";
-                            });
-                        }
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-                    }
-                });
-            });*/
 
             $('#form').submit(function(e) {
                 e.preventDefault();
@@ -421,14 +273,6 @@
                             } else {
                                 $('#kota').removeClass('is-invalid');
                                 $('.errorKota').html('');
-                            }
-
-                            if (response.errors.waktu_mulai) {
-                                $('#waktu_mulai').addClass('is-invalid');
-                                $('.errorWaktuMulai').html(response.errors.waktu_mulai);
-                            } else {
-                                $('#waktu_mulai').removeClass('is-invalid');
-                                $('.errorWaktuMulai').html('');
                             }
 
                             if (response.errors.waktu_selesai) {

@@ -33,14 +33,14 @@
                             <table id="datatable" class="table dt-responsive nowrap w-100">
                                 <thead>
                                     <tr>
-                                        <th width="1px"><input type="checkbox" id="check_all"></th>
+                                        <th><input type="checkbox" id="check_all"></th>
                                         <th>No</th>
                                         <th>Pasien</th>
                                         <th>No Telepon</th>
-                                        <th>Alamat</th>
                                         <th>Waktu Selesai</th>
                                         <th>Sisa Waktu</th>
-                                        <th style="width: 75px;">Aksi</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -55,8 +55,101 @@
 
     </div> <!-- content -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Detail Pelayanan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <td>Kode Pelayanan</td>
+                            <td>:</td>
+                            <td id="kode_pelayanan"></td>
+                        </tr>
+                        <tr>
+                            <td>Pasien</td>
+                            <td>:</td>
+                            <td id="pasien"></td>
+                        </tr>
+                        <tr>
+                            <td>Dokter</td>
+                            <td>:</td>
+                            <td id="dokter"></td>
+                        </tr>
+                        <tr>
+                            <td>Layanan</td>
+                            <td>:</td>
+                            <td id="layanan"></td>
+                        </tr>
+                        <tr>
+                            <td>Paket</td>
+                            <td>:</td>
+                            <td id="paket"></td>
+                        </tr>
+                        <tr>
+                            <td>Alamat</td>
+                            <td>:</td>
+                            <td id="alamat"></td>
+                        </tr>
+                        <tr>
+                            <td>Riwayat Penyakit</td>
+                            <td>:</td>
+                            <td id="riwayat_penyakit"></td>
+                        </tr>
+                        <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td id="no_telepon"></td>
+                        </tr>
+                        <tr>
+                            <td>Total Harga</td>
+                            <td>:</td>
+                            <td id="harga"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
+            $('body').on('click', '#btn-detail', function() {
+                let id = $(this).data('id');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/pelayanan/detail/"+id+"') }}",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        let pelayanan = response.pelayanan;
+                        let dokter = response.dokter;
+                        $('#kode_pelayanan').text(pelayanan.kode_pelayanan);
+                        $('#pasien').text(pelayanan.user.name);
+                        $('#dokter').text(dokter.user.name);
+                        $('#layanan').text(pelayanan.layanan);
+                        $('#paket').text(pelayanan.paket);
+                        $('#alamat').text(pelayanan.alamat);
+                        $('#riwayat_penyakit').text(pelayanan.riwayat_penyakit);
+                        $('#no_telepon').text(pelayanan.no_telepon);
+                        $('#harga').text(pelayanan.harga);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                })
+            });
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -83,14 +176,14 @@
                     data: 'no_telepon',
                     name: 'No Telepon'
                 }, {
-                    data: 'address',
-                    name: 'Alamat'
-                }, {
                     data: 'waktu_selesai',
                     name: 'Waktu selesai'
                 }, {
                     data: 'countdown',
                     name: 'countdown',
+                }, {
+                    data: 'status',
+                    name: 'status',
                 }, {
                     data: 'aksi',
                     name: 'Aksi'
@@ -99,13 +192,13 @@
                     // Calculate the countdown timer for each row
                     $('#datatable tbody tr').each(function() {
                         var countdown_id = $(this).find('td:first').text();
-                        var countdown_time = $(this).find('td:eq(5)').text();
+                        var countdown_time = $(this).find('td:eq(4)').text();
 
                         // Set the date we're counting down to
                         var countDownDate = new Date(countdown_time).getTime();
 
                         // Get the countdown element
-                        var countdown_element = $(this).find('td:eq(6)');
+                        var countdown_element = $(this).find('td:eq(5)');
 
                         // Update the count down every 1 second
                         var x = setInterval(function() {
@@ -130,8 +223,8 @@
                             seconds = ("0" + seconds).slice(-2);
 
                             // Output the result in the countdown element
-                            countdown_element.text(days + " Hari " + hours + " Jam " +
-                                minutes + " Menit " + seconds + " Detik ");
+                            countdown_element.text(days + ":" + hours + ":" +
+                                minutes + ":" + seconds);
 
                             // If the count down is over, write some text
                             if (distance < 0) {
@@ -143,6 +236,48 @@
                 },
             });
         });
+
+        // Nonaktif Data
+        $('body').on('click', '#btnNonaktif', function() {
+            let id = $(this).data('id');
+            Swal.fire({
+                title: 'Nonaktif',
+                text: "Apakah anda yakin?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Nonaktif!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url('/pelayanan/nonaktif/"+id+"') }}",
+                        data: {
+                            id: id
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.success,
+                                }).then(function() {
+                                    top.location.href =
+                                        "{{ route('pelayanan.index') }}";
+                                });
+                            }
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                                thrownError);
+                        }
+                    })
+                }
+            })
+        })
 
         // Hapus Data
         $('body').on('click', '#btnHapus', function() {

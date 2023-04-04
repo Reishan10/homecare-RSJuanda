@@ -35,4 +35,9 @@ class Pelayanan extends Model
     {
         return $this->belongsTo(Dokter::class, 'dokter_id', 'id');
     }
+
+    public function kota()
+    {
+        return $this->belongsTo(Kota::class, 'kota_id', 'id');
+    }
 }

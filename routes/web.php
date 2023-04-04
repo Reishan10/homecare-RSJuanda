@@ -90,6 +90,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/pelayanan/{pelayanan}', [PelayananController::class, 'show'])->name('pelayanan.show');
     Route::post('/pelayanan', [PelayananController::class, 'store'])->name('pelayanan.store');
     Route::delete('pelayanan/{pelayanan}', [PelayananController::class, 'destroy'])->name('pelayanan.destroy');
+    Route::post('/pelayanan/nonaktif/{pelayanan}', [PelayananController::class, 'nonaktif'])->name('pelayanan.nonaktif');
+    Route::post('/pelayanan/detail/{pelayanan}', [PelayananController::class, 'detail'])->name('pelayanan.detail');
 
     //Kota
     Route::post('/kota/delete-multiple-kota', [KotaController::class, 'deleteMultiple'])->name('delete-multiple-kota');

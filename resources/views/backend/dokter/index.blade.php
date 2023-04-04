@@ -40,6 +40,7 @@
                                         <th>Email</th>
                                         <th>No Telepon</th>
                                         <th>Alamat</th>
+                                        <th>Status</th>
                                         <th style="width: 75px;">Aksi</th>
                                     </tr>
                                 </thead>
@@ -90,6 +91,9 @@
                     }, {
                         data: 'address',
                         name: 'Alamat'
+                    },{
+                        data: 'status',
+                        name: 'status'
                     }, {
                         data: 'aksi',
                         name: 'Aksi'

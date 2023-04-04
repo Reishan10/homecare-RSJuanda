@@ -25,6 +25,28 @@
                 </a>
             </li>
 
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarMaster" aria-expanded="false" aria-controls="sidebarMaster"
+                    class="side-nav-link">
+                    <i class="fa-solid fa-server"></i>
+                    <span> Data Master </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarMaster">
+                    <ul class="side-nav-second-level">
+                        <li>
+                            <a href="{{ route('kota.index') }}">Kota</a>
+                        </li>
+                        <li>
+                            <a href="apps-ecommerce-products-details.html">Layanan</a>
+                        </li>
+                        <li>
+                            <a href="apps-ecommerce-orders.html">Paket</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             <li class="side-nav-item {{ request()->segment(1) == 'pelayanan' ? 'active' : '' }}">
                 <a href="{{ route('pelayanan.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-house"></i>
@@ -48,12 +70,6 @@
                 <a href="{{ route('pasien.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-notes-medical"></i>
                     <span> Pasien </span>
-                </a>
-            </li>
-            <li class="side-nav-item {{ request()->segment(1) == 'kota' ? 'active' : '' }}">
-                <a href="{{ route('kota.index') }}" class="side-nav-link">
-                    <i class="fa-solid fa-city"></i>
-                    <span> Kota </span>
                 </a>
             </li>
             <li class="side-nav-item {{ request()->segment(1) == 'pengguna' ? 'active' : '' }}">

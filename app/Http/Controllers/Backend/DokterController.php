@@ -16,12 +16,21 @@ class DokterController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $dokter = User::where('type', 3)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
+            $dokter = $dokter = User::with('dokter')->where('type', 3)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
             return DataTables::of($dokter)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
                     $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->id . "'>";
                     return $comboBox;
+                })
+                ->addColumn('status', function ($data) {
+                    if ($data->dokter->status == '0') {
+                        $badgeStatus = '<span class="badge bg-success">Melayanani</span>';
+                        return $badgeStatus;
+                    } else {
+                        $badgeStatus = '<span class="badge bg-danger">Sedang Melayanani</span>';
+                        return $badgeStatus;
+                    }
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<a class="btn btn-warning btn-sm me-1" href="' . route('dokter.edit', $data->id) . '" ><i
@@ -30,7 +39,7 @@ class DokterController extends Controller
                     class="mdi mdi-trash-can"></i></button>';
                     return $btn;
                 })
-                ->rawColumns(['aksi', 'comboBox'])
+                ->rawColumns(['aksi', 'comboBox', 'status'])
                 ->make(true);
         }
         return view('backend.dokter.index');
