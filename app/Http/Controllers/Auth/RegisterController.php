@@ -51,8 +51,18 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
+            'no_telepon' => ['required', 'min:11', 'max:15'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'name.required' => 'Silakan isi nama terlebih dahulu',
+            'email.required' => 'Silakan isi email terlebih dahulu',
+            'no_telepon.required' => 'Silakan isi no telepon terlebih dahulu',
+            'no_telepon.min' => 'No telepon minimal 11 karakter',
+            'no_telepon.max' => 'No telepon maksimal 11 karakter',
+            'password.required' => 'Silakan isi password terlebih dahulu',
+            'password.min' => 'Password minimal 8 karakter',
+            'password.confirmed' => 'Kofirmasi password gagal',
         ]);
     }
 
@@ -67,6 +77,8 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'no_telepon' => $data['no_telepon'],
+            'type' => 0,
             'password' => Hash::make($data['password']),
         ]);
     }

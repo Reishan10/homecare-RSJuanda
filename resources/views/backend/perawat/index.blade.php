@@ -36,10 +36,11 @@
                                     <tr>
                                         <th width="1px"><input type="checkbox" id="check_all"></th>
                                         <th>No</th>
+                                        <th>NIP</th>
                                         <th>Nama</th>
-                                        <th>Email</th>
                                         <th>No Telepon</th>
-                                        <th>Alamat</th>
+                                        <th>Jabatan</th>
+                                        <th>Status</th>
                                         <th style="width: 75px;">Aksi</th>
                                     </tr>
                                 </thead>
@@ -77,19 +78,21 @@
                         name: 'DT_RowIndex',
                         orderable: false,
                         searchable: false
-                    },
-                    {
-                        data: 'name',
-                        name: 'Nama'
                     }, {
-                        data: 'email',
-                        name: 'Email'
+                        data: 'nip',
+                        name: 'nip'
+                    }, {
+                        data: 'name',
+                        name: 'name'
                     }, {
                         data: 'no_telepon',
-                        name: 'No Telepon'
+                        name: 'no_telepon'
                     }, {
-                        data: 'address',
-                        name: 'Alamat'
+                        data: 'jabatan',
+                        name: 'jabatan'
+                    }, {
+                        data: 'status',
+                        name: 'status'
                     }, {
                         data: 'aksi',
                         name: 'Aksi'

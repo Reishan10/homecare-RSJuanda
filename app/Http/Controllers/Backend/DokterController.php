@@ -16,7 +16,7 @@ class DokterController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $dokter = $dokter = User::with('dokter')->where('type', 3)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
+            $dokter = User::with('dokter')->where('type', 3)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
             return DataTables::of($dokter)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
