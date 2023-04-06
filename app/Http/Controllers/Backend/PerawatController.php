@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Jabatan;
 use App\Models\Perawat;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -14,24 +15,29 @@ class PerawatController extends Controller
 {
     public function index()
     {
+
         if (request()->ajax()) {
-            $perawat = User::with('perawat')->where('type', 2)->orderBy('name', 'asc')->get();
+            $perawat =  Perawat::with('jabatan', 'user')->get();
             return DataTables::of($perawat)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
-                    $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->id . "'>";
+                    $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->user->id . "'>";
                     return $comboBox;
                 })
-                ->addColumn('nip', function ($data) {
-                    $nip = $data->perawat->nip;
-                    return $nip;
+                ->addColumn('name', function ($data) {
+                    $user = $data->user->name;
+                    return $user;
+                })
+                ->addColumn('no_telepon', function ($data) {
+                    $user = $data->user->no_telepon;
+                    return $user;
                 })
                 ->addColumn('jabatan', function ($data) {
-                    $jabatan = $data->perawat->jabatan;
+                    $jabatan = $data->jabatan->name;
                     return $jabatan;
                 })
                 ->addColumn('status', function ($data) {
-                    if ($data->perawat->status == '0') {
+                    if ($data->status == '0') {
                         $badgeStatus = '<span class="badge bg-success">Aktif</span>';
                         return $badgeStatus;
                     } else {
@@ -40,9 +46,10 @@ class PerawatController extends Controller
                     }
                 })
                 ->addColumn('aksi', function ($data) {
-                    $btn = '<a class="btn btn-warning btn-sm me-1" href="' . route('perawat.edit', $data->id) . '" ><i
+                    $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
+                    $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('perawat.edit', $data->user->id) . '" ><i
                     class="mdi mdi-pencil"></i></a>';
-                    $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
+                    $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->user->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
                     return $btn;
                 })
@@ -52,9 +59,16 @@ class PerawatController extends Controller
         return view('backend.perawat.index');
     }
 
+    public function detail(Request $request)
+    {
+        $perawat =  Perawat::with('jabatan', 'user')->findOrFail($request->id);
+        return response()->json(['perawat' => $perawat]);
+    }
+
     public function create()
     {
-        return view('backend.perawat.add');
+        $jabatan = Jabatan::orderBy('name', 'asc')->get();
+        return view('backend.perawat.add', compact('jabatan'));
     }
 
     public function store(Request $request)
@@ -66,9 +80,11 @@ class PerawatController extends Controller
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users,email',
                 'no_telepon' => 'required|unique:users,no_telepon|min:11|max:15',
+                'jabatan' => 'required|string',
             ],
             [
                 'nip.required' => 'Silakan isi nip terlebih dahulu!',
+                'jabatan.required' => 'Silakan isi jabatan terlebih dahulu!',
                 'nip.unique' => 'NIP sudah digunakan!',
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
                 'email.required' => 'Silakan isi email terlebih dahulu!',
@@ -102,7 +118,7 @@ class PerawatController extends Controller
             $perawat->tanggal_lahir = $request->tanggal_lahir;
             $perawat->agama = $request->agama;
             $perawat->status_nikah = $request->status_nikah;
-            $perawat->jabatan = $request->jabatan;
+            $perawat->jabatan_id = $request->jabatan;
             $perawat->save();
 
             return response()->json(['success' => 'Data barhasil ditambahkan']);
@@ -112,7 +128,8 @@ class PerawatController extends Controller
     public function edit($id)
     {
         $perawat = User::with('perawat')->findOrFail($id);
-        return view('backend.perawat.edit', compact('perawat'));
+        $jabatan = Jabatan::orderBy('name', 'asc')->get();
+        return view('backend.perawat.edit', compact(['perawat', 'jabatan']));
     }
 
     public function update(Request $request)
@@ -124,11 +141,13 @@ class PerawatController extends Controller
             [
                 'nip' => 'required|string|unique:perawat,nip,' . $id_perawat . ',id',
                 'name' => 'required|string',
+                'jabatan' => 'required|string',
                 'email' => 'required|email|unique:users,email,' . $id . ',id',
                 'no_telepon' => 'required|unique:users,no_telepon,' . $id . ',id|min:11|max:15',
             ],
             [
                 'nip.required' => 'Silakan isi nip terlebih dahulu!',
+                'jabatan.required' => 'Silakan isi jabatan terlebih dahulu!',
                 'nip.unique' => 'NIP sudah digunakan!',
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
                 'email.required' => 'Silakan isi email terlebih dahulu!',
@@ -143,7 +162,6 @@ class PerawatController extends Controller
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-
             $user = User::find($id);
             $perawat = $user->perawat;
 
@@ -164,7 +182,7 @@ class PerawatController extends Controller
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'agama' => $request->agama,
                 'status_nikah' => $request->status_nikah,
-                'jabatan' => $request->jabatan,
+                'jabatan_id' => $request->jabatan
             ]);
             return response()->json(['success' => 'Data barhasil diedit']);
         }

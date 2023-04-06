@@ -21,7 +21,8 @@ return new class extends Migration
             $table->date('tanggal_lahir')->nullable();
             $table->string('agama', 100)->nullable();
             $table->string('status_nikah', 100)->nullable();
-            $table->string('jabatan', 100)->nullable();
+            $table->unsignedBigInteger('jabatan_id');
+            $table->foreign('jabatan_id')->references('id')->on('jabatan');
             $table->tinyInteger('status')->default('0');
             $table->timestamps();
         });

@@ -159,11 +159,13 @@
                                         <label class="form-label" for="jabatan">Jabatan</label>
                                         <select name="jabatan" id="jabatan" class="form-control">
                                             <option value="">-- Pilih Jabatan --</option>
-                                            <option value="Perawat Kesehatan"
-                                                {{ $perawat->perawat->jabatan == 'Perawat Kesehatan' ? 'selected' : '' }}>
-                                                Perawat Kesehatan</option>
+                                            @foreach ($jabatan as $row)
+                                                <option value="{{ $row->id }}"
+                                                    {{ $row->id == $perawat->perawat->jabatan_id ? 'selected' : '' }}>
+                                                    {{ $row->name }}</option>
+                                            @endforeach
                                         </select>
-                                        <div class="invalid-feedback errorGolDarah">
+                                        <div class="invalid-feedback errorJabatan">
                                         </div>
                                     </div>
                                 </div>
@@ -237,6 +239,14 @@
                             } else {
                                 $('#no_telepon').removeClass('is-invalid');
                                 $('.errorNoTelepon').html('');
+                            }
+
+                            if (response.errors.jabatan) {
+                                $('#jabatan').addClass('is-invalid');
+                                $('.errorJabatan').html(response.errors.jabatan);
+                            } else {
+                                $('#jabatan').removeClass('is-invalid');
+                                $('.errorJabatan').html('');
                             }
                         } else {
                             Swal.fire({

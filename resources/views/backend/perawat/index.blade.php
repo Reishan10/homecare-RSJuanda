@@ -38,7 +38,6 @@
                                         <th>No</th>
                                         <th>NIP</th>
                                         <th>Nama</th>
-                                        <th>No Telepon</th>
                                         <th>Jabatan</th>
                                         <th>Status</th>
                                         <th style="width: 75px;">Aksi</th>
@@ -56,8 +55,101 @@
 
     </div> <!-- content -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Detail Pelayanan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <td>NIP</td>
+                            <td>:</td>
+                            <td id="nip"></td>
+                        </tr>
+                        <tr>
+                            <td>Nama</td>
+                            <td>:</td>
+                            <td id="name"></td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>:</td>
+                            <td id="email"></td>
+                        </tr>
+                        <tr>
+                            <td>Jenis Kelamin</td>
+                            <td>:</td>
+                            <td id="gender"></td>
+                        </tr>
+                        <tr>
+                            <td>Gol Darah</td>
+                            <td>:</td>
+                            <td id="gol_darah"></td>
+                        </tr>
+                        <tr>
+                            <td>Tempat, Tanggal Lahir</td>
+                            <td>:</td>
+                            <td id="ttl"></td>
+                        </tr>
+                        <tr>
+                            <td>Agama</td>
+                            <td>:</td>
+                            <td id="agama"></td>
+                        </tr>
+                        <tr>
+                            <td>Status Nikah</td>
+                            <td>:</td>
+                            <td id="status_nikah"></td>
+                        </tr>
+                        <tr>
+                            <td>Jabatan</td>
+                            <td>:</td>
+                            <td id="jabatan"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
+            $('body').on('click', '#btn-detail', function() {
+                let id = $(this).data('id');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/perawat/detail/"+id+"') }}",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#nip').text(response.perawat.nip);
+                        $('#name').text(response.perawat.user.name);
+                        $('#email').text(response.perawat.user.email);
+                        $('#gender').text(response.perawat.user.gender == 'L' ? 'Laki-laki' :
+                            'Perempuan');
+                        $('#gol_darah').text(response.perawat.gol_darah);
+                        $('#ttl').text(response.perawat.tempat_lahir + ', ' + response.perawat
+                            .tanggal_lahir);
+                        $('#agama').text(response.perawat.agama);
+                        $('#status_nikah').text(response.perawat.status_nikah);
+                        $('#jabatan').text(response.perawat.jabatan.name);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                })
+            });
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -69,35 +161,30 @@
                 serverside: true,
                 ajax: "{{ route('perawat.index') }}",
                 columns: [{
-                        data: 'comboBox',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    }, {
-                        data: 'nip',
-                        name: 'nip'
-                    }, {
-                        data: 'name',
-                        name: 'name'
-                    }, {
-                        data: 'no_telepon',
-                        name: 'no_telepon'
-                    }, {
-                        data: 'jabatan',
-                        name: 'jabatan'
-                    }, {
-                        data: 'status',
-                        name: 'status'
-                    }, {
-                        data: 'aksi',
-                        name: 'Aksi'
-                    }
-                ]
+                    data: 'comboBox',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'nip',
+                    name: 'nip'
+                }, {
+                    data: 'name',
+                    name: 'name'
+                }, {
+                    data: 'jabatan',
+                    name: 'jabatan'
+                }, {
+                    data: 'status',
+                    name: 'status'
+                }, {
+                    data: 'aksi',
+                    name: 'Aksi'
+                }]
             });
         });
 

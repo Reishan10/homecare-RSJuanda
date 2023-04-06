@@ -41,6 +41,16 @@ class Perawat extends Model
         'tanggal_lahir',
         'agama',
         'status_nikah',
-        'jabatan',
+        'jabatan_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class);
+    }
 }

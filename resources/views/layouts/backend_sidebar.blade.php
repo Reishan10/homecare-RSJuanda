@@ -38,10 +38,19 @@
                             <a href="{{ route('kota.index') }}">Kota</a>
                         </li>
                         <li>
-                            <a href="apps-ecommerce-products-details.html">Layanan</a>
+                            <a href="{{ route('layanan.index') }}">Layanan</a>
                         </li>
                         <li>
-                            <a href="apps-ecommerce-orders.html">Paket</a>
+                            <a href="{{ route('bayar.index') }}">Bayar</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('kategori.index') }}">Kategori</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('poli.index') }}">Poli</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('jabatan.index') }}">Jabatan</a>
                         </li>
                     </ul>
                 </div>

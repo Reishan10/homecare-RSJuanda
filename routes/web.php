@@ -1,13 +1,17 @@
 <?php
 
+use App\Http\Controllers\Backend\BayarController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DokterController;
 use App\Http\Controllers\Backend\GantiPasswordController;
-use App\Http\Controllers\Backend\HomecareController;
+use App\Http\Controllers\Backend\JabatanController;
+use App\Http\Controllers\Backend\KategoriController;
 use App\Http\Controllers\Backend\KotaController;
+use App\Http\Controllers\Backend\LayananController;
 use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PelayananController;
 use App\Http\Controllers\Backend\PerawatController;
+use App\Http\Controllers\Backend\PoliController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\BerandaController;
 use App\Http\Controllers\Frontend\DokterController as FrontendDokterController;
@@ -71,6 +75,7 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/perawat', [PerawatController::class, 'store'])->name('perawat.store');
     Route::get('/perawat/{perawat}/edit', [PerawatController::class, 'edit'])->name('perawat.edit');
     Route::post('/perawat/{perawat}', [PerawatController::class, 'update'])->name('perawat.update');
+    Route::post('/perawat/detail/{perawat}', [PerawatController::class, 'detail'])->name('perawat.detail');
     Route::delete('perawat/{perawat}', [PerawatController::class, 'destroy'])->name('perawat.destroy');
 
     //Pasien
@@ -112,6 +117,41 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::post('/pengguna/{user}', [UserController::class, 'update'])->name('user.update');
     Route::delete('pengguna/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+
+    //Layanan
+    Route::post('/layanan/delete-multiple-layanan', [LayananController::class, 'deleteMultiple'])->name('delete-multiple-layanan');
+    Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
+    Route::post('/layanan', [LayananController::class, 'store'])->name('layanan.store');
+    Route::get('/layanan/{layanan}/edit', [LayananController::class, 'edit'])->name('layanan.edit');
+    Route::delete('layanan/{layanan}', [LayananController::class, 'destroy'])->name('layanan.destroy');
+
+    //Bayar
+    Route::post('/bayar/delete-multiple-bayar', [BayarController::class, 'deleteMultiple'])->name('delete-multiple-bayar');
+    Route::get('/bayar', [BayarController::class, 'index'])->name('bayar.index');
+    Route::post('/bayar', [BayarController::class, 'store'])->name('bayar.store');
+    Route::get('/bayar/{bayar}/edit', [BayarController::class, 'edit'])->name('bayar.edit');
+    Route::delete('bayar/{bayar}', [BayarController::class, 'destroy'])->name('bayar.destroy');
+
+    //Kategori
+    Route::post('/kategori/delete-multiple-kategori', [KategoriController::class, 'deleteMultiple'])->name('delete-multiple-kategori');
+    Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
+    Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
+    Route::get('/kategori/{kategori}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
+    Route::delete('kategori/{kategori}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+
+    //Poli
+    Route::post('/poli/delete-multiple-poli', [PoliController::class, 'deleteMultiple'])->name('delete-multiple-poli');
+    Route::get('/poli', [PoliController::class, 'index'])->name('poli.index');
+    Route::post('/poli', [PoliController::class, 'store'])->name('poli.store');
+    Route::get('/poli/{poli}/edit', [PoliController::class, 'edit'])->name('poli.edit');
+    Route::delete('poli/{poli}', [PoliController::class, 'destroy'])->name('poli.destroy');
+
+    //Poli
+    Route::post('/jabatan/delete-multiple-jabatan', [JabatanController::class, 'deleteMultiple'])->name('delete-multiple-jabatan');
+    Route::get('/jabatan', [JabatanController::class, 'index'])->name('jabatan.index');
+    Route::post('/jabatan', [JabatanController::class, 'store'])->name('jabatan.store');
+    Route::get('/jabatan/{jabatan}/edit', [JabatanController::class, 'edit'])->name('jabatan.edit');
+    Route::delete('jabatan/{jabatan}', [JabatanController::class, 'destroy'])->name('jabatan.destroy');
 });
 
 /*------------------------------------------
