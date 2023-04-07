@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dokter;
+use App\Models\Jabatan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -15,16 +16,29 @@ class DokterController extends Controller
 {
     public function index()
     {
+
         if (request()->ajax()) {
-            $dokter = User::with('dokter')->where('type', 3)->orderBy('name', 'asc')->get(['id', 'name', 'email', 'no_telepon', 'address']);
+            $dokter = Dokter::with('user', 'jabatan')->get();
             return DataTables::of($dokter)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
-                    $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->id . "'>";
+                    $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->user->id . "'>";
                     return $comboBox;
                 })
+                ->addColumn('name', function ($data) {
+                    $name = $data->user->name;
+                    return $name;
+                })
+                ->addColumn('email', function ($data) {
+                    $email = $data->user->email;
+                    return $email;
+                })
+                ->addColumn('no_telepon', function ($data) {
+                    $no_telepon = $data->user->no_telepon;
+                    return $no_telepon;
+                })
                 ->addColumn('status', function ($data) {
-                    if ($data->dokter->status == '0') {
+                    if ($data->status == '0') {
                         $badgeStatus = '<span class="badge bg-success">Melayanani</span>';
                         return $badgeStatus;
                     } else {
@@ -33,9 +47,10 @@ class DokterController extends Controller
                     }
                 })
                 ->addColumn('aksi', function ($data) {
-                    $btn = '<a class="btn btn-warning btn-sm me-1" href="' . route('dokter.edit', $data->id) . '" ><i
+                    $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
+                    $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('dokter.edit', $data->id) . '" ><i
                     class="mdi mdi-pencil"></i></a>';
-                    $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
+                    $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->user->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
                     return $btn;
                 })
@@ -45,9 +60,16 @@ class DokterController extends Controller
         return view('backend.dokter.index');
     }
 
+    public function detail(Request $request)
+    {
+        $dokter = Dokter::with('user', 'jabatan')->findOrFail($request->id);
+        return response()->json(['dokter' => $dokter]);
+    }
+
     public function create()
     {
-        return view('backend.dokter.add');
+        $jabatan = Jabatan::orderBy('name', 'asc')->get();
+        return view('backend.dokter.add', compact('jabatan'));
     }
 
     public function store(Request $request)
@@ -55,215 +77,157 @@ class DokterController extends Controller
         $validated = Validator::make(
             $request->all(),
             [
+                'nip' => 'required|string|unique:dokter,nip',
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users,email',
                 'no_telepon' => 'required|unique:users,no_telepon|min:11|max:15',
-                'gender' => 'required',
-                'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
-                'spesialis' => 'required',
-                'pengalaman' => 'required|numeric|max:50',
-                'deskripsi' => 'required',
+                'jabatan' => 'required|string',
+                'spesialis' => 'required|string',
+                'pengalaman' => 'required|string',
+                'jam_masuk' => 'required|string',
+                'jam_pulang' => 'required|string',
+                'deskripsi' => 'required|string',
             ],
             [
+                'nip.required' => 'Silakan isi nip terlebih dahulu!',
+                'nip.unique' => 'NIP sudah digunakan!',
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
                 'email.required' => 'Silakan isi email terlebih dahulu!',
                 'email.unique' => 'Email sudah digunakan!',
-                'no_telepon.required' => 'Silakan isi no telepon terlebih dahulu!',
                 'no_telepon.unique' => 'No telepon sudah digunakan!',
+                'no_telepon.required' => 'Silakan isi no telepon terlebih dahulu!',
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
-                'gender.required' => 'Silakan isi jenis kelamin terlebih dahulu!',
-                'avatar.image' => 'File harus berupa gambar!',
-                'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
+                'jabatan.required' => 'Silakan isi jabatan terlebih dahulu!',
                 'spesialis.required' => 'Silakan isi spesialis terlebih dahulu!',
                 'pengalaman.required' => 'Silakan isi pengalaman terlebih dahulu!',
-                'pengalaman.max' => 'Maksimal pengisian pengalaman :max tahun.',
+                'jam_masuk.required' => 'Silakan isi jam masuk terlebih dahulu!',
+                'jam_pulang.required' => 'Silakan isi jam pulang terlebih dahulu!',
                 'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
             ]
         );
 
-
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
-                if ($file->isValid()) {
-                    $guessExtension = $request->file('avatar')->guessExtension();
-                    $request->file('avatar')->storeAs('users-avatar/', $request->name . '.' . $guessExtension, 'public');
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->no_telepon = $request->no_telepon;
+            $user->password = bcrypt($request->no_telepon);
+            $user->type = 3;
+            $user->gender = $request->gender;
+            $user->address = $request->address;
+            $user->save();
 
-                    $user = new User();
-                    $user->name = $request->name;
-                    $user->email = $request->email;
-                    $user->no_telepon = $request->no_telepon;
-                    $user->password = bcrypt($request->no_telepon);
-                    $user->type = 3;
-                    $user->gender = $request->gender;
-                    $user->address = $request->address;
-                    $user->avatar = $request->name . '.' . $guessExtension;
-                    $user->save();
+            $dokter = new Dokter();
+            $dokter->user_id = $user->id;
+            $dokter->nip = $request->nip;
+            $dokter->gol_darah = $request->gol_darah;
+            $dokter->tempat_lahir = $request->tempat_lahir;
+            $dokter->tanggal_lahir = $request->tanggal_lahir;
+            $dokter->agama = $request->agama;
+            $dokter->status_nikah = $request->status_nikah;
+            $dokter->jabatan_id = $request->jabatan;
+            $dokter->spesialis = $request->spesialis;
+            $dokter->pengalaman_tahun = $request->pengalaman;
+            $dokter->deskripsi = $request->deskripsi;
+            $dokter->jam_masuk = $request->jam_masuk;
+            $dokter->jam_pulang = $request->jam_pulang;
+            $dokter->save();
 
-                    $dokter = new Dokter();
-                    $dokter->user_id = $user->id;
-                    $dokter->spesialis = $request->spesialis;
-                    $dokter->pengalaman_tahun = $request->pengalaman;
-                    $dokter->deskripsi = $request->deskripsi;
-                    $dokter->save();
-                    return response()->json(['success' => 'Data barhasil ditambahkan']);
-                }
-            } else {
-                $user = new User();
-                $user->name = $request->name;
-                $user->email = $request->email;
-                $user->no_telepon = $request->no_telepon;
-                $user->password = bcrypt($request->no_telepon);
-                $user->type = 3;
-                $user->gender = $request->gender;
-                $user->address = $request->address;
-                $user->save();
-
-                $dokter = new Dokter();
-                $dokter->user_id = $user->id;
-                $dokter->spesialis = $request->spesialis;
-                $dokter->pengalaman_tahun = $request->pengalaman;
-                $dokter->deskripsi = $request->deskripsi;
-                $dokter->save();
-
-                return response()->json(['success' => 'Data barhasil ditambahkan']);
-            }
+            return response()->json(['success' => 'Data barhasil ditambahkan']);
         }
     }
 
+
     public function edit($id)
     {
-        $user = User::with('dokter')->find($id);
-        $dokter = $user->dokter;
-        return view('backend.dokter.edit', compact('user', 'dokter'));
+        $dokter = Dokter::with('user', 'jabatan')->findOrFail($id);
+        $jabatan = Jabatan::orderBy('name', 'asc')->get();
+        return view('backend.dokter.edit', compact('jabatan', 'dokter'));
     }
 
     public function update(Request $request)
     {
         $id = $request->id;
+        $user_id = $request->user_id;
         $validated = Validator::make(
             $request->all(),
             [
+                'nip' => 'required|string|unique:dokter,nip,' . $id . ',id',
                 'name' => 'required|string',
-                'email' => 'required|email|unique:users,email,' . $id . ',id',
-                'no_telepon' => 'required|unique:users,no_telepon,' . $id . ',id|min:11|max:15',
-                'gender' => 'required',
-                'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
-                'spesialis' => 'required',
-                'pengalaman' => 'required|numeric|max:50',
-                'deskripsi' => 'required',
+                'email' => 'required|email|unique:users,email,' . $user_id . ',id',
+                'no_telepon' => 'required|unique:users,no_telepon,' . $user_id . ',id|min:11|max:15',
+                'jabatan' => 'required|string',
+                'spesialis' => 'required|string',
+                'pengalaman' => 'required|string',
+                'jam_masuk' => 'required|string',
+                'jam_pulang' => 'required|string',
+                'deskripsi' => 'required|string',
             ],
             [
+                'nip.required' => 'Silakan isi nip terlebih dahulu!',
+                'nip.unique' => 'NIP sudah digunakan!',
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
                 'email.required' => 'Silakan isi email terlebih dahulu!',
                 'email.unique' => 'Email sudah digunakan!',
-                'no_telepon.required' => 'Silakan isi no telepon terlebih dahulu!',
                 'no_telepon.unique' => 'No telepon sudah digunakan!',
+                'no_telepon.required' => 'Silakan isi no telepon terlebih dahulu!',
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
-                'gender.required' => 'Silakan isi jenis kelamin terlebih dahulu!',
-                'avatar.image' => 'File harus berupa gambar!',
-                'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
+                'jabatan.required' => 'Silakan isi jabatan terlebih dahulu!',
                 'spesialis.required' => 'Silakan isi spesialis terlebih dahulu!',
                 'pengalaman.required' => 'Silakan isi pengalaman terlebih dahulu!',
-                'pengalaman.max' => 'Maksimal pengisian pengalaman :max tahun.',
+                'jam_masuk.required' => 'Silakan isi jam masuk terlebih dahulu!',
+                'jam_pulang.required' => 'Silakan isi jam pulang terlebih dahulu!',
                 'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
             ]
         );
 
+
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
-                if ($file->isValid()) {
-                    $dokter = User::findOrFail($id);
+            $user = User::find($user_id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->no_telepon = $request->no_telepon;
+            $user->gender = $request->gender;
+            $user->address = $request->address;
+            $user->save();
 
-                    if ($dokter->avatar !== 'avatar.png') {
-                        Storage::delete('users-avatar/' . $dokter->avatar);
-                    }
+            $dokter = Dokter::find($id);
+            $dokter->nip = $request->nip;
+            $dokter->gol_darah = $request->gol_darah;
+            $dokter->tempat_lahir = $request->tempat_lahir;
+            $dokter->tanggal_lahir = $request->tanggal_lahir;
+            $dokter->agama = $request->agama;
+            $dokter->status_nikah = $request->status_nikah;
+            $dokter->jabatan_id = $request->jabatan;
+            $dokter->spesialis = $request->spesialis;
+            $dokter->pengalaman_tahun = $request->pengalaman;
+            $dokter->deskripsi = $request->deskripsi;
+            $dokter->jam_masuk = $request->jam_masuk;
+            $dokter->jam_pulang = $request->jam_pulang;
+            $dokter->save();
 
-                    $guessExtension = $request->file('avatar')->guessExtension();
-                    $request->file('avatar')->storeAs('users-avatar/', $request->name . '.' . $guessExtension, 'public');
-
-                    $user = User::find($id);
-                    $dokter = $user->dokter;
-
-                    // Mengupdate data pada tabel users
-                    $user->update([
-                        'name' => $request->name,
-                        'email' => $request->email,
-                        'no_telepon' => $request->no_telepon,
-                        'gender' => $request->gender,
-                        'address' => $request->address,
-                        'avatar' => $request->name . '.' . $guessExtension,
-                    ]);
-
-                    // Mengupdate data pada tabel dokter
-                    $dokter->update([
-                        'spesialis' => $request->spesialis,
-                        'pengalaman_tahun' => $request->pengalaman,
-                        'deskripsi' =>  $request->deskripsi,
-                    ]);
-
-                    return response()->json(['success' => 'Data barhasil diubah']);
-                }
-            } else {
-                $user = User::find($id);
-                $dokter = $user->dokter;
-
-                // Mengupdate data pada tabel users
-                $user->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'no_telepon' => $request->no_telepon,
-                    'gender' => $request->gender,
-                    'address' => $request->address,
-                ]);
-
-                // Mengupdate data pada tabel dokter
-                $dokter->update([
-                    'spesialis' => $request->spesialis,
-                    'pengalaman_tahun' => $request->pengalaman,
-                    'deskripsi' =>  $request->deskripsi,
-                ]);
-
-                return response()->json(['success' => 'Data barhasil diubah']);
-            }
+            return response()->json(['success' => 'Data barhasil ditambahkan']);
         }
     }
 
     public function destroy(Request $request)
     {
         $dokter = User::findOrFail($request->id);
-
-        if ($dokter->avatar !== 'avatar.png') {
-            Storage::delete('users-avatar/' . $dokter->avatar);
-            $dokter->delete();
-        } else {
-            $dokter->delete();
-        }
-
+        $dokter->delete();
         return Response()->json(['dokter' => $dokter, 'success' => 'Data berhasil dihapus']);
     }
 
 
     public function deleteMultiple(Request $request)
     {
-        $dokter = User::whereIn('id', explode(",", $request->id))->get();
-
-        foreach ($dokter as $row) {
-            if ($row->avatar !== 'avatar.png') {
-                Storage::delete('users-avatar/' . $row->avatar);
-                $row->delete();
-            } else {
-                $row->delete();
-            }
-        }
-
+        $id = $request->id;
+        User::whereIn('id', explode(",", $id))->delete();
         return response()->json(['success' => "Data berhasil dihapus"]);
     }
 }

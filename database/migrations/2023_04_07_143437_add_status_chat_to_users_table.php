@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('chat_payment_id')->default(0)->after('active_status');
+            $table->bigInteger('chat_payment_id')->nullable()->after('active_status');
         });
     }
 

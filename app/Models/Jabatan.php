@@ -16,4 +16,9 @@ class Jabatan extends Model
     {
         return $this->hasOne(Perawat::class);
     }
+
+    public function dokter()
+    {
+        return $this->hasOne(Dokter::class);
+    }
 }

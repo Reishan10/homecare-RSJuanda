@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('dokter', function (Blueprint $table) {
-            $table->integer('status')->default(0)->after('deskripsi');
+        Schema::create('pasiens', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('dokter', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        Schema::dropIfExists('pasiens');
     }
 };

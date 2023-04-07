@@ -9,67 +9,194 @@
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('dokter.update', $user->id) }}" method="post" id="form"
-                    enctype="multipart/form-data">
+                <form action="{{ route('dokter.store') }}" method="post" id="form">
                     @csrf
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
+                                        <label for="nip" class="form-label">NIP</label>
+                                        <input type="hidden" name="id" id="id" value="{{ $dokter->id }}">
+                                        <input type="hidden" name="user_id" id="user_id" value="{{ $dokter->user->id }}">
+                                        <input type="text" id="nip" name="nip" class="form-control"
+                                            value="{{ $dokter->nip }}">
+                                        <div class="invalid-feedback errorNIP">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="name" class="form-label">Nama Lengkap</label>
-                                        <input type="hidden" name="id" id="id" value="{{ $user->id }}">
                                         <input type="text" id="name" name="name" class="form-control"
-                                            value="{{ $user->name }}">
+                                            value="{{ $dokter->user->name }}">
                                         <div class="invalid-feedback errorName">
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" id="email" name="email" class="form-control"
-                                            value={{ $user->email }}>
-                                        <div class="invalid-feedback errorEmail">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" id="email" name="email" class="form-control"
+                                                    value="{{ $dokter->user->email }}">
+                                                <div class="invalid-feedback errorEmail">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="no_telepon" class="form-label">No Telepon</label>
+                                                <input type="number" id="no_telepon" name="no_telepon" class="form-control"
+                                                    value="{{ $dokter->user->no_telepon }}">
+                                                <div class="invalid-feedback errorNoTelepon">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="no_telepon" class="form-label">No Telepon</label>
-                                        <input type="number" id="no_telepon" name="no_telepon" class="form-control"
-                                            placeholder="6285...." value={{ $user->no_telepon }}>
-                                        <div class="invalid-feedback errorNoTelepon">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="gender">Jenis Kelamin</label>
+                                                <select name="gender" id="gender" class="form-control">
+                                                    <option value="">-- Pilih Jenis Kelamin --</option>
+                                                    <option value="L"
+                                                        {{ $dokter->user->gender == 'L' ? 'selected' : '' }}>Laki-laki
+                                                    </option>
+                                                    <option value="P"
+                                                        {{ $dokter->user->gender == 'P' ? 'selected' : '' }}>Perempuan
+                                                    </option>
+                                                </select>
+                                                <div class="invalid-feedback errorGender">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="gol_darah">Gol. Darah</label>
+                                                <select name="gol_darah" id="gol_darah" class="form-control">
+                                                    <option value="">-- Pilih Gol. Darah --</option>
+                                                    <option value="A"
+                                                        {{ $dokter->gol_darah == 'A' ? 'selected' : '' }}>A</option>
+                                                    <option value="B"
+                                                        {{ $dokter->gol_darah == 'B' ? 'selected' : '' }}>B</option>
+                                                    <option value="AB"
+                                                        {{ $dokter->gol_darah == 'AB' ? 'selected' : '' }}>AB</option>
+                                                    <option value="O"
+                                                        {{ $dokter->gol_darah == 'O' ? 'selected' : '' }}>O</option>
+                                                </select>
+                                                <div class="invalid-feedback errorGolDarah">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="gender" class="form-label">Jenis Kelamin</label>
-                                        <select name="gender" id="gender" class="form-control">
-                                            <option value="">-- Pilih Jenis Kelamin --</option>
-                                            <option value="L" {{ $user->gender == 'L' ? 'selected' : '' }}>Laki-laki
-                                            </option>
-                                            <option value="P" {{ $user->gender == 'P' ? 'selected' : '' }}>Perempuan
-                                            </option>
-                                        </select>
-                                        <div class="invalid-feedback errorGender">
+                                        <div class="row">
+                                            <label class="form-label" for="tempat_lahir">Tempat, Tanggal Lahir</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" name="tempat_lahir" id="tempat_lahir"
+                                                    class="form-control" value="{{ $dokter->tempat_lahir }}">
+                                                <div class="invalid-feedback errorTempatLahir">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input type="date" name="tanggal_lahir" id="tanggal_lahir"
+                                                    class="form-control" value="{{ $dokter->tanggal_lahir }}">
+                                                <div class="invalid-feedback errorTanggalLahir">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="address" class="form-label">Alamat</label>
-                                        <textarea name="address" id="address" rows="1" class="form-control">{{ $user->address }}</textarea>
+                                        <textarea name="address" id="address" rows="1" class="form-control">{{ $dokter->user->address }}</textarea>
                                         <div class="invalid-feedback errorAddress">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
-                                        <label for="spesialis" class="form-label">Spesialis</label>
-                                        <input type="text" id="spesialis" name="spesialis" class="form-control"
-                                            value="{{ $dokter->spesialis }}">
-                                        <div class="invalid-feedback errorSpesialis">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="agama">Agama</label>
+                                                <select name="agama" id="agama" class="form-control">
+                                                    <option value="">-- Pilih Agama --</option>
+                                                    <option value="Islam"
+                                                        {{ $dokter->agama == 'Islam' ? 'selected' : '' }}>Islam</option>
+                                                    <option value="Kristen"
+                                                        {{ $dokter->agama == 'Kristen' ? 'selected' : '' }}>Kristen
+                                                    </option>
+                                                    <option value="Katolik"
+                                                        {{ $dokter->agama == 'Katolik' ? 'selected' : '' }}>Katolik
+                                                    </option>
+                                                    <option value="Hindu"
+                                                        {{ $dokter->agama == 'Hindu' ? 'selected' : '' }}>Hindu</option>
+                                                    <option value="Budha"
+                                                        {{ $dokter->agama == 'Budha' ? 'selected' : '' }}>Budha</option>
+                                                    <option value="Konghucu"
+                                                        {{ $dokter->agama == 'Konghucu' ? 'selected' : '' }}>Konghucu
+                                                    </option>
+                                                </select>
+                                                <div class="invalid-feedback errorAgama">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="status_nikah">Status Nikah</label>
+                                                <select name="status_nikah" id="status_nikah" class="form-control">
+                                                    <option value="">-- Pilih Status Nikah --</option>
+                                                    <option value="Belum Menikah"
+                                                        {{ $dokter->status_nikah == 'Belum Menikah' ? 'selected' : '' }}>
+                                                        Belum Menikah
+                                                    </option>
+                                                    <option value="Menikah"
+                                                        {{ $dokter->status_nikah == 'Menikah' ? 'selected' : '' }}>Menikah
+                                                    </option>
+                                                </select>
+                                                <div class="invalid-feedback errorStatusNikah">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="pengalaman" class="form-label">Pengalaman (Tahun)</label>
-                                        <input type="number" id="pengalaman" name="pengalaman" class="form-control"
-                                            value="{{ $dokter->pengalaman_tahun }}">
-                                        <div class="invalid-feedback errorPengalaman">
+                                        <label class="form-label" for="jabatan">Jabatan</label>
+                                        <select name="jabatan" id="jabatan" class="form-control">
+                                            <option value="">-- Pilih Jabatan --</option>
+                                            @foreach ($jabatan as $row)
+                                                <option value="{{ $row->id }}"
+                                                    {{ $row->id == $dokter->jabatan_id ? 'selected' : '' }}>
+                                                    {{ $row->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback errorJabatan">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="spesialis">Spesialis</label>
+                                                <input type="text" name="spesialis" id="spesialis"
+                                                    class="form-control" value="{{ $dokter->spesialis }}">
+                                                <div class="invalid-feedback errorSpesialis">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="pengalaman">Pengalaman (Tahun)</label>
+                                                <input type="number" name="pengalaman" id="pengalaman"
+                                                    class="form-control" value="{{ $dokter->pengalaman_tahun }}">
+                                                <div class="invalid-feedback errorPengalaman">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="jam_masuk">Jam Masuk</label>
+                                                <input type="time" name="jam_masuk" id="jam_masuk"
+                                                    class="form-control" value="{{ $dokter->jam_masuk }}">
+                                                <div class="invalid-feedback errorJamMasuk">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="jam_pulang">Jam Pulang</label>
+                                                <input type="time" name="jam_pulang" id="jam_pulang"
+                                                    class="form-control" value="{{ $dokter->jam_pulang }}">
+                                                <div class="invalid-feedback errorJamPulang">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -78,26 +205,12 @@
                                         <div class="invalid-feedback errorDeskripsi">
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <img src="{{ asset('storage/users-avatar/' . $user->avatar) }}"
-                                                    alt=""class="img-thumbnail img-preview">
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label class="form-label" for="avatar">Foto</label>
-                                                <input type="file" name="avatar" id="avatar" class="form-control"
-                                                    accept="image/*" onchange="previewImgFoto()">
-                                                <div class="invalid-feedback errorAvatar">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
+
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <button type="button" class="btn btn-secondary mb-3"
+                                    <button type="button" class="btn btn-secondary mb-2"
                                         onclick="window.location='{{ route('dokter.index') }}'">Kembali</button>
-                                    <button type="submit" class="btn btn-primary mb-3" id="simpan">Simpan</button>
+                                    <button type="submit" class="btn btn-primary mb-2" id="simpan">Simpan</button>
                                 </div>
                             </div>
                         </div>
@@ -107,19 +220,8 @@
         </div>
         <!-- end page title -->
     </div>
+
     <script>
-        function previewImgFoto() {
-            const foto = document.querySelector('#avatar');
-            const imgPreview = document.querySelector('.img-preview');
-            const fileFoto = new FileReader();
-
-            fileFoto.readAsDataURL(foto.files[0]);
-
-            fileFoto.onload = function(e) {
-                imgPreview.src = e.target.result;
-            }
-        }
-
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -132,13 +234,10 @@
                 let id = $('#id').val();
 
                 $.ajax({
-                    data: new FormData(this),
+                    data: $(this).serialize(),
                     url: "{{ url('dokter/"+id+"') }}",
                     type: "POST",
                     dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    cache: false,
                     beforeSend: function() {
                         $('#simpan').attr('disable', 'disabled');
                         $('#simpan').text('Proses...');
@@ -149,6 +248,14 @@
                     },
                     success: function(response) {
                         if (response.errors) {
+                            if (response.errors.nip) {
+                                $('#nip').addClass('is-invalid');
+                                $('.errorNIP').html(response.errors.nip);
+                            } else {
+                                $('#nip').removeClass('is-invalid');
+                                $('.errorNIP').html('');
+                            }
+
                             if (response.errors.name) {
                                 $('#name').addClass('is-invalid');
                                 $('.errorName').html(response.errors.name);
@@ -173,28 +280,12 @@
                                 $('.errorNoTelepon').html('');
                             }
 
-                            if (response.errors.gender) {
-                                $('#gender').addClass('is-invalid');
-                                $('.errorGender').html(response.errors.gender);
+                            if (response.errors.jabatan) {
+                                $('#jabatan').addClass('is-invalid');
+                                $('.errorJabatan').html(response.errors.jabatan);
                             } else {
-                                $('#gender').removeClass('is-invalid');
-                                $('.errorGender').html('');
-                            }
-
-                            if (response.errors.address) {
-                                $('#address').addClass('is-invalid');
-                                $('.errorAddress').html(response.errors.address);
-                            } else {
-                                $('#address').removeClass('is-invalid');
-                                $('.errorAddress').html('');
-                            }
-
-                            if (response.errors.avatar) {
-                                $('#avatar').addClass('is-invalid');
-                                $('.errorAvatar').html(response.errors.avatar);
-                            } else {
-                                $('#avatar').removeClass('is-invalid');
-                                $('.errorAvatar').html('');
+                                $('#jabatan').removeClass('is-invalid');
+                                $('.errorJabatan').html('');
                             }
 
                             if (response.errors.spesialis) {
@@ -211,6 +302,22 @@
                             } else {
                                 $('#pengalaman').removeClass('is-invalid');
                                 $('.errorPengalaman').html('');
+                            }
+
+                            if (response.errors.jam_masuk) {
+                                $('#jam_masuk').addClass('is-invalid');
+                                $('.errorJamMasuk').html(response.errors.jam_masuk);
+                            } else {
+                                $('#jam_masuk').removeClass('is-invalid');
+                                $('.errorJamMasuk').html('');
+                            }
+
+                            if (response.errors.jam_pulang) {
+                                $('#jam_pulang').addClass('is-invalid');
+                                $('.errorJamPulang').html(response.errors.jam_pulang);
+                            } else {
+                                $('#jam_pulang').removeClass('is-invalid');
+                                $('.errorJamPulang').html('');
                             }
 
                             if (response.errors.deskripsi) {

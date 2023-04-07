@@ -68,6 +68,7 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/dokter', [DokterController::class, 'store'])->name('dokter.store');
     Route::get('/dokter/{dokter}/edit', [DokterController::class, 'edit'])->name('dokter.edit');
     Route::post('/dokter/{dokter}', [DokterController::class, 'update'])->name('dokter.update');
+    Route::post('/dokter/detail/{dokter}', [DokterController::class, 'detail'])->name('dokter.detail');
     Route::delete('dokter/{dokter}', [DokterController::class, 'destroy'])->name('dokter.destroy');
 
     //Perawat

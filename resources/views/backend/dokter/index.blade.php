@@ -39,7 +39,6 @@
                                         <th>Nama</th>
                                         <th>Email</th>
                                         <th>No Telepon</th>
-                                        <th>Alamat</th>
                                         <th>Status</th>
                                         <th style="width: 75px;">Aksi</th>
                                     </tr>
@@ -56,8 +55,144 @@
 
     </div> <!-- content -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Detail Dokter</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <td>NIP</td>
+                            <td>:</td>
+                            <td id="nip"></td>
+                        </tr>
+                        <tr>
+                            <td>Nama</td>
+                            <td>:</td>
+                            <td id="name"></td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>:</td>
+                            <td id="email"></td>
+                        </tr>
+                        <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td id="no_telepon"></td>
+                        </tr>
+                        <tr>
+                            <td>Jenis Kelamin</td>
+                            <td>:</td>
+                            <td id="gender"></td>
+                        </tr>
+                        <tr>
+                            <td>Gol Darah</td>
+                            <td>:</td>
+                            <td id="gol_darah"></td>
+                        </tr>
+                        <tr>
+                            <td>Tempat, Tanggal Lahir</td>
+                            <td>:</td>
+                            <td id="ttl"></td>
+                        </tr>
+                        <tr>
+                            <td>Alamat</td>
+                            <td>:</td>
+                            <td id="address"></td>
+                        </tr>
+                        <tr>
+                            <td>Agama</td>
+                            <td>:</td>
+                            <td id="agama"></td>
+                        </tr>
+                        <tr>
+                            <td>Status Nikah</td>
+                            <td>:</td>
+                            <td id="status_nikah"></td>
+                        </tr>
+                        <tr>
+                            <td>Jabatan</td>
+                            <td>:</td>
+                            <td id="jabatan"></td>
+                        </tr>
+                        <tr>
+                            <td>Spesialis</td>
+                            <td>:</td>
+                            <td id="spesialis"></td>
+                        </tr>
+                        <tr>
+                            <td>Pengalaman</td>
+                            <td>:</td>
+                            <td id="pengalaman"></td>
+                        </tr>
+                        <tr>
+                            <td>Jam Masuk</td>
+                            <td>:</td>
+                            <td id="jam_masuk"></td>
+                        </tr>
+                        <tr>
+                            <td>Jam Pulang</td>
+                            <td>:</td>
+                            <td id="jam_pulang"></td>
+                        </tr>
+                        <tr>
+                            <td>Deskripsi</td>
+                            <td>:</td>
+                            <td id="deskripsi"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         $(document).ready(function() {
+            $('body').on('click', '#btn-detail', function() {
+                let id = $(this).data('id');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/dokter/detail/"+id+"') }}",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#nip').text(response.dokter.nip);
+                        $('#name').text(response.dokter.user.name);
+                        $('#email').text(response.dokter.user.email);
+                        $('#no_telepon').text(response.dokter.user.no_telepon);
+                        $('#gender').text(response.dokter.user.gender == 'L' ? 'Laki-laki' :
+                            'Perempuan');
+                        $('#gol_darah').text(response.dokter.gol_darah);
+                        $('#ttl').text(response.dokter.tempat_lahir + ', ' + response.dokter
+                            .tanggal_lahir);
+                        $('#address').text(response.dokter.user.address);
+                        $('#agama').text(response.dokter.agama);
+                        $('#status_nikah').text(response.dokter.status_nikah);
+                        $('#jabatan').text(response.dokter.jabatan.name);
+                        $('#spesialis').text(response.dokter.spesialis);
+                        $('#pengalaman').text(response.dokter.pengalaman_tahun + " Tahun");
+                        $('#jam_masuk').text(response.dokter.jam_masuk);
+                        $('#jam_pulang').text(response.dokter.jam_pulang);
+                        $('#deskripsi').text(response.dokter.deskripsi);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                })
+            });
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -89,9 +224,6 @@
                         data: 'no_telepon',
                         name: 'No Telepon'
                     }, {
-                        data: 'address',
-                        name: 'Alamat'
-                    },{
                         data: 'status',
                         name: 'status'
                     }, {
