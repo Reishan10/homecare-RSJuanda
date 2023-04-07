@@ -11,4 +11,9 @@ class Poli extends Model
 
     protected $table = 'poli';
     protected $fillable = ['kode_poli', 'name'];
+
+    public function homecare()
+    {
+        return $this->hasOne(Homecare::class);
+    }
 }

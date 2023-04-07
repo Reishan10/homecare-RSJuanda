@@ -11,4 +11,9 @@ class Bayar extends Model
 
     protected $table = 'bayar';
     protected $fillable = ['kode_bayar', 'name'];
+
+    public function homecare()
+    {
+        return $this->hasOne(Homecare::class);
+    }
 }

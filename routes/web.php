@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Backend\BayarController;
+use App\Http\Controllers\Backend\ChatPaymentController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DokterController;
 use App\Http\Controllers\Backend\GantiPasswordController;
+use App\Http\Controllers\Backend\HomecareController;
 use App\Http\Controllers\Backend\JabatanController;
 use App\Http\Controllers\Backend\KategoriController;
 use App\Http\Controllers\Backend\KotaController;
@@ -14,9 +16,9 @@ use App\Http\Controllers\Backend\PerawatController;
 use App\Http\Controllers\Backend\PoliController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\BerandaController;
-use App\Http\Controllers\Frontend\DokterController as FrontendDokterController;
 use App\Http\Controllers\Frontend\FisioterapiController;
 use App\Http\Controllers\Frontend\PerawatController as FrontendPerawatController;
+use App\Http\Controllers\Frontend\TelemedicineController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,8 +38,8 @@ Route::get('/', [BerandaController::class, 'index'])->name('beranda');
 Route::get('/layanan/perawat', [FrontendPerawatController::class, 'index'])->name('frontend.perawat');
 Route::get('/layanan/fisioterapi', [FisioterapiController::class, 'index'])->name('frontend.fisioterapi');
 
-Route::get('/layanan/dokter', [FrontendDokterController::class, 'index'])->name('frontend.dokter');
-Route::get('/dokter/detail/{dokter}', [FrontendDokterController::class, 'detail'])->name('frontend.dokter.detail');
+Route::get('/layanan/telemedicine', [TelemedicineController::class, 'index'])->name('frontend.telemedicine');
+Route::get('/telemedicine/detail/{telemedicine}', [TelemedicineController::class, 'detail'])->name('frontend.telemedicine.detail');
 
 Auth::routes();
 
@@ -152,6 +154,26 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/jabatan', [JabatanController::class, 'store'])->name('jabatan.store');
     Route::get('/jabatan/{jabatan}/edit', [JabatanController::class, 'edit'])->name('jabatan.edit');
     Route::delete('jabatan/{jabatan}', [JabatanController::class, 'destroy'])->name('jabatan.destroy');
+
+    //Homecare
+    Route::post('/homecare/delete-multiple-homecare', [HomecareController::class, 'deleteMultiple'])->name('delete-multiple-homecare');
+    Route::get('/homecare', [HomecareController::class, 'index'])->name('homecare.index');
+    Route::get('/homecare/tambah', [HomecareController::class, 'create'])->name('homecare.create');
+    Route::post('/homecare', [HomecareController::class, 'store'])->name('homecare.store');
+    Route::get('/homecare/{homecare}/edit', [HomecareController::class, 'edit'])->name('homecare.edit');
+    Route::post('/homecare/{homecare}', [HomecareController::class, 'update'])->name('homecare.update');
+    Route::post('/homecare/detail/{homecare}', [HomecareController::class, 'detail'])->name('homecare.detail');
+    Route::delete('homecare/{homecare}', [HomecareController::class, 'destroy'])->name('homecare.destroy');
+
+    //Chatpayment
+    Route::post('/chatpayment/delete-multiple-chatpayment', [ChatPaymentController::class, 'deleteMultiple'])->name('delete-multiple-chatpayment');
+    Route::get('/chatpayment', [ChatPaymentController::class, 'index'])->name('chatpayment.index');
+    Route::get('/chatpayment/tambah', [ChatPaymentController::class, 'create'])->name('chatpayment.create');
+    Route::post('/chatpayment', [ChatPaymentController::class, 'store'])->name('chatpayment.store');
+    Route::get('/chatpayment/{chatpayment}/edit', [ChatPaymentController::class, 'edit'])->name('chatpayment.edit');
+    Route::post('/chatpayment/{chatpayment}', [ChatPaymentController::class, 'update'])->name('chatpayment.update');
+    Route::post('/chatpayment/detail/{chatpayment}', [ChatPaymentController::class, 'detail'])->name('chatpayment.detail');
+    Route::delete('chatpayment/{chatpayment}', [ChatPaymentController::class, 'destroy'])->name('chatpayment.destroy');
 });
 
 /*------------------------------------------

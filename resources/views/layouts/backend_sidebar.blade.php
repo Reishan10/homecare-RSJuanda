@@ -63,6 +63,20 @@
                 </a>
             </li>
 
+            <li class="side-nav-item {{ request()->segment(1) == 'homecare' ? 'active' : '' }}">
+                <a href="{{ route('homecare.index') }}" class="side-nav-link">
+                    <i class="fa-solid fa-hospital"></i>
+                    <span> Homecare </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item {{ request()->segment(1) == 'chatpayment' ? 'active' : '' }}">
+                <a href="{{ route('chatpayment.index') }}" class="side-nav-link">
+                    <i class="fa-solid fa-comments-dollar"></i>
+                    <span> Chat Payment </span>
+                </a>
+            </li>
+
             <li class="side-nav-item {{ request()->segment(1) == 'dokter' ? 'active' : '' }}">
                 <a href="{{ route('dokter.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-user-doctor"></i>

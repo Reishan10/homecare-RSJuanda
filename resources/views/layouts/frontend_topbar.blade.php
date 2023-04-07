@@ -21,9 +21,8 @@
                                 href="{{ route('frontend.perawat') }}">Perawat</a></li> --}}
                         <li class="nav-dropdown-item"><a class="nav-dropdown-link"
                                 href="{{ route('frontend.fisioterapi') }}">Fisioterapi</a></li>
-                        <li class="nav-dropdown-item"><a class="nav-dropdown-link" href="#">Telemedicine</a></li>
                         <li class="nav-dropdown-item"><a class="nav-dropdown-link"
-                                href="{{ route('frontend.dokter') }}">Dokter</a></li>
+                                href="{{ route('frontend.telemedicine') }}">Telemedicine</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">

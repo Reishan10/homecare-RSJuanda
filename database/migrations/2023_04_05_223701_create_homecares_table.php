@@ -15,9 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('kode_homecare', 100)->nullable();
             $table->string('name', 100)->nullable();
-            $table->bigInteger('bayar_id')->nullable();
-            $table->bigInteger('kategori_id')->nullable();
-            $table->bigInteger('poli_id')->nullable();
+            $table->unsignedBigInteger('bayar_id');
+            $table->foreign('bayar_id')->references('id')->on('bayar');
+            $table->unsignedBigInteger('kategori_id');
+            $table->foreign('kategori_id')->references('id')->on('kategori');
+            $table->unsignedBigInteger('poli_id');
+            $table->foreign('poli_id')->references('id')->on('poli');
+            $table->string('paket_obat')->nullable();
             $table->string('kso')->nullable();
             $table->string('jasa_medis_dokter')->nullable();
             $table->string('jasa_medis_perawat')->nullable();

@@ -11,4 +11,9 @@ class Kategori extends Model
 
     protected $table = 'kategori';
     protected $fillable = ['kode_kategori', 'name'];
+
+    public function homecare()
+    {
+        return $this->hasOne(Homecare::class);
+    }
 }

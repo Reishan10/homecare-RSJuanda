@@ -15,7 +15,6 @@ class PerawatController extends Controller
 {
     public function index()
     {
-
         if (request()->ajax()) {
             $perawat =  Perawat::with('jabatan', 'user')->get();
             return DataTables::of($perawat)

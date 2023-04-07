@@ -1,12 +1,12 @@
 @extends('layouts.frontend_main')
-@section('title', 'Dokter')
+@section('title', 'Telemedicine')
 @section('content')
     <!-- Dokter section -->
     <div class="section">
         <div class="container">
             <div class="row text-center">
                 <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
-                    <h2>Dokter</h2>
+                    <h2>@yield('title')</h2>
                     <div class="divider-width-50px">
                         <hr class="bg-black-06">
                     </div>
@@ -132,13 +132,13 @@
                 @forelse($user as $row)
                     <div class="col-12 col-md-4">
                         <div class="border-radius-05 bg-white border-all padding-20 padding-lg-30">
-                            <a href="{{ route('frontend.dokter.detail', $row->id) }}">
+                            <a href="{{ route('frontend.telemedicine.detail', $row->id) }}">
                                 <img src="{{ asset('storage/users-avatar/' . $row->avatar) }}" alt=""
                                     class="img-preview">
                             </a>
                             <div class="d-lg-flex justify-content-between margin-bottom-10 margin-top-20">
                                 <div class="d-block d-lg-inline-block margin-bottom-10">
-                                    <a href="{{ route('frontend.dokter.detail', $row->id) }}">
+                                    <a href="{{ route('frontend.telemedicine.detail', $row->id) }}">
                                         <h5 class="fw-normal line-height-140 margin-0">{{ $row->name }}</h5>
                                     </a>
                                     <span class="font-small fw-normal">{{ $row->dokter->spesialis }} -
