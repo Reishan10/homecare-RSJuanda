@@ -46,6 +46,11 @@ class Dokter extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function chatpayments()
+    {
+        return $this->hasMany(Chatpayment::class);
+    }
+
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class);

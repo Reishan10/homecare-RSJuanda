@@ -13,12 +13,19 @@ class UserAccess
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $userType)
+    public function handle(Request $request, Closure $next, ...$userTypes)
     {
-        if (auth()->user()->type == $userType) {
-            return $next($request);
-        } else {
+        // if (auth()->user()->type == $userType) {
+        //     return $next($request);
+        // } else {
+        //     abort(403, 'Access denied');
+        // }
+        $user = auth()->user();
+
+        if (!in_array($user->type, $userTypes)) {
             abort(403, 'Access denied');
         }
+
+        return $next($request);
     }
 }

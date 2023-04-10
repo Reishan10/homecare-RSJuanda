@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pasien;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +23,8 @@ class PasienController extends Controller
                     return $comboBox;
                 })
                 ->addColumn('aksi', function ($data) {
-                    $btn = '<a class="btn btn-warning btn-sm me-1" href="' . route('pasien.edit', $data->id) . '" ><i
+                    $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
+                    $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('pasien.edit', $data->id) . '" ><i
                     class="mdi mdi-pencil"></i></a>';
                     $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
@@ -32,6 +34,12 @@ class PasienController extends Controller
                 ->make(true);
         }
         return view('backend.pasien.index');
+    }
+
+    public function detail(Request $request)
+    {
+        $pasien = User::with('pasien')->find($request->id);
+        return response()->json(['pasien' => $pasien]);
     }
 
     public function create()
@@ -44,11 +52,9 @@ class PasienController extends Controller
         $validated = Validator::make(
             $request->all(),
             [
-                'name' => 'required',
+                'name' => 'required|string',
                 'email' => 'required|email|unique:users,email',
                 'no_telepon' => 'required|unique:users,no_telepon|min:11|max:15',
-                'gender' => 'required',
-                'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
@@ -58,9 +64,6 @@ class PasienController extends Controller
                 'no_telepon.unique' => 'No telepon sudah digunakan!',
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
-                'gender.required' => 'Silakan isi jenis kelamin terlebih dahulu!',
-                'avatar.image' => 'File harus berupa gambar!',
-                'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
             ]
         );
 
@@ -68,57 +71,46 @@ class PasienController extends Controller
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
-                if ($file->isValid()) {
-                    $guessExtension = $request->file('avatar')->guessExtension();
-                    $request->file('avatar')->storeAs('users-avatar/', $request->name . '.' . $guessExtension, 'public');
-                    $data = [
-                        'name' => $request->name,
-                        'email' => $request->email,
-                        'no_telepon' => $request->no_telepon,
-                        'password' => bcrypt($request->no_telepon),
-                        'type' => 0,
-                        'gender' => $request->gender,
-                        'address' => $request->address,
-                        'avatar' => $request->name . '.' . $guessExtension,
-                    ];
-                    $pasien = User::create($data);
-                    return response()->json($pasien);
-                }
-            } else {
-                $data = [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'no_telepon' => $request->no_telepon,
-                    'password' => bcrypt($request->no_telepon),
-                    'type' => 0,
-                    'gender' => $request->gender,
-                    'address' => $request->address,
-                ];
-                $pasien = User::create($data);
-                return response()->json($pasien);
-            }
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->no_telepon = $request->no_telepon;
+            $user->password = bcrypt($request->no_telepon);
+            $user->type = 0;
+            $user->gender = $request->gender;
+            $user->address = $request->address;
+            $user->save();
+
+            $pasien = new Pasien();
+            $pasien->user_id = $user->id;
+            $pasien->gol_darah = $request->gol_darah;
+            $pasien->tempat_lahir = $request->tempat_lahir;
+            $pasien->tanggal_lahir = $request->tanggal_lahir;
+            $pasien->agama = $request->agama;
+            $pasien->status_nikah = $request->status_nikah;
+            $pasien->pekerjaan = $request->pekerjaan;
+            $pasien->save();
+
+            return response()->json(['success' => 'Data barhasil ditambahkan']);
         }
     }
 
     public function edit($id)
     {
-        $pasien = User::where('type', 0)->find($id);
+        $pasien = User::with('pasien')->find($id);
         return view('backend.pasien.edit', compact('pasien'));
     }
 
     public function update(Request $request)
     {
         $id = $request->id;
+        $pasien_id = $request->pasien_id;
         $validated = Validator::make(
             $request->all(),
             [
-                'name' => 'required',
+                'name' => 'required|string',
                 'email' => 'required|email|unique:users,email,' . $id . ',id',
                 'no_telepon' => 'required|unique:users,no_telepon,' . $id . ',id|min:11|max:15',
-                'gender' => 'required',
-                'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
@@ -128,48 +120,31 @@ class PasienController extends Controller
                 'no_telepon.unique' => 'No telepon sudah digunakan!',
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
-                'gender.required' => 'Silakan isi jenis kelamin terlebih dahulu!',
-                'avatar.image' => 'File harus berupa gambar!',
-                'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
             ]
         );
+
 
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
-                if ($file->isValid()) {
-                    $pasien = User::findOrFail($id);
+            $user = User::find($id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->no_telepon = $request->no_telepon;
+            $user->gender = $request->gender;
+            $user->address = $request->address;
+            $user->save();
 
-                    if ($pasien->avatar !== 'avatar.png') {
-                        Storage::delete('users-avatar/' . $pasien->avatar);
-                    }
+            $pasien = Pasien::find($pasien_id);
+            $pasien->gol_darah = $request->gol_darah;
+            $pasien->tempat_lahir = $request->tempat_lahir;
+            $pasien->tanggal_lahir = $request->tanggal_lahir;
+            $pasien->agama = $request->agama;
+            $pasien->status_nikah = $request->status_nikah;
+            $pasien->pekerjaan = $request->pekerjaan;
+            $pasien->save();
 
-                    $guessExtension = $request->file('avatar')->guessExtension();
-                    $request->file('avatar')->storeAs('users-avatar/', $request->name . '.' . $guessExtension, 'public');
-                    $data = [
-                        'name' => $request->name,
-                        'email' => $request->email,
-                        'no_telepon' => $request->no_telepon,
-                        'gender' => $request->gender,
-                        'address' => $request->address,
-                        'avatar' => $request->name . '.' . $guessExtension,
-                    ];
-                    $pasien = User::where('id', $id)->update($data);
-                    return response()->json($pasien);
-                }
-            } else {
-                $data = [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'no_telepon' => $request->no_telepon,
-                    'gender' => $request->gender,
-                    'address' => $request->address,
-                ];
-                $pasien = User::where('id', $id)->update($data);
-                return response()->json($pasien);
-            }
+            return response()->json(['success' => 'Data barhasil disimpan']);
         }
     }
 

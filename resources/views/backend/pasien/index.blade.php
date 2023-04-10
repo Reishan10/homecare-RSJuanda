@@ -55,8 +55,105 @@
 
     </div> <!-- content -->
 
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Detail Dokter</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <td>Nama</td>
+                            <td>:</td>
+                            <td id="name"></td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>:</td>
+                            <td id="email"></td>
+                        </tr>
+                        <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td id="no_telepon"></td>
+                        </tr>
+                        <tr>
+                            <td>Jenis Kelamin</td>
+                            <td>:</td>
+                            <td id="gender"></td>
+                        </tr>
+                        <tr>
+                            <td>Gol Darah</td>
+                            <td>:</td>
+                            <td id="gol_darah"></td>
+                        </tr>
+                        <tr>
+                            <td>Tempat, Tanggal Lahir</td>
+                            <td>:</td>
+                            <td id="ttl"></td>
+                        </tr>
+                        <tr>
+                            <td>Alamat</td>
+                            <td>:</td>
+                            <td id="address"></td>
+                        </tr>
+                        <tr>
+                            <td>Agama</td>
+                            <td>:</td>
+                            <td id="agama"></td>
+                        </tr>
+                        <tr>
+                            <td>Status Nikah</td>
+                            <td>:</td>
+                            <td id="status_nikah"></td>
+                        </tr>
+                        <tr>
+                            <td>Pekerjaan</td>
+                            <td>:</td>
+                            <td id="pekerjaan"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
+            $('body').on('click', '#btn-detail', function() {
+                let id = $(this).data('id');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/pasien/detail/"+id+"') }}",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#name').text(response.pasien.name);
+                        $('#email').text(response.pasien.email);
+                        $('#gender').text(response.pasien.gender == 'L' ? 'Laki-laki' :
+                            'Perempuan');
+                        $('#no_telepon').text(response.pasien.no_telepon);
+                        $('#gol_darah').text(response.pasien.pasien.gol_darah);
+                        $('#ttl').text(response.pasien.pasien.tempat_lahir + ', ' + response
+                            .pasien.pasien.tanggal_lahir);
+                        $('#address').text(response.pasien.address);
+                        $('#agama').text(response.pasien.pasien.agama);
+                        $('#status_nikah').text(response.pasien.pasien.status_nikah);
+                        $('#pekerjaan').text(response.pasien.pasien.pekerjaan);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                })
+            });
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

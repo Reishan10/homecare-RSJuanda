@@ -11,12 +11,10 @@ use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
-
 class DokterController extends Controller
 {
     public function index()
     {
-
         if (request()->ajax()) {
             $dokter = Dokter::with('user', 'jabatan')->get();
             return DataTables::of($dokter)

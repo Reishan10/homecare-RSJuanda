@@ -16,7 +16,7 @@
                             <div class="row">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
-                                        <label for="namnipe" class="form-label">NIP</label>
+                                        <label for="nip" class="form-label">NIP</label>
                                         <input type="text" id="nip" name="nip" class="form-control">
                                         <div class="invalid-feedback errorNIP">
                                         </div>

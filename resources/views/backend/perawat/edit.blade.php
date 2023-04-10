@@ -19,7 +19,7 @@
                                         <input type="hidden" name="id" id="id" value="{{ $perawat->id }}">
                                         <input type="hidden" name="id_perawat" id="id_perawat"
                                             value="{{ $perawat->perawat->id }}">
-                                        <label for="namnipe" class="form-label">NIP</label>
+                                        <label for="nip" class="form-label">NIP</label>
                                         <input type="text" id="nip" name="nip" class="form-control"
                                             value="{{ $perawat->perawat->nip }}">
                                         <div class="invalid-feedback errorNIP">

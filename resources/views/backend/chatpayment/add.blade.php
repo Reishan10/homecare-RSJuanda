@@ -9,7 +9,7 @@
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('chatpayment.store') }}" method="post" id="form">
+                <form method="post" id="form" enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -17,13 +17,19 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="pasien" class="form-label">Pasien</label>
-                                        <select name="pasien" id="pasien" class="form-control select2"
-                                            data-toggle="select2">
-                                            <option value="">-- Pilih Pasien --</option>
-                                            @foreach ($pasien as $row)
-                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        @if (auth()->user()->type == 'Administrator')
+                                            <select name="pasien" id="pasien" class="form-control select2"
+                                                data-toggle="select2">
+                                                <option value="">-- Pilih Pasien --</option>
+                                                @foreach ($pasien as $row)
+                                                    <option value="{{ $row->user->id }}">{{ $row->user->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <input type="hidden" name="pasien" value="{{ auth()->user()->id }}">
+                                            <input type="text" name="pasien" id="pasien" class="form-control"
+                                                value="{{ auth()->user()->name }}" readonly>
+                                        @endif
                                         <div class="invalid-feedback errorPasien">
                                         </div>
                                     </div>
@@ -35,7 +41,7 @@
                                             data-toggle="select2">
                                             <option value="">-- Pilih Dokter --</option>
                                             @foreach ($dokter as $row)
-                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                                <option value="{{ $row->id }}">{{ $row->user->name }}</option>
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback errorDokter">
@@ -44,28 +50,25 @@
                                 </div>
                                 <div class="col-lg-4 col-md-12">
                                     <div class="mb-3">
-                                        <label for="waktu_mulai" class="form-label">Waktu Mulai</label>
-                                        <input type="datetime-local" name="waktu_mulai" id="waktu_mulai"
-                                            class="form-control">
-                                        <div class="invalid-feedback errorWaktuMulai">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="waktu_selesai" class="form-label">Waktu Selesai</label>
-                                        <input type="datetime-local" name="waktu_selesai" id="waktu_selesai"
-                                            class="form-control">
-                                        <div class="invalid-feedback errorWaktuSelesai">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="biaya_chat" class="form-label">Total Biaya</label>
-                                        <input type="text" name="biaya_chat" id="biaya_chat" class="form-control"
-                                            readonly>
+                                        <label for="biaya_chat" class="form-label">Biaya yang akan dikeluarkan</label>
+                                        <input type="text" name="biaya_chat" id="biaya_chat" class="form-control">
                                         <div class="invalid-feedback errorBiayaChat">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="waktu_chat" class="form-label">Waktu Chat</label>
+                                        <input type="text" name="waktu_chat" id="waktu_chat" class="form-control"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="bukti_pembayaran" class="form-label">Upload Bukti Pembayaran</label>
+                                        <input type="file" name="bukti_pembayaran" id="bukti_pembayaran"
+                                            class="form-control">
+                                        <div class="invalid-feedback errorBuktiPembayaran">
                                         </div>
                                     </div>
                                 </div>
@@ -85,28 +88,32 @@
 
     <script>
         $(document).ready(function() {
-            $('#waktu_mulai, #waktu_selesai').change(function() {
-                let waktu_mulai = new Date($('#waktu_mulai').val()).getTime();
-                let waktu_selesai = new Date($('#waktu_selesai').val()).getTime();
+            var biayaChatInput = $('#biaya_chat');
+            var waktuChatInput = $('#waktu_chat');
 
-                if (waktu_mulai && waktu_selesai) {
-                    let selisih_waktu = waktu_selesai - waktu_mulai;
-                    if (selisih_waktu < 0) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Waktu selesai tidak bisa lebih awal dari waktu mulai!'
-                        });
-                        $('#waktu_selesai').val('');
-                        $('#biaya_chat').val('');
-                        return;
+            // ketika nilai di input biaya chat berubah
+            biayaChatInput.on('input', function() {
+                var biayaChat = parseInt(biayaChatInput.val());
+                if (!isNaN(biayaChat)) {
+                    // hitung waktu chat berdasarkan biaya chat
+                    var waktuChat = Math.ceil(biayaChat / 800); // 800 rupiah per menit
+                    if (waktuChat > 0) {
+                        var hours = Math.floor(waktuChat / 60);
+                        var minutes = waktuChat % 60;
+                        // format waktu chat dalam format HH:mm
+                        var formattedWaktuChat = hours.toString().padStart(2, '0') + ':' + minutes
+                            .toString().padStart(2, '0');
+                        // set nilai input waktu chat
+                        waktuChatInput.val(formattedWaktuChat);
+                    } else {
+                        // jika biaya chat kurang dari 800, maka waktu chat akan dianggap 1 menit
+                        waktuChatInput.val('00:01');
                     }
-                    let biaya_per_menit = 800;
-                    let biaya_chat = Math.ceil(selisih_waktu / 60000) * biaya_per_menit;
-                    $('#biaya_chat').val(biaya_chat);
+                } else {
+                    // jika input biaya chat tidak valid, kosongkan input waktu chat
+                    waktuChatInput.val('');
                 }
             });
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -116,10 +123,13 @@
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
-                    data: $(this).serialize(),
+                    data: new FormData(this),
                     url: "{{ route('chatpayment.store') }}",
                     type: "POST",
                     dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
                     beforeSend: function() {
                         $('#simpan').attr('disable', 'disabled');
                         $('#simpan').text('Proses...');
@@ -144,20 +154,22 @@
                                 $('#dokter').removeClass('is-invalid');
                                 $('.errorDokter').html('');
                             }
-                            if (response.errors.waktu_mulai) {
-                                $('#waktu_mulai').addClass('is-invalid');
-                                $('.errorWaktuMulai').html(response.errors.waktu_mulai);
+                            if (response.errors.biaya_chat) {
+                                $('#biaya_chat').addClass('is-invalid');
+                                $('.errorBiayaChat').html(response.errors.biaya_chat);
                             } else {
-                                $('#waktu_mulai').removeClass('is-invalid');
-                                $('.errorWaktuMulai').html('');
+                                $('#biaya_chat').removeClass('is-invalid');
+                                $('.errorBiayaChat').html('');
                             }
-                            if (response.errors.waktu_selesai) {
-                                $('#waktu_selesai').addClass('is-invalid');
-                                $('.errorWaktuSelesai').html(response.errors.waktu_selesai);
+                            if (response.errors.bukti_pembayaran) {
+                                $('#bukti_pembayaran').addClass('is-invalid');
+                                $('.errorBuktiPembayaran').html(response.errors
+                                    .bukti_pembayaran);
                             } else {
-                                $('#waktu_selesai').removeClass('is-invalid');
-                                $('.errorWaktuSelesai').html('');
+                                $('#bukti_pembayaran').removeClass('is-invalid');
+                                $('.errorBuktiPembayaran').html('');
                             }
+
                         } else {
                             Swal.fire({
                                 icon: 'success',

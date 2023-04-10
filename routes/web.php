@@ -43,6 +43,23 @@ Route::get('/telemedicine/detail/{telemedicine}', [TelemedicineController::class
 
 Auth::routes();
 
+Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator']], function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+    //Chatpayment
+    Route::post('/chatpayment/delete-multiple-chatpayment', [ChatPaymentController::class, 'deleteMultiple'])->name('delete-multiple-chatpayment');
+    Route::get('/chatpayment', [ChatPaymentController::class, 'index'])->name('chatpayment.index');
+    Route::get('/chatpayment/tambah', [ChatPaymentController::class, 'create'])->name('chatpayment.create');
+    Route::post('/chatpayment', [ChatPaymentController::class, 'store'])->name('chatpayment.store');
+    Route::post('/chatpayment/bukti/{chatpayment}', [ChatPaymentController::class, 'uploadBukti'])->name('chatpayment.bukti');
+    Route::get('/chatpayment/{chatpayment}/edit', [ChatPaymentController::class, 'edit'])->name('chatpayment.edit');
+    Route::post('/chatpayment/{chatpayment}', [ChatPaymentController::class, 'update'])->name('chatpayment.update');
+    Route::get('/chatpayment/detail/{chatpayment}', [ChatPaymentController::class, 'detail'])->name('chatpayment.detail');
+    Route::delete('chatpayment/{chatpayment}', [ChatPaymentController::class, 'destroy'])->name('chatpayment.destroy');
+});
+
+
 /*------------------------------------------
 --------------------------------------------
 All Normal Users Routes List
@@ -58,8 +75,6 @@ All Admin Routes List
 --------------------------------------------
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     //Dokter
     Route::post('/dokter/delete-multiple-dokter', [DokterController::class, 'deleteMultiple'])->name('delete-multiple-dokter');
@@ -88,6 +103,7 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/pasien', [PasienController::class, 'store'])->name('pasien.store');
     Route::get('/pasien/{pasien}/edit', [PasienController::class, 'edit'])->name('pasien.edit');
     Route::post('/pasien/{pasien}', [PasienController::class, 'update'])->name('pasien.update');
+    Route::post('/pasien/detail/{pasien}', [PasienController::class, 'detail'])->name('pasien.detail');
     Route::delete('pasien/{pasien}', [PasienController::class, 'destroy'])->name('pasien.destroy');
 
     //Pelayanan
@@ -165,16 +181,6 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/homecare/{homecare}', [HomecareController::class, 'update'])->name('homecare.update');
     Route::post('/homecare/detail/{homecare}', [HomecareController::class, 'detail'])->name('homecare.detail');
     Route::delete('homecare/{homecare}', [HomecareController::class, 'destroy'])->name('homecare.destroy');
-
-    //Chatpayment
-    Route::post('/chatpayment/delete-multiple-chatpayment', [ChatPaymentController::class, 'deleteMultiple'])->name('delete-multiple-chatpayment');
-    Route::get('/chatpayment', [ChatPaymentController::class, 'index'])->name('chatpayment.index');
-    Route::get('/chatpayment/tambah', [ChatPaymentController::class, 'create'])->name('chatpayment.create');
-    Route::post('/chatpayment', [ChatPaymentController::class, 'store'])->name('chatpayment.store');
-    Route::get('/chatpayment/{chatpayment}/edit', [ChatPaymentController::class, 'edit'])->name('chatpayment.edit');
-    Route::post('/chatpayment/{chatpayment}', [ChatPaymentController::class, 'update'])->name('chatpayment.update');
-    Route::post('/chatpayment/detail/{chatpayment}', [ChatPaymentController::class, 'detail'])->name('chatpayment.detail');
-    Route::delete('chatpayment/{chatpayment}', [ChatPaymentController::class, 'destroy'])->name('chatpayment.destroy');
 });
 
 /*------------------------------------------

@@ -90,4 +90,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Perawat::class);
     }
+
+    public function pasien()
+    {
+        return $this->hasOne(Pasien::class);
+    }
+
+    public function chatpayments()
+    {
+        return $this->hasMany(Chatpayment::class);
+    }
 }

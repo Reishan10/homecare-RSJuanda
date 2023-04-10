@@ -9,7 +9,7 @@
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('pasien.store') }}" method="post" id="form" enctype="multipart/form-data">
+                <form action="{{ route('pasien.store') }}" method="post" id="form">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -22,49 +22,105 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" id="email" name="email" class="form-control">
-                                        <div class="invalid-feedback errorEmail">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" id="email" name="email" class="form-control">
+                                                <div class="invalid-feedback errorEmail">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="no_telepon" class="form-label">No Telepon</label>
+                                                <input type="number" id="no_telepon" name="no_telepon"
+                                                    class="form-control">
+                                                <div class="invalid-feedback errorNoTelepon">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="no_telepon" class="form-label">No Telepon</label>
-                                        <input type="number" id="no_telepon" name="no_telepon" class="form-control"
-                                            placeholder="6285....">
-                                        <div class="invalid-feedback errorNoTelepon">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="gender">Jenis Kelamin</label>
+                                                <select name="gender" id="gender" class="form-control">
+                                                    <option value="">-- Pilih Jenis Kelamin --</option>
+                                                    <option value="L">Laki-laki</option>
+                                                    <option value="P">Perempuan</option>
+                                                </select>
+                                                <div class="invalid-feedback errorGender">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="gol_darah">Gol. Darah</label>
+                                                <select name="gol_darah" id="gol_darah" class="form-control">
+                                                    <option value="">-- Pilih Gol. Darah --</option>
+                                                    <option value="A">A</option>
+                                                    <option value="B">B</option>
+                                                    <option value="AB">AB</option>
+                                                    <option value="O">O</option>
+                                                </select>
+                                                <div class="invalid-feedback errorGolDarah">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="gender" class="form-label">Jenis Kelamin</label>
-                                        <select name="gender" id="gender" class="form-control">
-                                            <option value="">-- Pilih Jenis Kelamin --</option>
-                                            <option value="L">Laki-laki</option>
-                                            <option value="P">Perempuan</option>
-                                        </select>
-                                        <div class="invalid-feedback errorGender">
+                                        <div class="row">
+                                            <label class="form-label" for="tempat_lahir">Tempat, Tanggal Lahir</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" name="tempat_lahir" id="tempat_lahir"
+                                                    class="form-control">
+                                                <div class="invalid-feedback errorTempatLahir">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input type="date" name="tanggal_lahir" id="tanggal_lahir"
+                                                    class="form-control">
+                                                <div class="invalid-feedback errorTanggalLahir">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="address" class="form-label">Alamat</label>
-                                        <textarea name="address" id="address" rows="5" class="form-control"></textarea>
+                                        <textarea name="address" id="address" rows="1" class="form-control"></textarea>
                                         <div class="invalid-feedback errorAddress">
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <div class="row">
-                                            <div class="col-sm-4">
-                                                <img src="{{ asset('storage/users-avatar/avatar.png') }}"
-                                                    alt=""class="img-thumbnail img-preview">
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <label class="form-label" for="avatar">Foto</label>
-                                                <input type="file" name="avatar" id="avatar" class="form-control"
-                                                    accept="image/*" onchange="previewImgFoto()">
-                                                <div class="invalid-feedback errorAvatar">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="agama">Agama</label>
+                                                <select name="agama" id="agama" class="form-control">
+                                                    <option value="">-- Pilih Agama --</option>
+                                                    <option value="Islam">Islam</option>
+                                                    <option value="Kristen">Kristen</option>
+                                                    <option value="Katolik">Katolik</option>
+                                                    <option value="Hindu">Hindu</option>
+                                                    <option value="Budha">Budha</option>
+                                                    <option value="Konghucu">Konghucu</option>
+                                                </select>
+                                                <div class="invalid-feedback errorAgama">
                                                 </div>
                                             </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="status_nikah">Status Nikah</label>
+                                                <select name="status_nikah" id="status_nikah" class="form-control">
+                                                    <option value="">-- Pilih Status Nikah --</option>
+                                                    <option value="Belum Menikah">Belum Menikah</option>
+                                                    <option value="Menikah">Menikah</option>
+                                                </select>
+                                                <div class="invalid-feedback errorStatusNikah">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="pekerjaan">Pekerjaan</label>
+                                        <input type="text" name="pekerjaan" id="pekerjaan" class="form-control">
+                                        <div class="invalid-feedback errorPekerjaan">
                                         </div>
                                     </div>
                                 </div>
@@ -83,18 +139,6 @@
     </div>
 
     <script>
-        function previewImgFoto() {
-            const foto = document.querySelector('#avatar');
-            const imgPreview = document.querySelector('.img-preview');
-            const fileFoto = new FileReader();
-
-            fileFoto.readAsDataURL(foto.files[0]);
-
-            fileFoto.onload = function(e) {
-                imgPreview.src = e.target.result;
-            }
-        }
-
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -105,13 +149,10 @@
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
-                    data: new FormData(this),
+                    data: $(this).serialize(),
                     url: "{{ route('pasien.store') }}",
                     type: "POST",
                     dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    cache: false,
                     beforeSend: function() {
                         $('#simpan').attr('disable', 'disabled');
                         $('#simpan').text('Proses...');
@@ -144,30 +185,6 @@
                             } else {
                                 $('#no_telepon').removeClass('is-invalid');
                                 $('.errorNoTelepon').html('');
-                            }
-
-                            if (response.errors.gender) {
-                                $('#gender').addClass('is-invalid');
-                                $('.errorGender').html(response.errors.gender);
-                            } else {
-                                $('#gender').removeClass('is-invalid');
-                                $('.errorGender').html('');
-                            }
-
-                            if (response.errors.address) {
-                                $('#address').addClass('is-invalid');
-                                $('.errorAddress').html(response.errors.address);
-                            } else {
-                                $('#address').removeClass('is-invalid');
-                                $('.errorAddress').html('');
-                            }
-
-                            if (response.errors.avatar) {
-                                $('#avatar').addClass('is-invalid');
-                                $('.errorAvatar').html(response.errors.avatar);
-                            } else {
-                                $('#avatar').removeClass('is-invalid');
-                                $('.errorAvatar').html('');
                             }
                         } else {
                             Swal.fire({
