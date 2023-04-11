@@ -43,7 +43,7 @@ Route::get('/telemedicine/detail/{telemedicine}', [TelemedicineController::class
 
 Auth::routes();
 
-Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator']], function () {
+Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat,Dokter']], function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -57,6 +57,10 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator']], fun
     Route::post('/chatpayment/{chatpayment}', [ChatPaymentController::class, 'update'])->name('chatpayment.update');
     Route::get('/chatpayment/detail/{chatpayment}', [ChatPaymentController::class, 'detail'])->name('chatpayment.detail');
     Route::delete('chatpayment/{chatpayment}', [ChatPaymentController::class, 'destroy'])->name('chatpayment.destroy');
+
+    // Ganti Password
+    Route::get('/ganti-password', [GantiPasswordController::class, 'index'])->name('ganti-password.index');
+    Route::post('/ganti-password', [GantiPasswordController::class, 'update'])->name('ganti-password.update');
 });
 
 
@@ -123,10 +127,6 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/kota', [KotaController::class, 'store'])->name('kota.store');
     Route::get('/kota/{kota}/edit', [KotaController::class, 'edit'])->name('kota.edit');
     Route::delete('kota/{kota}', [KotaController::class, 'destroy'])->name('kota.destroy');
-
-    // Ganti Password
-    Route::get('/ganti-password', [GantiPasswordController::class, 'index'])->name('ganti-password.index');
-    Route::post('/ganti-password', [GantiPasswordController::class, 'update'])->name('ganti-password.update');
 
     // User
     Route::post('/pengguna/delete-multiple-user', [UserController::class, 'deleteMultiple'])->name('delete-multiple-user');

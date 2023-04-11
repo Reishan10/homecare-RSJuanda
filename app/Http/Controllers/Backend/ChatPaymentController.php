@@ -9,6 +9,7 @@ use App\Models\Pasien;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
@@ -17,7 +18,18 @@ class ChatPaymentController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $chatpayments = Chatpayment::with(['user', 'dokter'])->orderBy('created_at', 'desc')->get();
+            $userType = auth()->user()->type;
+            if ($userType == "Pasien") {
+                $id = auth()->user()->id;
+                $chatpayments = Chatpayment::with(['user', 'dokter'])
+                    ->orderBy('created_at', 'desc')
+                    ->where('user_id', $id) // hanya menampilkan data milik user yang sedang login
+                    ->get();
+            } else {
+                $chatpayments = Chatpayment::with(['user', 'dokter'])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            }
             return DataTables::of($chatpayments)
                 ->addIndexColumn()
                 ->addColumn('pasien', function ($data) {
@@ -56,7 +68,7 @@ class ChatPaymentController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<a class="btn btn-info btn-sm me-1" href="' . route('chatpayment.detail', $data->id) . '" ><i class="fa-solid fa-circle-info"></i></a>';
-                    $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . route('chatpayment.create', $data->id) . '" ><i class="fa-solid fa-comment"></i></i></a>';
+                    $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . url('chat-RSJuanda/' . $data->dokter->user->id) . '" target="_blank"><i class="fa-solid fa-comment"></i></i></a>';
                     $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
                     return $btn;
@@ -95,7 +107,7 @@ class ChatPaymentController extends Controller
                 'pasien.required' => 'Silakan isi pasien terlebih dahulu!',
                 'dokter.required' => 'Silakan isi dokter terlebih dahulu!',
                 'biaya_chat.required' => 'Silakan isi biaya chat terlebih dahulu!',
-                'bukti_pembayaran.required' => 'Silakan isi bukti_pembayaran terlebih dahulu!.',
+                'bukti_pembayaran.required' => 'Silakan isi bukti pembayaran terlebih dahulu!.',
                 'bukti_pembayaran.image' => 'Berkas yang diunggah harus berupa gambar.',
                 'bukti_pembayaran.mimes' => 'Berkas yang diunggah harus berupa salah satu dari jenis berikut: jpg, png, jpeg, webp, svg.',
             ]
@@ -113,8 +125,8 @@ class ChatPaymentController extends Controller
             $chatpayment->status = '0';
             // simpan file bukti pembayaran ke storage
             $file = $request->file('bukti_pembayaran');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/bukti_pembayaran', $filename);
+            $filename = 'bukti_pembayaran_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('bukti_pembayaran', $filename);
             $chatpayment->bukti_pembayaran = $filename;
 
             $chatpayment->save();

@@ -51,7 +51,8 @@
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <button type="button" class="btn btn-secondary mb-2"
                                 onclick="window.location='{{ route('chatpayment.index') }}'">Kembali</button>
-                            <button type="submit" class="btn btn-success mb-2" id="simpan">Chat</button>
+                            <a href="{{ url('chat-RSJuanda/' . $chatpayment->dokter->user->id) }}"
+                                class="btn btn-success mb-2" target="_blank">Chat</a>
                         </div>
                     </div>
                 </div>
@@ -73,7 +74,7 @@
                 var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                $('#countdown').text(hours + "Jam " + minutes + "Menit " + seconds + "Detik ");
+                $('#countdown').text(hours + " Jam " + minutes + " Menit " + seconds + " Detik ");
 
                 if (distance < 0) {
                     clearInterval(x);

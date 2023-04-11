@@ -27,7 +27,7 @@
                                             </select>
                                         @else
                                             <input type="hidden" name="pasien" value="{{ auth()->user()->id }}">
-                                            <input type="text" name="pasien" id="pasien" class="form-control"
+                                            <input type="text" name="nama" id="nama" class="form-control"
                                                 value="{{ auth()->user()->name }}" readonly>
                                         @endif
                                         <div class="invalid-feedback errorPasien">
@@ -174,7 +174,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Sukses',
-                                text: 'Silakan upload bukti pembayaran.',
+                                text: 'Data berhasil disimpan.',
                             }).then(function() {
                                 top.location.href = "{{ route('chatpayment.index') }}";
                             });
