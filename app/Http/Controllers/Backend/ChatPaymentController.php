@@ -18,12 +18,19 @@ class ChatPaymentController extends Controller
     public function index()
     {
         if (request()->ajax()) {
+            $id = auth()->user()->id;
             $userType = auth()->user()->type;
             if ($userType == "Pasien") {
-                $id = auth()->user()->id;
                 $chatpayments = Chatpayment::with(['user', 'dokter'])
                     ->orderBy('created_at', 'desc')
                     ->where('user_id', $id) // hanya menampilkan data milik user yang sedang login
+                    ->get();
+            } else if ($userType == "Dokter") {
+                $chatpayments = Chatpayment::with(['user', 'dokter'])
+                    ->orderBy('created_at', 'desc')
+                    ->whereHas('dokter', function ($query) use ($id) {
+                        $query->where('user_id', $id);
+                    })
                     ->get();
             } else {
                 $chatpayments = Chatpayment::with(['user', 'dokter'])
@@ -68,9 +75,13 @@ class ChatPaymentController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<a class="btn btn-info btn-sm me-1" href="' . route('chatpayment.detail', $data->id) . '" ><i class="fa-solid fa-circle-info"></i></a>';
-                    $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . url('chat-RSJuanda/' . $data->dokter->user->id) . '" target="_blank"><i class="fa-solid fa-comment"></i></i></a>';
-                    $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
+                    if (auth()->user()->type != 'Dokter') {
+                        $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . url('chat-RSJuanda/' . $data->dokter->user->id) . '" target="_blank"><i class="fa-solid fa-comment"></i></i></a>';
+                    }
+                    if (auth()->user()->type != 'Pasien') {
+                        $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
+                    }
                     return $btn;
                 })
                 ->rawColumns(['aksi', 'status', 'waktu'])

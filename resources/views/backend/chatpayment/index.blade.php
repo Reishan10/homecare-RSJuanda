@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Dokter</h4>
+                    <h4 class="page-title">@yield('title')</h4>
                 </div>
             </div>
         </div>
@@ -20,7 +20,7 @@
                     <div class="card-body">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="{{ route('chatpayment.create') }}" class="btn btn-primary mb-2 btn-sm"><i
-                                    class="mdi mdi-plus-circle"></i> Tambah Dokter</a>
+                                    class="mdi mdi-plus-circle"></i> Tambah Data</a>
                         </div>
                         <div class="table-responsive">
                             <table id="datatable" class="table dt-responsive nowrap w-100">

@@ -70,13 +70,14 @@
                     </a>
                 </li>
             @endif
-
-            <li class="side-nav-item {{ request()->segment(1) == 'chatpayment' ? 'active' : '' }}">
-                <a href="{{ route('chatpayment.index') }}" class="side-nav-link">
-                    <i class="fa-solid fa-comments-dollar"></i>
-                    <span> Chat Payment </span>
-                </a>
-            </li>
+            @if (auth()->user()->type != 'Perawat')
+                <li class="side-nav-item {{ request()->segment(1) == 'chatpayment' ? 'active' : '' }}">
+                    <a href="{{ route('chatpayment.index') }}" class="side-nav-link">
+                        <i class="fa-solid fa-comments-dollar"></i>
+                        <span> Chat Payment </span>
+                    </a>
+                </li>
+            @endif
 
             @if (auth()->user()->type == 'Administrator')
                 <li class="side-nav-item {{ request()->segment(1) == 'dokter' ? 'active' : '' }}">
@@ -91,12 +92,16 @@
                         <span> Perawat </span>
                     </a>
                 </li>
+            @endif
+            @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter')
                 <li class="side-nav-item {{ request()->segment(1) == 'pasien' ? 'active' : '' }}">
                     <a href="{{ route('pasien.index') }}" class="side-nav-link">
                         <i class="fa-solid fa-notes-medical"></i>
                         <span> Pasien </span>
                     </a>
                 </li>
+            @endif
+            @if (auth()->user()->type == 'Administrator')
                 <li class="side-nav-item {{ request()->segment(1) == 'pengguna' ? 'active' : '' }}">
                     <a href="{{ route('user.index') }}" class="side-nav-link">
                         <i class="fa-solid fa-users"></i>

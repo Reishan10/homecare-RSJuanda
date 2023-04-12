@@ -36,6 +36,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Hi, {{ Auth::user()->name }}</a>
                         <ul class="nav-dropdown">
+                            <li class="nav-dropdown-item"><a class="nav-dropdown-link"
+                                    href="{{ route('dashboard.index') }}">Dashboard</a>
+                            </li>
                             <li class="nav-dropdown-item"><a class="nav-dropdown-link" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Keluar</a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

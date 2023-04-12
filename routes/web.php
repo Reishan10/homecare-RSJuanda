@@ -47,6 +47,16 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
+    // Ganti Password
+    Route::get('/ganti-password', [GantiPasswordController::class, 'index'])->name('ganti-password.index');
+    Route::post('/ganti-password', [GantiPasswordController::class, 'update'])->name('ganti-password.update');
+
+    //Profile
+    Route::get('/pengguna/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::post('/pengguna/profile/{user}', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+});
+
+Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter']], function () {
     //Chatpayment
     Route::post('/chatpayment/delete-multiple-chatpayment', [ChatPaymentController::class, 'deleteMultiple'])->name('delete-multiple-chatpayment');
     Route::get('/chatpayment', [ChatPaymentController::class, 'index'])->name('chatpayment.index');
@@ -58,28 +68,18 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat
     Route::get('/chatpayment/detail/{chatpayment}', [ChatPaymentController::class, 'detail'])->name('chatpayment.detail');
     Route::delete('chatpayment/{chatpayment}', [ChatPaymentController::class, 'destroy'])->name('chatpayment.destroy');
 
-    // Ganti Password
-    Route::get('/ganti-password', [GantiPasswordController::class, 'index'])->name('ganti-password.index');
-    Route::post('/ganti-password', [GantiPasswordController::class, 'update'])->name('ganti-password.update');
+    //Pasien
+    Route::post('/pasien/delete-multiple-pasien', [PasienController::class, 'deleteMultiple'])->name('delete-multiple-pasien');
+    Route::get('/pasien', [PasienController::class, 'index'])->name('pasien.index');
+    Route::get('/pasien/tambah', [PasienController::class, 'create'])->name('pasien.create');
+    Route::post('/pasien', [PasienController::class, 'store'])->name('pasien.store');
+    Route::get('/pasien/{pasien}/edit', [PasienController::class, 'edit'])->name('pasien.edit');
+    Route::post('/pasien/{pasien}', [PasienController::class, 'update'])->name('pasien.update');
+    Route::post('/pasien/detail/{pasien}', [PasienController::class, 'detail'])->name('pasien.detail');
+    Route::delete('pasien/{pasien}', [PasienController::class, 'destroy'])->name('pasien.destroy');
 });
 
-
-/*------------------------------------------
---------------------------------------------
-All Normal Users Routes List
---------------------------------------------
---------------------------------------------*/
-Route::middleware(['auth', 'user-access:Pasien'])->group(function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-});
-
-/*------------------------------------------
---------------------------------------------
-All Admin Routes List
---------------------------------------------
---------------------------------------------*/
 Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
-
     //Dokter
     Route::post('/dokter/delete-multiple-dokter', [DokterController::class, 'deleteMultiple'])->name('delete-multiple-dokter');
     Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
@@ -99,16 +99,6 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/perawat/{perawat}', [PerawatController::class, 'update'])->name('perawat.update');
     Route::post('/perawat/detail/{perawat}', [PerawatController::class, 'detail'])->name('perawat.detail');
     Route::delete('perawat/{perawat}', [PerawatController::class, 'destroy'])->name('perawat.destroy');
-
-    //Pasien
-    Route::post('/pasien/delete-multiple-pasien', [PasienController::class, 'deleteMultiple'])->name('delete-multiple-pasien');
-    Route::get('/pasien', [PasienController::class, 'index'])->name('pasien.index');
-    Route::get('/pasien/tambah', [PasienController::class, 'create'])->name('pasien.create');
-    Route::post('/pasien', [PasienController::class, 'store'])->name('pasien.store');
-    Route::get('/pasien/{pasien}/edit', [PasienController::class, 'edit'])->name('pasien.edit');
-    Route::post('/pasien/{pasien}', [PasienController::class, 'update'])->name('pasien.update');
-    Route::post('/pasien/detail/{pasien}', [PasienController::class, 'detail'])->name('pasien.detail');
-    Route::delete('pasien/{pasien}', [PasienController::class, 'destroy'])->name('pasien.destroy');
 
     //Pelayanan
     Route::post('/pelayanan/delete-multiple-pelayanan', [PelayananController::class, 'deleteMultiple'])->name('delete-multiple-pelayanan');
@@ -165,7 +155,7 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/poli/{poli}/edit', [PoliController::class, 'edit'])->name('poli.edit');
     Route::delete('poli/{poli}', [PoliController::class, 'destroy'])->name('poli.destroy');
 
-    //Poli
+    //Jabatan
     Route::post('/jabatan/delete-multiple-jabatan', [JabatanController::class, 'deleteMultiple'])->name('delete-multiple-jabatan');
     Route::get('/jabatan', [JabatanController::class, 'index'])->name('jabatan.index');
     Route::post('/jabatan', [JabatanController::class, 'store'])->name('jabatan.store');
@@ -181,22 +171,4 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/homecare/{homecare}', [HomecareController::class, 'update'])->name('homecare.update');
     Route::post('/homecare/detail/{homecare}', [HomecareController::class, 'detail'])->name('homecare.detail');
     Route::delete('homecare/{homecare}', [HomecareController::class, 'destroy'])->name('homecare.destroy');
-});
-
-/*------------------------------------------
---------------------------------------------
-All Perawat Routes List
---------------------------------------------
---------------------------------------------*/
-Route::middleware(['auth', 'user-access:Perawat'])->group(function () {
-
-    Route::get('/perawat/home', [HomeController::class, 'perawatHome'])->name('perawat.home');
-});
-
-/*------------------------------------------
---------------------------------------------
-All Dokter Routes List
---------------------------------------------
---------------------------------------------*/
-Route::middleware(['auth', 'user-access:Dokter'])->group(function () {
 });

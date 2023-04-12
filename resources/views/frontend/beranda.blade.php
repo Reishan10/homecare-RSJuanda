@@ -5,33 +5,11 @@
     <div class="owl-carousel owl-nav-overlay owl-dots-overlay" data-owl-autoplay="true" data-owl-nav="true" data-owl-dots="true"
         data-owl-items="1">
         <!-- Slider Item 1 -->
-        <div class="section-2xl bg-image" data-bg-src="{{ asset('assets') }}/images/header-juanda.jpg">
+        <div class="section-2xl bg-image" data-bg-src="{{ asset('assets') }}/images/header_juanda.jpg">
             <div class="bg-black-06">
                 <div class="container text-center">
                     <h3 class="fw-normal uppercase margin-bottom-10">Selamat Datang</h3>
                     <h1 class="fw-bold">Rumah Sakit Juanda</h1>
-                </div>
-            </div>
-        </div>
-        <!-- Slider Item 2 -->
-        <div class="section-2xl bg-image" data-bg-src="{{ asset('assets') }}/images/background.jpg">
-            <div class="bg-black-06">
-                <div class="container text-center">
-                    <h6 class="font-small fw-normal uppercase margin-bottom-20">Travel, Nature</h6>
-                    <h1>Hero Post with Image</h1>
-                    <a class="button button-lg button-radius button-border-2 button-reveal-right-outline-white margin-top-20"
-                        href="#"><i class="bi bi-arrow-right"></i><span>Read More</span></a>
-                </div>
-            </div>
-        </div>
-        <!-- Slider Item 3 -->
-        <div class="section-2xl bg-image" data-bg-src="{{ asset('assets') }}/images/background.jpg">
-            <div class="bg-black-06">
-                <div class="container text-center">
-                    <h6 class="font-small fw-normal uppercase margin-bottom-20">Travel, Nature</h6>
-                    <h1>Hero Post with Image</h1>
-                    <a class="button button-lg button-radius button-border-2 button-reveal-right-outline-white margin-top-20"
-                        href="#"><i class="bi bi-arrow-right"></i><span>Read More</span></a>
                 </div>
             </div>
         </div>
@@ -44,7 +22,7 @@
             <!-- Process box 1 -->
             <div class="row align-items-center g-5">
                 <div class="col-12 col-md-6">
-                    <img class="border-radius hover-shadow hover-float" src="{{ asset('assets') }}/images/col-2.jpg"
+                    <img class="border-radius hover-shadow hover-float" src="{{ asset('assets') }}/images/beranda_1.png"
                         alt="">
                 </div>
                 <div class="col-12 col-md-6">
@@ -75,7 +53,7 @@
                 <div class="border-all">
                     <div class="hoverbox-9">
                         <a href="#">
-                            <img src="{{ asset('assets') }}/images/col-2.jpg" alt="">
+                            <img src="{{ asset('assets') }}/images/perawat.png" alt="">
                         </a>
                     </div>
                     <div class="padding-30">
@@ -88,7 +66,7 @@
                 <div class="border-all">
                     <div class="hoverbox-9">
                         <a href="#">
-                            <img src="{{ asset('assets') }}/images/col-2.jpg" alt="">
+                            <img src="{{ asset('assets') }}/images/fisioterapi.png" alt="">
                         </a>
                     </div>
                     <div class="padding-30">
@@ -101,7 +79,7 @@
                 <div class="border-all">
                     <div class="hoverbox-9">
                         <a href="#">
-                            <img src="{{ asset('assets') }}/images/col-2.jpg" alt="">
+                            <img src="{{ asset('assets') }}/images/telemedicine.png" alt="">
                         </a>
                     </div>
                     <div class="padding-30">
@@ -132,7 +110,7 @@
             <div class="row icon-5xl g-4 text-center">
                 <div class="col-12 col-md-6 col-lg-12">
                     <div class="border-all border-radius padding-40 hover-shadow">
-                        <img class="img-circle-md margin-bottom-20" src="{{ asset('assets') }}/images/img-circle-medium.jpg"
+                        <img class="img-circle-md margin-bottom-20" src="{{ asset('assets') }}/images/header_juanda.jpg"
                             alt="">
                         <h4 class="margin-top-10" style="color: #033b22;">Visi</h4>
                         <p>Menjadi Rumah Sakit Utama di Kabupaten Kuningan yang Berorientasi Pada Layanan Berkualitas,
@@ -142,8 +120,8 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-12">
                     <div class="border-all border-radius padding-40 hover-shadow bg-dark">
-                        <img class="img-circle-md margin-bottom-20"
-                            src="{{ asset('assets') }}/images/img-circle-medium.jpg" alt="">
+                        <img class="img-circle-md margin-bottom-20" src="{{ asset('assets') }}/images/header_juanda.jpg"
+                            alt="">
                         <h4 class="margin-top-10">Misi</h4>
                         <ul style="text-align: left;">
                             <li>Menyelenggarakan pelayanan kesehatan berkualitas sesuai standar nasional.</li>
@@ -157,8 +135,8 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-12">
                     <div class="border-all border-radius padding-40 hover-shadow">
-                        <img class="img-circle-md margin-bottom-20"
-                            src="{{ asset('assets') }}/images/img-circle-medium.jpg" alt="">
+                        <img class="img-circle-md margin-bottom-20" src="{{ asset('assets') }}/images/header_juanda.jpg"
+                            alt="">
                         <h4 class="margin-top-10" style="color: #033b22;">Tujuan</h4>
                         <p>Melaksanakan pelayanan kesehatan yang paripurna dengan mengutamakan kesembuhan, dengan
                             berpedoman kepada usaha

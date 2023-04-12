@@ -37,6 +37,8 @@
                                         <div class="invalid-feedback errorNoTelepon">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="gender" class="form-label">Jenis Kelamin</label>
                                         <select name="gender" id="gender" class="form-control">
@@ -47,24 +49,6 @@
                                             </option>
                                         </select>
                                         <div class="invalid-feedback errorGender">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="type" class="form-label">Type</label>
-                                        <select name="type" id="type" class="form-control">
-                                            <option value="">-- Pilih Type --</option>
-                                            <option value="0" {{ $user->type == 'Pasien' ? 'selected' : '' }}>Pasien
-                                            </option>
-                                            <option value="1" {{ $user->type == 'Administrator' ? 'selected' : '' }}>
-                                                Administrator</option>
-                                            <option value="2" {{ $user->type == 'Perawat' ? 'selected' : '' }}>Perawat
-                                            </option>
-                                            <option value="3" {{ $user->type == 'Dokter' ? 'selected' : '' }}>Dokter
-                                            </option>
-                                        </select>
-                                        <div class="invalid-feedback errorType">
                                         </div>
                                     </div>
                                     <div class="mb-3">

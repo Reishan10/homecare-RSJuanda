@@ -48,7 +48,6 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'no_telepon' => 'required|unique:users,no_telepon|min:11|max:15',
                 'gender' => 'required',
-                'type' => 'required',
                 'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
             ],
             [
@@ -60,7 +59,6 @@ class UserController extends Controller
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
                 'gender.required' => 'Silakan isi jenis kelamin terlebih dahulu!',
-                'type.required' => 'Silakan isi type terlebih dahulu!',
                 'avatar.image' => 'File harus berupa gambar!',
                 'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
             ]
@@ -80,7 +78,7 @@ class UserController extends Controller
                         'email' => $request->email,
                         'no_telepon' => $request->no_telepon,
                         'password' => bcrypt($request->no_telepon),
-                        'type' => $request->type,
+                        'type' => 1,
                         'gender' => $request->gender,
                         'address' => $request->address,
                         'avatar' => $request->name . '.' . $guessExtension,
@@ -94,7 +92,7 @@ class UserController extends Controller
                     'email' => $request->email,
                     'no_telepon' => $request->no_telepon,
                     'password' => bcrypt($request->no_telepon),
-                    'type' => $request->type,
+                    'type' => 1,
                     'gender' => $request->gender,
                     'address' => $request->address,
                 ];
@@ -120,7 +118,6 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email,' . $id . ',id',
                 'no_telepon' => 'required|unique:users,no_telepon,' . $id . ',id|min:11|max:15',
                 'gender' => 'required',
-                'type' => 'required',
                 'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
             ],
             [
@@ -132,7 +129,6 @@ class UserController extends Controller
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
                 'gender.required' => 'Silakan isi jenis kelamin terlebih dahulu!',
-                'type.required' => 'Silakan isi type terlebih dahulu!',
                 'avatar.image' => 'File harus berupa gambar!',
                 'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
             ]
@@ -145,7 +141,6 @@ class UserController extends Controller
                 $file = $request->file('avatar');
                 if ($file->isValid()) {
                     $user = User::findOrFail($id);
-
                     if ($user->avatar !== 'avatar.png') {
                         Storage::delete('users-avatar/' . $user->avatar);
                     }
@@ -156,7 +151,6 @@ class UserController extends Controller
                         'name' => $request->name,
                         'email' => $request->email,
                         'no_telepon' => $request->no_telepon,
-                        'type' => $request->type,
                         'gender' => $request->gender,
                         'address' => $request->address,
                         'avatar' => $request->name . '.' . $guessExtension,
@@ -169,7 +163,6 @@ class UserController extends Controller
                     'name' => $request->name,
                     'email' => $request->email,
                     'no_telepon' => $request->no_telepon,
-                    'type' => $request->type,
                     'gender' => $request->gender,
                     'address' => $request->address,
                 ];
@@ -207,5 +200,68 @@ class UserController extends Controller
         }
 
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function profile()
+    {
+        return view('backend.user.profile');
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $id = $request->id;
+        $validated = Validator::make(
+            $request->all(),
+            [
+                'email' => 'email|unique:users,email,' . $id . ',id',
+                'no_telepon' => 'unique:users,no_telepon,' . $id . ',id|min:11|max:15',
+                'avatar' => 'image|mimes:jpg,png,jpeg,webp,svg',
+            ],
+            [
+                'email.unique' => 'Email sudah digunakan!',
+                'no_telepon.unique' => 'No telepon sudah digunakan!',
+                'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
+                'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
+                'avatar.image' => 'File harus berupa gambar!',
+                'avatar.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
+            ]
+        );
+
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()]);
+        } else {
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+                if ($file->isValid()) {
+                    $user = User::findOrFail($id);
+                    if ($user->avatar !== 'avatar.png') {
+                        Storage::delete('users-avatar/' . $user->avatar);
+                    }
+
+                    $guessExtension = $request->file('avatar')->guessExtension();
+                    $request->file('avatar')->storeAs('users-avatar/', $request->name . '.' . $guessExtension, 'public');
+                    $data = [
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'no_telepon' => $request->no_telepon,
+                        'gender' => $request->gender,
+                        'address' => $request->address,
+                        'avatar' => $request->name . '.' . $guessExtension,
+                    ];
+                    $user = User::where('id', $id)->update($data);
+                    return response()->json($user);
+                }
+            } else {
+                $data = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'no_telepon' => $request->no_telepon,
+                    'gender' => $request->gender,
+                    'address' => $request->address,
+                ];
+                $user = User::where('id', $id)->update($data);
+                return response()->json($user);
+            }
+        }
     }
 }

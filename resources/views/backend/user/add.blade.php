@@ -34,6 +34,8 @@
                                         <div class="invalid-feedback errorNoTelepon">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="gender" class="form-label">Jenis Kelamin</label>
                                         <select name="gender" id="gender" class="form-control">
@@ -42,20 +44,6 @@
                                             <option value="P">Perempuan</option>
                                         </select>
                                         <div class="invalid-feedback errorGender">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="type" class="form-label">Type</label>
-                                        <select name="type" id="type" class="form-control">
-                                            <option value="">-- Pilih Type --</option>
-                                            <option value="0">Pasien</option>
-                                            <option value="1">Administrator</option>
-                                            <option value="2">Perawat</option>
-                                            <option value="3">Dokter</option>
-                                        </select>
-                                        <div class="invalid-feedback errorType">
                                         </div>
                                     </div>
                                     <div class="mb-3">

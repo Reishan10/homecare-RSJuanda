@@ -26,7 +26,7 @@ class ChatPaymentMiddleware
                     $chatpayment->status = '1';
                     $chatpayment->save();
                 }
-                abort(403, 'Waktu Chatpayment habis, perbarui status untuk akses chat berbayar.');
+                abort(403, 'Perbarui status untuk akses chat berbayar.');
             }
         }
         return $next($request);

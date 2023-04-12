@@ -81,6 +81,11 @@
                             <td id="email"></td>
                         </tr>
                         <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td id="no_telepon"></td>
+                        </tr>
+                        <tr>
                             <td>Jenis Kelamin</td>
                             <td>:</td>
                             <td id="gender"></td>
@@ -134,6 +139,7 @@
                         $('#nip').text(response.perawat.nip);
                         $('#name').text(response.perawat.user.name);
                         $('#email').text(response.perawat.user.email);
+                        $('#no_telepon').text(response.perawat.user.no_telepon);
                         $('#gender').text(response.perawat.user.gender == 'L' ? 'Laki-laki' :
                             'Perempuan');
                         $('#gol_darah').text(response.perawat.gol_darah);

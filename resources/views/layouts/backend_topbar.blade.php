@@ -14,6 +14,12 @@
             </a>
             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
                 <!-- item-->
+                <a href="{{ route('user.profile') }}" class="dropdown-item notify-item">
+                    <i class="mdi mdi-account-edit me-1"></i>
+                    <span>Edit Profile</span>
+                </a>
+
+                <!-- item-->
                 <a href="{{ route('ganti-password.index') }}" class="dropdown-item notify-item">
                     <i class="mdi mdi-lock-outline me-1"></i>
                     <span>Ganti Password</span>
