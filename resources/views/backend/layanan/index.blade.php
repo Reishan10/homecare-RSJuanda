@@ -29,7 +29,7 @@
                                             <th width="1px"><input type="checkbox" id="check_all"></th>
                                             <th>#</th>
                                             <th>Kode Layanan</th>
-                                            <th>Nama</th>
+                                            <th>Nama</th>>
                                             <th>Harga</th>
                                             <th width="10">Aksi</th>
                                         </tr>
@@ -64,6 +64,12 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <label for="deskripsi" class="form-label">Dekskripsi</label>
+                            <textarea name="deskripsi" id="deskripsi" rows="1" class="form-control"></textarea>
+                            <div class="invalid-feedback errorDeskripsi">
+                            </div>
+                        </div>
+                        <div class="mb-3">
                             <label for="harga" class="form-label">Harga</label>
                             <input type="number" id="harga" name="harga" class="form-control">
                             <div class="invalid-feedback errorHarga">
@@ -79,12 +85,67 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Detail Layanan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <td>Nama</td>
+                            <td>:</td>
+                            <td id="name_detail"></td>
+                        </tr>
+                        <tr>
+                            <td>Deskripsi</td>
+                            <td>:</td>
+                            <td id="deskripsi_detail"></td>
+                        </tr>
+                        <tr>
+                            <td>Harga</td>
+                            <td>:</td>
+                            <td id="harga_detail"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $('body').on('click', '#btn-detail', function() {
+                let id = $(this).data('id');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('/layanan/detail/"+id+"') }}",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#name_detail').text(response.layanan.name);
+                        $('#deskripsi_detail').text(response.layanan.deskripsi);
+                        $('#harga_detail').text(response.layanan.harga);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                })
             });
 
             $('#datatable').DataTable({
@@ -131,6 +192,9 @@
                 $('#name').removeClass('is-invalid');
                 $('.errorName').html('');
 
+                $('#deskripsi').removeClass('is-invalid');
+                $('.errorDeskripsi').html('');
+
                 $('#harga').removeClass('is-invalid');
                 $('.errorHarga').html('');
             });
@@ -150,11 +214,15 @@
                         $('#name').removeClass('is-invalid');
                         $('.errorName').html('');
 
+                        $('#deskripsi').removeClass('is-invalid');
+                        $('.errorDeskripsi').html('');
+
                         $('#harga').removeClass('is-invalid');
                         $('.errorHarga').html('');
 
                         $('#id').val(response.id);
                         $('#name').val(response.name);
+                        $('#deskripsi').val(response.deskripsi);
                         $('#harga').val(response.harga);
                     }
                 });
@@ -224,6 +292,14 @@
                             } else {
                                 $('#name').removeClass('is-invalid');
                                 $('.errorName').html('');
+                            }
+
+                            if (response.errors.deskripsi) {
+                                $('#deskripsi').addClass('is-invalid');
+                                $('.errorDeskripsi').html(response.errors.deskripsi);
+                            } else {
+                                $('#deskripsi').removeClass('is-invalid');
+                                $('.errorDeskripsi').html('');
                             }
 
                             if (response.errors.harga) {

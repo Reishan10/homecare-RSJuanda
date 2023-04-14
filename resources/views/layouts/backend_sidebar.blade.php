@@ -35,10 +35,13 @@
                     <div class="collapse" id="sidebarMaster">
                         <ul class="side-nav-second-level">
                             <li>
-                                <a href="{{ route('kota.index') }}">Kota</a>
+                                <a href="{{ route('layanan.index') }}">Layanan</a>
                             </li>
                             <li>
-                                <a href="{{ route('layanan.index') }}">Layanan</a>
+                                <a href="{{ route('homecare.index') }}">Homecare</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('kota.index') }}">Kota</a>
                             </li>
                             <li>
                                 <a href="{{ route('bayar.index') }}">Bayar</a>
@@ -52,6 +55,25 @@
                             <li>
                                 <a href="{{ route('jabatan.index') }}">Jabatan</a>
                             </li>
+
+                        </ul>
+                    </div>
+                </li>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarTransaksi" aria-expanded="false"
+                        aria-controls="sidebarTransaksi" class="side-nav-link">
+                        <i class="fa-sharp fa-solid fa-money-bill-1-wave"></i>
+                        <span> Transaksi </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarTransaksi">
+                        <ul class="side-nav-second-level">
+                            <li>
+                                <a href="{{ route('layanan.index') }}">Layanan Homecare</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('transaksi-homecare.index') }}">Layanan Paket Homecare</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -60,13 +82,6 @@
                     <a href="{{ route('pelayanan.index') }}" class="side-nav-link">
                         <i class="fa-solid fa-house"></i>
                         <span> Pelayanan </span>
-                    </a>
-                </li>
-
-                <li class="side-nav-item {{ request()->segment(1) == 'homecare' ? 'active' : '' }}">
-                    <a href="{{ route('homecare.index') }}" class="side-nav-link">
-                        <i class="fa-solid fa-hospital"></i>
-                        <span> Homecare </span>
                     </a>
                 </li>
             @endif

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_layanan')->nullable();
             $table->string('name', 100)->nullable();
+            $table->text('deskripsi')->nullable();
             $table->string('harga')->default('0');
             $table->timestamps();
         });

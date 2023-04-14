@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PelayananController;
 use App\Http\Controllers\Backend\PerawatController;
 use App\Http\Controllers\Backend\PoliController;
+use App\Http\Controllers\Backend\TransaksiHomecareController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\BerandaController;
 use App\Http\Controllers\Frontend\FisioterapiController;
@@ -132,6 +133,7 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
     Route::post('/layanan', [LayananController::class, 'store'])->name('layanan.store');
     Route::get('/layanan/{layanan}/edit', [LayananController::class, 'edit'])->name('layanan.edit');
+    Route::post('/layanan/detail/{layanan}', [LayananController::class, 'detail'])->name('layanan.detail');
     Route::delete('layanan/{layanan}', [LayananController::class, 'destroy'])->name('layanan.destroy');
 
     //Bayar
@@ -171,4 +173,14 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/homecare/{homecare}', [HomecareController::class, 'update'])->name('homecare.update');
     Route::post('/homecare/detail/{homecare}', [HomecareController::class, 'detail'])->name('homecare.detail');
     Route::delete('homecare/{homecare}', [HomecareController::class, 'destroy'])->name('homecare.destroy');
+
+    //Transaksi Homecare
+    Route::post('/transaksi-homecare/delete-multiple-transaksi-homecare', [TransaksiHomecareController::class, 'deleteMultiple'])->name('delete-multiple-homecare');
+    Route::get('/transaksi-homecare', [TransaksiHomecareController::class, 'index'])->name('transaksi-homecare.index');
+    Route::get('/transaksi-homecare/tambah', [TransaksiHomecareController::class, 'create'])->name('transaksi-homecare.create');
+    Route::post('/transaksi-homecare', [TransaksiHomecareController::class, 'store'])->name('transaksi-homecare.store');
+    Route::get('/transaksi-homecare/{homecare}/edit', [TransaksiHomecareController::class, 'edit'])->name('transaksi-homecare.edit');
+    Route::post('/transaksi-homecare/{homecare}', [TransaksiHomecareController::class, 'update'])->name('transaksi-homecare.update');
+    Route::post('/transaksi-homecare/detail/{homecare}', [TransaksiHomecareController::class, 'detail'])->name('transaksi-homecare.detail');
+    Route::delete('/transaksi-homecare/{homecare}', [TransaksiHomecareController::class, 'destroy'])->name('transaksi-homecare.destroy');
 });

@@ -25,7 +25,8 @@ class LayananController extends Controller
                     return $comboBox;
                 })
                 ->addColumn('aksi', function ($data) {
-                    $btn = '<button type="button" class="btn btn-warning btn-sm me-1" data-id="' . $data->id . '" id="btnEdit"><i
+                    $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
+                    $btn = $btn . '<button type="button" class="btn btn-warning btn-sm me-1" data-id="' . $data->id . '" id="btnEdit"><i
                     class="mdi mdi-pencil"></i></button>';
                     $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
@@ -37,6 +38,12 @@ class LayananController extends Controller
         return view('backend.layanan.index');
     }
 
+    public function detail(Request $request)
+    {
+        $layanan = Layanan::findOrFail($request->id);
+        return response()->json(['layanan' => $layanan]);
+    }
+
     public function store(Request $request)
     {
         $id = $request->id;
@@ -44,11 +51,13 @@ class LayananController extends Controller
             $request->all(),
             [
                 'name' => 'required|unique:layanan,name,' . $id,
-                'harga' => 'required'
+                'deskripsi' => 'required',
+                'harga' => 'required',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
                 'name.unique' => 'Layanan sudah tersedia!',
+                'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
                 'harga.required' => 'Silakan isi harga terlebih dahulu!',
             ]
         );
@@ -71,6 +80,7 @@ class LayananController extends Controller
             }
 
             $layanan->name = $request->name;
+            $layanan->deskripsi = $request->deskripsi;
             $layanan->harga = $request->harga;
             $layanan->save();
 
