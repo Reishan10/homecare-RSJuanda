@@ -2,14 +2,13 @@
 @section('title', 'Tambah Pasien')
 @section('content')
     <div class="container-fluid">
-
         <!-- start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('pasien.store') }}" method="post" id="form">
+                <form action="{{ route('pasien.store') }}" method="post" id="form" enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -123,21 +122,27 @@
                                         <div class="invalid-feedback errorPekerjaan">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <button type="button" class="btn btn-secondary mb-2"
-                                        onclick="window.location='{{ route('pasien.index') }}'">Kembali</button>
-                                    <button type="submit" class="btn btn-primary mb-2" id="simpan">Simpan</button>
+                                    <div class="mb-3">
+                                        <div class="mb-3">
+                                            <label for="ktp" class="form-label">Upload KTP</label>
+                                            <input type="file" class="form-control" name="ktp" id="ktp">
+                                            <small class="text-danger errorKTP"></small>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <button type="button" class="btn btn-secondary mb-2"
+                                            onclick="window.location='{{ route('pasien.index') }}'">Kembali</button>
+                                        <button type="submit" class="btn btn-primary mb-2"
+                                            id="simpan">Simpan</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </form>
             </div>
         </div>
         <!-- end page title -->
     </div>
-
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
@@ -149,10 +154,13 @@
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
-                    data: $(this).serialize(),
+                    data: new FormData(this),
                     url: "{{ route('pasien.store') }}",
                     type: "POST",
                     dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
                     beforeSend: function() {
                         $('#simpan').attr('disable', 'disabled');
                         $('#simpan').text('Proses...');
@@ -185,6 +193,14 @@
                             } else {
                                 $('#no_telepon').removeClass('is-invalid');
                                 $('.errorNoTelepon').html('');
+                            }
+
+                            if (response.errors.ktp) {
+                                $('#ktp').addClass('is-invalid');
+                                $('.errorKTP').html(response.errors.ktp);
+                            } else {
+                                $('#ktp').removeClass('is-invalid');
+                                $('.errorKTP').html('');
                             }
                         } else {
                             Swal.fire({

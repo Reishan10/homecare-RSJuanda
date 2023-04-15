@@ -29,7 +29,7 @@
                                             <th width="1px"><input type="checkbox" id="check_all"></th>
                                             <th>#</th>
                                             <th>Kode Layanan</th>
-                                            <th>Nama</th>>
+                                            <th>Nama</th>
                                             <th>Harga</th>
                                             <th width="10">Aksi</th>
                                         </tr>

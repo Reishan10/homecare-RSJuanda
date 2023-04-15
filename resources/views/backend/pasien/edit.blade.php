@@ -2,24 +2,24 @@
 @section('title', 'Edit Pasien')
 @section('content')
     <div class="container-fluid">
-
         <!-- start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('pasien.update', $pasien->id) }}" method="post" id="form">
+                <form action="{{ route('pasien.update', $pasien->pasien->id) }}" method="post" id="form"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
+                                        <label for="name" class="form-label">Nama Lengkap</label>
                                         <input type="hidden" name="id" id="id" value="{{ $pasien->id }}">
                                         <input type="hidden" name="pasien_id" id="pasien_id"
                                             value="{{ $pasien->pasien->id }}">
-                                        <label for="name" class="form-label">Nama Lengkap</label>
                                         <input type="text" id="name" name="name" class="form-control"
                                             value="{{ $pasien->name }}">
                                         <div class="invalid-feedback errorName">
@@ -114,12 +114,10 @@
                                                         {{ $pasien->pasien->agama == 'Islam' ? 'selected' : '' }}>Islam
                                                     </option>
                                                     <option value="Kristen"
-                                                        {{ $pasien->pasien->agama == 'Kristen' ? 'selected' : '' }}>
-                                                        Kristen
+                                                        {{ $pasien->pasien->agama == 'Kristen' ? 'selected' : '' }}>Kristen
                                                     </option>
                                                     <option value="Katolik"
-                                                        {{ $pasien->pasien->agama == 'Katolik' ? 'selected' : '' }}>
-                                                        Katolik
+                                                        {{ $pasien->pasien->agama == 'Katolik' ? 'selected' : '' }}>Katolik
                                                     </option>
                                                     <option value="Hindu"
                                                         {{ $pasien->pasien->agama == 'Hindu' ? 'selected' : '' }}>Hindu
@@ -129,7 +127,8 @@
                                                     </option>
                                                     <option value="Konghucu"
                                                         {{ $pasien->pasien->agama == 'Konghucu' ? 'selected' : '' }}>
-                                                        Konghucu</option>
+                                                        Konghucu
+                                                    </option>
                                                 </select>
                                                 <div class="invalid-feedback errorAgama">
                                                 </div>
@@ -157,21 +156,28 @@
                                         <div class="invalid-feedback errorPekerjaan">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <button type="button" class="btn btn-secondary mb-2"
-                                        onclick="window.location='{{ route('pasien.index') }}'">Kembali</button>
-                                    <button type="submit" class="btn btn-primary mb-2" id="simpan">Simpan</button>
+                                    <div class="mb-3">
+                                        <div class="mb-3">
+                                            <label for="ktp" class="form-label">Upload KTP</label>
+                                            <input type="file" class="form-control" name="ktp" id="ktp"
+                                                value="{{ $pasien->pasien->ktp }}">
+                                            <small class="text-danger errorKTP"></small>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <button type="button" class="btn btn-secondary mb-2"
+                                            onclick="window.location='{{ route('pasien.index') }}'">Kembali</button>
+                                        <button type="submit" class="btn btn-primary mb-2"
+                                            id="simpan">Simpan</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </form>
             </div>
         </div>
         <!-- end page title -->
     </div>
-
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
@@ -183,11 +189,15 @@
             $('#form').submit(function(e) {
                 e.preventDefault();
                 let id = $('#id').val();
+
                 $.ajax({
-                    data: $(this).serialize(),
+                    data: new FormData(this),
                     url: "{{ url('pasien/"+id+"') }}",
                     type: "POST",
                     dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
                     beforeSend: function() {
                         $('#simpan').attr('disable', 'disabled');
                         $('#simpan').text('Proses...');
@@ -220,6 +230,14 @@
                             } else {
                                 $('#no_telepon').removeClass('is-invalid');
                                 $('.errorNoTelepon').html('');
+                            }
+
+                            if (response.errors.ktp) {
+                                $('#ktp').addClass('is-invalid');
+                                $('.errorKTP').html(response.errors.ktp);
+                            } else {
+                                $('#ktp').removeClass('is-invalid');
+                                $('.errorKTP').html('');
                             }
                         } else {
                             Swal.fire({

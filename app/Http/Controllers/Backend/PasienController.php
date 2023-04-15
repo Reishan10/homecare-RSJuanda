@@ -55,6 +55,7 @@ class PasienController extends Controller
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users,email',
                 'no_telepon' => 'required|unique:users,no_telepon|min:11|max:15',
+                'ktp' => 'required|image|mimes:jpg,png,jpeg,webp,svg',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
@@ -64,6 +65,9 @@ class PasienController extends Controller
                 'no_telepon.unique' => 'No telepon sudah digunakan!',
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
+                'ktp.required' => 'Silakan isi KTP terlebih dahulu!',
+                'ktp.image' => 'File harus berupa gambar!',
+                'ktp.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
             ]
         );
 
@@ -71,27 +75,58 @@ class PasienController extends Controller
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-            $user = new User();
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->no_telepon = $request->no_telepon;
-            $user->password = bcrypt($request->no_telepon);
-            $user->type = 0;
-            $user->gender = $request->gender;
-            $user->address = $request->address;
-            $user->save();
+            if ($request->hasFile('ktp')) {
+                $file = $request->file('ktp');
+                if ($file->isValid()) {
+                    $guessExtension = $request->file('ktp')->guessExtension();
+                    $request->file('ktp')->storeAs('ktp/', 'KTP - ' . $request->name . '.' . $guessExtension, 'public');
 
-            $pasien = new Pasien();
-            $pasien->user_id = $user->id;
-            $pasien->gol_darah = $request->gol_darah;
-            $pasien->tempat_lahir = $request->tempat_lahir;
-            $pasien->tanggal_lahir = $request->tanggal_lahir;
-            $pasien->agama = $request->agama;
-            $pasien->status_nikah = $request->status_nikah;
-            $pasien->pekerjaan = $request->pekerjaan;
-            $pasien->save();
+                    $user = new User();
+                    $user->name = $request->name;
+                    $user->email = $request->email;
+                    $user->no_telepon = $request->no_telepon;
+                    $user->password = bcrypt($request->no_telepon);
+                    $user->type = 0;
+                    $user->gender = $request->gender;
+                    $user->address = $request->address;
+                    $user->save();
 
-            return response()->json(['success' => 'Data barhasil ditambahkan']);
+                    $pasien = new Pasien();
+                    $pasien->user_id = $user->id;
+                    $pasien->gol_darah = $request->gol_darah;
+                    $pasien->tempat_lahir = $request->tempat_lahir;
+                    $pasien->tanggal_lahir = $request->tanggal_lahir;
+                    $pasien->agama = $request->agama;
+                    $pasien->status_nikah = $request->status_nikah;
+                    $pasien->pekerjaan = $request->pekerjaan;
+                    $pasien->ktp = 'KTP - ' . $request->name . '.' . $guessExtension;
+                    $pasien->save();
+
+                    return response()->json(['success' => 'Data barhasil ditambahkan']);
+                }
+            } else {
+                $user = new User();
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->no_telepon = $request->no_telepon;
+                $user->password = bcrypt($request->no_telepon);
+                $user->type = 0;
+                $user->gender = $request->gender;
+                $user->address = $request->address;
+                $user->save();
+
+                $pasien = new Pasien();
+                $pasien->user_id = $user->id;
+                $pasien->gol_darah = $request->gol_darah;
+                $pasien->tempat_lahir = $request->tempat_lahir;
+                $pasien->tanggal_lahir = $request->tanggal_lahir;
+                $pasien->agama = $request->agama;
+                $pasien->status_nikah = $request->status_nikah;
+                $pasien->pekerjaan = $request->pekerjaan;
+                $pasien->save();
+
+                return response()->json(['success' => 'Data barhasil ditambahkan']);
+            }
         }
     }
 
@@ -111,6 +146,7 @@ class PasienController extends Controller
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users,email,' . $id . ',id',
                 'no_telepon' => 'required|unique:users,no_telepon,' . $id . ',id|min:11|max:15',
+                'ktp' => 'image|mimes:jpg,png,jpeg,webp,svg',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
@@ -120,6 +156,8 @@ class PasienController extends Controller
                 'no_telepon.unique' => 'No telepon sudah digunakan!',
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
+                'ktp.image' => 'File harus berupa gambar!',
+                'ktp.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
             ]
         );
 
@@ -127,24 +165,62 @@ class PasienController extends Controller
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-            $user = User::find($id);
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->no_telepon = $request->no_telepon;
-            $user->gender = $request->gender;
-            $user->address = $request->address;
-            $user->save();
+            if ($request->hasFile('ktp')) {
+                $file = $request->file('ktp');
+                if ($file->isValid()) {
+                    $pasien = User::with('pasien')->find($id);
+                    if ($pasien->pasien->ktp !== '') {
+                        Storage::delete('ktp/' . $pasien->pasien->ktp);
+                    }
+                    $guessExtension = $request->file('ktp')->guessExtension();
+                    $request->file('ktp')->storeAs('ktp/', 'KTP - ' . $request->name . '.' . $guessExtension, 'public');
 
-            $pasien = Pasien::find($pasien_id);
-            $pasien->gol_darah = $request->gol_darah;
-            $pasien->tempat_lahir = $request->tempat_lahir;
-            $pasien->tanggal_lahir = $request->tanggal_lahir;
-            $pasien->agama = $request->agama;
-            $pasien->status_nikah = $request->status_nikah;
-            $pasien->pekerjaan = $request->pekerjaan;
-            $pasien->save();
+                    $user = User::find($id);
+                    $user->name = $request->name;
+                    $user->email = $request->email;
+                    $user->no_telepon = $request->no_telepon;
+                    $user->password = bcrypt($request->no_telepon);
+                    $user->type = 0;
+                    $user->gender = $request->gender;
+                    $user->address = $request->address;
+                    $user->save();
 
-            return response()->json(['success' => 'Data barhasil disimpan']);
+                    $pasien = Pasien::find($pasien_id);
+                    $pasien->user_id = $user->id;
+                    $pasien->gol_darah = $request->gol_darah;
+                    $pasien->tempat_lahir = $request->tempat_lahir;
+                    $pasien->tanggal_lahir = $request->tanggal_lahir;
+                    $pasien->agama = $request->agama;
+                    $pasien->status_nikah = $request->status_nikah;
+                    $pasien->pekerjaan = $request->pekerjaan;
+                    $pasien->ktp = 'KTP - ' . $request->name . '.' . $guessExtension;
+                    $pasien->save();
+
+                    return response()->json(['success' => 'Data barhasil ditambahkan']);
+                }
+            } else {
+                $user = new User();
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->no_telepon = $request->no_telepon;
+                $user->password = bcrypt($request->no_telepon);
+                $user->type = 0;
+                $user->gender = $request->gender;
+                $user->address = $request->address;
+                $user->save();
+
+                $pasien = new Pasien();
+                $pasien->user_id = $user->id;
+                $pasien->gol_darah = $request->gol_darah;
+                $pasien->tempat_lahir = $request->tempat_lahir;
+                $pasien->tanggal_lahir = $request->tanggal_lahir;
+                $pasien->agama = $request->agama;
+                $pasien->status_nikah = $request->status_nikah;
+                $pasien->pekerjaan = $request->pekerjaan;
+                $pasien->save();
+
+                return response()->json(['success' => 'Data barhasil ditambahkan']);
+            }
         }
     }
 
@@ -152,8 +228,8 @@ class PasienController extends Controller
     {
         $pasien = User::findOrFail($request->id);
 
-        if ($pasien->avatar !== 'avatar.png') {
-            Storage::delete('users-avatar/' . $pasien->avatar);
+        if ($pasien->pasien->ktp !== '') {
+            Storage::delete('ktp/' . $pasien->pasien->ktp);
             $pasien->delete();
         } else {
             $pasien->delete();
@@ -164,11 +240,11 @@ class PasienController extends Controller
 
     public function deleteMultiple(Request $request)
     {
-        $pasien = User::whereIn('id', explode(",", $request->id))->get();
+        $pasien = User::with('pasien')->whereIn('id', explode(",", $request->id))->get();
 
         foreach ($pasien as $row) {
-            if ($row->avatar !== 'avatar.png') {
-                Storage::delete('users-avatar/' . $row->avatar);
+            if ($row->pasien->ktp !== '') {
+                Storage::delete('ktp/' . $row->pasien->ktp);
                 $row->delete();
             } else {
                 $row->delete();
