@@ -9,7 +9,7 @@
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('homecare.store') }}" method="post" id="form">
+                <form action="{{ route('homecare.store') }}" method="post" id="form" enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -70,6 +70,22 @@
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback errorJenisBayar">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                                        <textarea name="deskripsi" id="deskripsi" rows="1" class="form-control"></textarea>
+                                        <div class="invalid-feedback errorDeskripsi">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="foto" class="form-label">Foto</label>
+                                        <input type="file" id="foto" name="foto" class="form-control">
+                                        <div class="invalid-feedback errorFoto">
                                         </div>
                                     </div>
                                 </div>
@@ -178,10 +194,13 @@
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
-                    data: $(this).serialize(),
+                    data: new FormData(this),
                     url: "{{ route('homecare.store') }}",
                     type: "POST",
                     dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
                     beforeSend: function() {
                         $('#simpan').attr('disable', 'disabled');
                         $('#simpan').text('Proses...');
@@ -222,6 +241,22 @@
                             } else {
                                 $('#bayar').removeClass('is-invalid');
                                 $('.errorJenisBayar').html('');
+                            }
+
+                            if (response.errors.deskripsi) {
+                                $('#deskripsi').addClass('is-invalid');
+                                $('.errorDeskripsi').html(response.errors.deskripsi);
+                            } else {
+                                $('#deskripsi').removeClass('is-invalid');
+                                $('.errorDeskripsi').html('');
+                            }
+
+                            if (response.errors.foto) {
+                                $('#foto').addClass('is-invalid');
+                                $('.errorFoto').html(response.errors.foto);
+                            } else {
+                                $('#foto').removeClass('is-invalid');
+                                $('.errorFoto').html('');
                             }
 
                         } else {

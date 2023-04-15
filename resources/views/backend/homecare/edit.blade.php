@@ -9,7 +9,8 @@
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('homecare.update', $homecare->id) }}" method="post" id="form">
+                <form action="{{ route('homecare.update', $homecare->id) }}" method="post" id="form"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -78,6 +79,23 @@
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback errorJenisBayar">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                                        <textarea name="deskripsi" id="deskripsi" rows="1" class="form-control">{{ $homecare->deskripsi }}</textarea>
+                                        <div class="invalid-feedback errorDeskripsi">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="foto" class="form-label">Foto</label>
+                                        <input type="file" id="foto" name="foto" class="form-control"
+                                            value="{{ $homecare->foto }}">
+                                        <div class="invalid-feedback errorFoto">
                                         </div>
                                     </div>
                                 </div>
@@ -187,10 +205,13 @@
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
-                    data: $(this).serialize(),
+                    data: new FormData(this),
                     url: "{{ url('homecare/"+id+"') }}",
                     type: "POST",
                     dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
                     beforeSend: function() {
                         $('#simpan').attr('disable', 'disabled');
                         $('#simpan').text('Proses...');

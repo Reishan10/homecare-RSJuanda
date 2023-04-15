@@ -8,6 +8,7 @@ use App\Models\Homecare;
 use App\Models\Kategori;
 use App\Models\Poli;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
@@ -76,6 +77,8 @@ class HomecareController extends Controller
                 'kategori' => 'required|string',
                 'poli' => 'required|string',
                 'bayar' => 'required|string',
+                'deskripsi' => 'required|string',
+                'foto' => 'required|image|mimes:jpg,png,jpeg,webp,svg',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
@@ -83,6 +86,10 @@ class HomecareController extends Controller
                 'kategori.required' => 'Silakan isi kategori terlebih dahulu!',
                 'poli.required' => 'Silakan isi poli terlebih dahulu!',
                 'bayar.required' => 'Silakan isi jenis bayar terlebih dahulu!',
+                'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
+                'foto.required' => 'Silakan isi foto terlebih dahulu!',
+                'foto.image' => 'File harus berupa gambar!',
+                'foto.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
             ]
         );
 
@@ -90,30 +97,59 @@ class HomecareController extends Controller
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-            $homecare = new Homecare();
-            $homecare->kode_homecare = $request->kode_homecare;
-            $homecare->name = $request->name;
-            $homecare->bayar_id = $request->bayar;
-            $homecare->kategori_id = $request->kategori;
-            $homecare->poli_id = $request->poli;
-            $homecare->paket_obat = $request->paket_obat;
-            $homecare->kso = $request->kso;
-            $homecare->jasa_medis_dokter = $request->jasa_medis_dokter;
-            $homecare->jasa_medis_perawat = $request->jasa_medis_perawat;
-            $homecare->jasa_rumah_sakit = $request->jasa_rumah_sakit;
-            $homecare->menejemen = $request->menejemen;
-            $homecare->total_biaya_dokter = $request->total_biaya_dokter;
-            $homecare->total_biaya_perawat = $request->total_biaya_perawat;
-            $homecare->total_biaya_perawat_dokter = $request->total_biaya_perawat_dokter;
-            $homecare->save();
+            if ($request->hasFile('foto')) {
+                $file = $request->file('foto');
+                if ($file->isValid()) {
+                    $guessExtension = $request->file('foto')->guessExtension();
+                    $request->file('foto')->storeAs('homecare/', 'Homecare - ' . $request->name . '.' . $guessExtension, 'public');
 
-            return response()->json(['success' => 'Data barhasil ditambahkan']);
+                    $homecare = new Homecare();
+                    $homecare->kode_homecare = $request->kode_homecare;
+                    $homecare->name = $request->name;
+                    $homecare->bayar_id = $request->bayar;
+                    $homecare->kategori_id = $request->kategori;
+                    $homecare->poli_id = $request->poli;
+                    $homecare->deskripsi = $request->deskripsi;
+                    $homecare->foto = 'Homecare - ' . $request->name . '.' . $guessExtension;
+                    $homecare->paket_obat = $request->paket_obat;
+                    $homecare->kso = $request->kso;
+                    $homecare->jasa_medis_dokter = $request->jasa_medis_dokter;
+                    $homecare->jasa_medis_perawat = $request->jasa_medis_perawat;
+                    $homecare->jasa_rumah_sakit = $request->jasa_rumah_sakit;
+                    $homecare->menejemen = $request->menejemen;
+                    $homecare->total_biaya_dokter = $request->total_biaya_dokter;
+                    $homecare->total_biaya_perawat = $request->total_biaya_perawat;
+                    $homecare->total_biaya_perawat_dokter = $request->total_biaya_perawat_dokter;
+                    $homecare->save();
+
+                    return response()->json(['success' => 'Data barhasil ditambahkan']);
+                }
+            } else {
+                $homecare = new Homecare();
+                $homecare->kode_homecare = $request->kode_homecare;
+                $homecare->name = $request->name;
+                $homecare->bayar_id = $request->bayar;
+                $homecare->kategori_id = $request->kategori;
+                $homecare->poli_id = $request->poli;
+                $homecare->paket_obat = $request->paket_obat;
+                $homecare->kso = $request->kso;
+                $homecare->jasa_medis_dokter = $request->jasa_medis_dokter;
+                $homecare->jasa_medis_perawat = $request->jasa_medis_perawat;
+                $homecare->jasa_rumah_sakit = $request->jasa_rumah_sakit;
+                $homecare->menejemen = $request->menejemen;
+                $homecare->total_biaya_dokter = $request->total_biaya_dokter;
+                $homecare->total_biaya_perawat = $request->total_biaya_perawat;
+                $homecare->total_biaya_perawat_dokter = $request->total_biaya_perawat_dokter;
+                $homecare->save();
+
+                return response()->json(['success' => 'Data barhasil ditambahkan']);
+            }
         }
     }
 
     public function edit($id)
     {
-        $homecare = Homecare::with('bayar', 'kategori', 'poli')->orderBy('name', 'asc')->findOrFail($id);
+        $homecare = Homecare::with('bayar', 'kategori', 'poli')->findOrFail($id);
         $kategori = Kategori::orderBy('name', 'asc')->get();
         $poli = Poli::orderBy('name', 'asc')->get();
         $bayar = Bayar::orderBy('name', 'asc')->get();
@@ -130,6 +166,8 @@ class HomecareController extends Controller
                 'kategori' => 'required|string',
                 'poli' => 'required|string',
                 'bayar' => 'required|string',
+                'deskripsi' => 'required|string',
+                'foto' => 'image|mimes:jpg,png,jpeg,webp,svg',
             ],
             [
                 'name.required' => 'Silakan isi nama terlebih dahulu!',
@@ -137,6 +175,9 @@ class HomecareController extends Controller
                 'kategori.required' => 'Silakan isi kategori terlebih dahulu!',
                 'poli.required' => 'Silakan isi poli terlebih dahulu!',
                 'bayar.required' => 'Silakan isi jenis bayar terlebih dahulu!',
+                'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
+                'foto.image' => 'File harus berupa gambar!',
+                'foto.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
             ]
         );
 
@@ -144,36 +185,84 @@ class HomecareController extends Controller
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
-            $homecare = Homecare::find($id);
-            $homecare->name = $request->name;
-            $homecare->bayar_id = $request->bayar;
-            $homecare->kategori_id = $request->kategori;
-            $homecare->poli_id = $request->poli;
-            $homecare->paket_obat = $request->paket_obat;
-            $homecare->kso = $request->kso;
-            $homecare->jasa_medis_dokter = $request->jasa_medis_dokter;
-            $homecare->jasa_medis_perawat = $request->jasa_medis_perawat;
-            $homecare->jasa_rumah_sakit = $request->jasa_rumah_sakit;
-            $homecare->menejemen = $request->menejemen;
-            $homecare->total_biaya_dokter = $request->total_biaya_dokter;
-            $homecare->total_biaya_perawat = $request->total_biaya_perawat;
-            $homecare->total_biaya_perawat_dokter = $request->total_biaya_perawat_dokter;
-            $homecare->save();
+            if ($request->hasFile('foto')) {
+                $file = $request->file('foto');
+                if ($file->isValid()) {
+                    $homecare = Homecare::find($id);
+                    if ($homecare->foto !== 'default.png') {
+                        Storage::delete('homecare/' . $homecare->foto);
+                    }
+                    $guessExtension = $request->file('foto')->guessExtension();
+                    $request->file('foto')->storeAs('homecare/', 'Homecare - ' . $request->name . '.' . $guessExtension, 'public');
 
-            return response()->json(['success' => 'Data barhasil ditambahkan']);
+                    $homecare = Homecare::find($id);
+                    $homecare->kode_homecare = $request->kode_homecare;
+                    $homecare->name = $request->name;
+                    $homecare->bayar_id = $request->bayar;
+                    $homecare->kategori_id = $request->kategori;
+                    $homecare->poli_id = $request->poli;
+                    $homecare->deskripsi = $request->deskripsi;
+                    $homecare->foto = 'Homecare - ' . $request->name . '.' . $guessExtension;
+                    $homecare->paket_obat = $request->paket_obat;
+                    $homecare->kso = $request->kso;
+                    $homecare->jasa_medis_dokter = $request->jasa_medis_dokter;
+                    $homecare->jasa_medis_perawat = $request->jasa_medis_perawat;
+                    $homecare->jasa_rumah_sakit = $request->jasa_rumah_sakit;
+                    $homecare->menejemen = $request->menejemen;
+                    $homecare->total_biaya_dokter = $request->total_biaya_dokter;
+                    $homecare->total_biaya_perawat = $request->total_biaya_perawat;
+                    $homecare->total_biaya_perawat_dokter = $request->total_biaya_perawat_dokter;
+                    $homecare->save();
+
+                    return response()->json(['success' => 'Data barhasil disimpan']);
+                }
+            } else {
+                $homecare = Homecare::find($id);
+                $homecare->kode_homecare = $request->kode_homecare;
+                $homecare->name = $request->name;
+                $homecare->bayar_id = $request->bayar;
+                $homecare->kategori_id = $request->kategori;
+                $homecare->poli_id = $request->poli;
+                $homecare->paket_obat = $request->paket_obat;
+                $homecare->kso = $request->kso;
+                $homecare->jasa_medis_dokter = $request->jasa_medis_dokter;
+                $homecare->jasa_medis_perawat = $request->jasa_medis_perawat;
+                $homecare->jasa_rumah_sakit = $request->jasa_rumah_sakit;
+                $homecare->menejemen = $request->menejemen;
+                $homecare->total_biaya_dokter = $request->total_biaya_dokter;
+                $homecare->total_biaya_perawat = $request->total_biaya_perawat;
+                $homecare->total_biaya_perawat_dokter = $request->total_biaya_perawat_dokter;
+                $homecare->save();
+
+                return response()->json(['success' => 'Data barhasil disimpan']);
+            }
         }
     }
 
     public function destroy(Request $request)
     {
-        $homecare = Homecare::where('id', $request->id)->delete();
+        $homecare = Homecare::find($request->id);
+        if ($homecare->foto !== 'default.png') {
+            Storage::delete('homecare/' . $homecare->foto);
+            $homecare->delete();
+        } else {
+            $homecare->delete();
+        }
         return Response()->json(['homecare' => $homecare, 'success' => 'Data berhasil dihapus']);
     }
 
     public function deleteMultiple(Request $request)
     {
-        $id = $request->id;
-        Homecare::whereIn('id', explode(",", $id))->delete();
+        $homecare = Homecare::whereIn('id', explode(",", $request->id))->get();
+
+        foreach ($homecare as $row) {
+            if ($row->foto !== 'default.png') {
+                Storage::delete('homecare/' . $row->foto);
+                $row->delete();
+            } else {
+                $row->delete();
+            }
+        }
         return response()->json(['success' => "Data berhasil dihapus"]);
     }
 }

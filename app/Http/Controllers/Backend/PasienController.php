@@ -196,10 +196,10 @@ class PasienController extends Controller
                     $pasien->ktp = 'KTP - ' . $request->name . '.' . $guessExtension;
                     $pasien->save();
 
-                    return response()->json(['success' => 'Data barhasil ditambahkan']);
+                    return response()->json(['success' => 'Data barhasil disimpan']);
                 }
             } else {
-                $user = new User();
+                $user = User::find($id);
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->no_telepon = $request->no_telepon;
@@ -209,7 +209,7 @@ class PasienController extends Controller
                 $user->address = $request->address;
                 $user->save();
 
-                $pasien = new Pasien();
+                $pasien = Pasien::find($pasien_id);
                 $pasien->user_id = $user->id;
                 $pasien->gol_darah = $request->gol_darah;
                 $pasien->tempat_lahir = $request->tempat_lahir;
@@ -219,7 +219,7 @@ class PasienController extends Controller
                 $pasien->pekerjaan = $request->pekerjaan;
                 $pasien->save();
 
-                return response()->json(['success' => 'Data barhasil ditambahkan']);
+                return response()->json(['success' => 'Data barhasil disimpan']);
             }
         }
     }
