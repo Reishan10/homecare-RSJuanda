@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\BayarController;
 use App\Http\Controllers\Backend\ChatPaymentController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DokterController;
+use App\Http\Controllers\Backend\FisioterapiController as BackendFisioterapiController;
 use App\Http\Controllers\Backend\GantiPasswordController;
 use App\Http\Controllers\Backend\HomecareController;
 use App\Http\Controllers\Backend\JabatanController;
@@ -172,7 +173,7 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/homecare/{homecare}/edit', [HomecareController::class, 'edit'])->name('homecare.edit');
     Route::post('/homecare/{homecare}', [HomecareController::class, 'update'])->name('homecare.update');
     Route::post('/homecare/detail/{homecare}', [HomecareController::class, 'detail'])->name('homecare.detail');
-    Route::delete('homecare/{homecare}', [HomecareController::class, 'destroy'])->name('homecare.destroy');
+    Route::delete('/homecare/{homecare}', [HomecareController::class, 'destroy'])->name('homecare.destroy');
 
     //Transaksi Homecare
     Route::post('/transaksi-homecare/delete-multiple-transaksi-homecare', [TransaksiHomecareController::class, 'deleteMultiple'])->name('delete-multiple-homecare');
@@ -183,4 +184,12 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/transaksi-homecare/{homecare}', [TransaksiHomecareController::class, 'update'])->name('transaksi-homecare.update');
     Route::post('/transaksi-homecare/detail/{homecare}', [TransaksiHomecareController::class, 'detail'])->name('transaksi-homecare.detail');
     Route::delete('/transaksi-homecare/{homecare}', [TransaksiHomecareController::class, 'destroy'])->name('transaksi-homecare.destroy');
+
+    //Fisioterapi
+    Route::post('/fisioterapi/delete-multiple-fisioterapi', [BackendFisioterapiController::class, 'deleteMultiple'])->name('delete-multiple-fisioterapi');
+    Route::get('/fisioterapi', [BackendFisioterapiController::class, 'index'])->name('fisioterapi.index');
+    Route::post('/fisioterapi', [BackendFisioterapiController::class, 'store'])->name('fisioterapi.store');
+    Route::get('/fisioterapi/{fisioterapi}/edit', [BackendFisioterapiController::class, 'edit'])->name('fisioterapi.edit');
+    Route::post('/fisioterapi/detail/{fisioterapi}', [BackendFisioterapiController::class, 'detail'])->name('fisioterapi.detail');
+    Route::delete('fisioterapi/{fisioterapi}', [BackendFisioterapiController::class, 'destroy'])->name('fisioterapi.destroy');
 });

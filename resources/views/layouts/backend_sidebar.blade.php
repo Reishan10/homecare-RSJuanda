@@ -35,10 +35,13 @@
                     <div class="collapse" id="sidebarMaster">
                         <ul class="side-nav-second-level">
                             <li>
-                                <a href="{{ route('layanan.index') }}">Layanan</a>
+                                <a href="{{ route('layanan.index') }}">Homecare</a>
                             </li>
                             <li>
-                                <a href="{{ route('homecare.index') }}">Homecare</a>
+                                <a href="{{ route('homecare.index') }}">Paket Homecare</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('fisioterapi.index') }}">Fisioterapi</a>
                             </li>
                             <li>
                                 <a href="{{ route('kota.index') }}">Kota</a>
