@@ -176,6 +176,41 @@
                                         <div class="invalid-feedback errorDeskripsi">
                                         </div>
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Pilih Hari</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Senin">
+                                            <label class="form-check-label">Senin</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Selasa">
+                                            <label class="form-check-label">Selasa</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Rabu">
+                                            <label class="form-check-label">Rabu</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Kamis">
+                                            <label class="form-check-label">Kamis</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Jumat">
+                                            <label class="form-check-label">Jumat</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Sabtu">
+                                            <label class="form-check-label">Sabtu</label>
+                                        </div>
+                                        <div class="text-danger errorHari text-sm">
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -295,6 +330,12 @@
                             } else {
                                 $('#deskripsi').removeClass('is-invalid');
                                 $('.errorDeskripsi').html('');
+                            }
+
+                            if (response.errors.hari) {
+                                $('.errorHari').html(response.errors.hari);
+                            } else {
+                                $('.errorHari').html('');
                             }
                         } else {
                             Swal.fire({

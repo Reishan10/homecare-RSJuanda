@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PelayananController;
 use App\Http\Controllers\Backend\PerawatController;
 use App\Http\Controllers\Backend\PoliController;
+use App\Http\Controllers\backend\RekamMedisController;
 use App\Http\Controllers\Backend\TransaksiHomecareController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\BerandaController;
@@ -80,6 +81,19 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter'
     Route::post('/pasien/detail/{pasien}', [PasienController::class, 'detail'])->name('pasien.detail');
     Route::delete('pasien/{pasien}', [PasienController::class, 'destroy'])->name('pasien.destroy');
 });
+
+Route::group(['middleware' => ['auth', 'user-access:Administrator,Dokter']], function () {
+    //Rekam Medis
+    Route::post('/rekam-medis/delete-multiple-rekam-medis', [RekamMedisController::class, 'deleteMultiple'])->name('delete-multiple-rekam-medis');
+    Route::get('/rekam-medis', [RekamMedisController::class, 'index'])->name('rekam-medis.index');
+    Route::get('/rekam-medis/tambah', [RekamMedisController::class, 'create'])->name('rekam-medis.create');
+    Route::post('/rekam-medis', [RekamMedisController::class, 'store'])->name('rekam-medis.store');
+    Route::get('/rekam-medis/{id}/edit', [RekamMedisController::class, 'edit'])->name('rekam-medis.edit');
+    Route::post('/rekam-medis/{id}', [RekamMedisController::class, 'update'])->name('rekam-medis.update');
+    Route::post('/rekam-medis/detail/{id}', [RekamMedisController::class, 'detail'])->name('rekam-medis.detail');
+    Route::delete('/rekam-medis/{id}', [RekamMedisController::class, 'destroy'])->name('rekam-medis.destroy');
+});
+
 
 Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     //Dokter

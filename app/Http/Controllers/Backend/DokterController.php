@@ -7,7 +7,6 @@ use App\Models\Dokter;
 use App\Models\Jabatan;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -85,6 +84,7 @@ class DokterController extends Controller
                 'jam_masuk' => 'required|string',
                 'jam_pulang' => 'required|string',
                 'deskripsi' => 'required|string',
+                'hari' => 'required|array',
             ],
             [
                 'nip.required' => 'Silakan isi nip terlebih dahulu!',
@@ -102,6 +102,7 @@ class DokterController extends Controller
                 'jam_masuk.required' => 'Silakan isi jam masuk terlebih dahulu!',
                 'jam_pulang.required' => 'Silakan isi jam pulang terlebih dahulu!',
                 'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
+                'hari.required' => 'Silakan isi hari terlebih dahulu!',
             ]
         );
 
@@ -132,6 +133,7 @@ class DokterController extends Controller
             $dokter->deskripsi = $request->deskripsi;
             $dokter->jam_masuk = $request->jam_masuk;
             $dokter->jam_pulang = $request->jam_pulang;
+            $dokter->hari = implode(',', $request->hari);
             $dokter->save();
 
             return response()->json(['success' => 'Data barhasil ditambahkan']);
@@ -142,8 +144,9 @@ class DokterController extends Controller
     public function edit($id)
     {
         $dokter = Dokter::with('user', 'jabatan')->findOrFail($id);
+        $hari = explode(",", $dokter->hari);
         $jabatan = Jabatan::orderBy('name', 'asc')->get();
-        return view('backend.dokter.edit', compact('jabatan', 'dokter'));
+        return view('backend.dokter.edit', compact('jabatan', 'dokter', 'hari'));
     }
 
     public function update(Request $request)
@@ -163,6 +166,8 @@ class DokterController extends Controller
                 'jam_masuk' => 'required|string',
                 'jam_pulang' => 'required|string',
                 'deskripsi' => 'required|string',
+                'hari' => 'required|array',
+                'hari.required' => 'Silakan isi hari terlebih dahulu!',
             ],
             [
                 'nip.required' => 'Silakan isi nip terlebih dahulu!',
@@ -208,6 +213,7 @@ class DokterController extends Controller
             $dokter->deskripsi = $request->deskripsi;
             $dokter->jam_masuk = $request->jam_masuk;
             $dokter->jam_pulang = $request->jam_pulang;
+            $dokter->hari = implode(',', $request->hari);
             $dokter->save();
 
             return response()->json(['success' => 'Data barhasil ditambahkan']);
