@@ -15,7 +15,19 @@ class RekamMedisController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $rekamMedis = RekamMedis::with(['user', 'dokter'])->get();
+            $userType = auth()->user()->type;
+            if ($userType == 'Dokter') {
+                $id = auth()->user()->id;
+                $rekamMedis = RekamMedis::with('user', 'dokter')
+                    ->orderBy('created_at', 'desc')
+                    ->whereHas('dokter', function ($query) use ($id) {
+                        $query->where('user_id', $id);
+                    })
+                    ->get();
+            } else {
+                $rekamMedis = RekamMedis::with(['user', 'dokter'])->get();
+            }
+
             return DataTables::of($rekamMedis)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
@@ -26,12 +38,17 @@ class RekamMedisController extends Controller
                     return $data->user->name;
                 })
                 ->addColumn('aksi', function ($data) {
-                    $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
-                    $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . url('rekam-medis/' . $data->id . '/edit') . '" ><i
+                    if (auth()->user()->type == 'Administrator') {
+                        $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
+                        return $btn;
+                    } else {
+                        $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
+                        $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . url('rekam-medis/' . $data->id . '/edit') . '" ><i
                     class="mdi mdi-pencil"></i></a>';
-                    $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
+                        $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
-                    return $btn;
+                        return $btn;
+                    }
                 })
                 ->rawColumns(['aksi', 'comboBox'])
                 ->make(true);

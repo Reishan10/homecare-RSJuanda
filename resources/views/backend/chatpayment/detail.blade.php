@@ -51,9 +51,11 @@
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <button type="button" class="btn btn-secondary mb-2"
                                 onclick="window.location='{{ route('chatpayment.index') }}'">Kembali</button>
-                            @if (auth()->user()->type != 'Dokter')
-                                <a href="{{ url('chat-RSJuanda/' . $chatpayment->dokter->user->id) }}"
-                                    class="btn btn-success mb-2" target="_blank">Chat</a>
+                            @if ($selisihWaktu >= 0 && $selisihWaktu <= $waktuSelesai->diffInSeconds($waktuMulai))
+                                @if (auth()->user()->type != 'Dokter')
+                                    <a href="{{ url('chat-RSJuanda/' . $chatpayment->dokter->user->id) }}"
+                                        class="btn btn-success mb-2" target="_blank">Chat</a>
+                                @endif
                             @endif
                         </div>
                     </div>

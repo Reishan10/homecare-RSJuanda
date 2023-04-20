@@ -51,15 +51,6 @@ class ChatPaymentController extends Controller
                     $no_telepon = $data->user->no_telepon;
                     return $no_telepon;
                 })
-                ->addColumn('status', function ($data) {
-                    if ($data->status == '0') {
-                        $badgeStatus = '<span class="badge bg-success">Aktif</span>';
-                        return $badgeStatus;
-                    } else {
-                        $badgeStatus = '<span class="badge bg-danger">Tidak Aktif</span>';
-                        return $badgeStatus;
-                    }
-                })
                 ->addColumn('waktu', function ($data) {
                     $waktuMulai = Carbon::createFromFormat('Y-m-d H:i:s', $data->waktu_mulai);
                     $waktuSelesai = Carbon::createFromFormat('Y-m-d H:i:s', $data->waktu_selesai);
@@ -75,8 +66,14 @@ class ChatPaymentController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<a class="btn btn-info btn-sm me-1" href="' . route('chatpayment.detail', $data->id) . '" ><i class="fa-solid fa-circle-info"></i></a>';
-                    if (auth()->user()->type != 'Dokter') {
-                        $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . url('chat-RSJuanda/' . $data->dokter->user->id) . '" target="_blank"><i class="fa-solid fa-comment"></i></i></a>';
+
+                    $waktuMulai = Carbon::createFromFormat('Y-m-d H:i:s', $data->waktu_mulai);
+                    $waktuSelesai = Carbon::createFromFormat('Y-m-d H:i:s', $data->waktu_selesai);
+                    $selisihWaktu = $waktuMulai->diffInSeconds(Carbon::now());
+                    if ($selisihWaktu >= 0 && $selisihWaktu <= $waktuSelesai->diffInSeconds($waktuMulai)) {
+                        if (auth()->user()->type != 'Dokter') {
+                            $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . url('chat-RSJuanda/' . $data->dokter->user->id) . '" target="_blank"><i class="fa-solid fa-comment"></i></i></a>';
+                        }
                     }
                     if (auth()->user()->type != 'Pasien') {
                         $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
@@ -94,7 +91,11 @@ class ChatPaymentController extends Controller
     public function detail($id)
     {
         $chatpayment = Chatpayment::with(['user', 'dokter'])->findOrFail($id);
-        return view('backend.chatpayment.detail', compact('chatpayment'));
+        $waktuMulai = Carbon::createFromFormat('Y-m-d H:i:s', $chatpayment->waktu_mulai);
+        $waktuSelesai = Carbon::createFromFormat('Y-m-d H:i:s', $chatpayment->waktu_selesai);
+
+        $selisihWaktu = $waktuMulai->diffInSeconds(Carbon::now());
+        return view('backend.chatpayment.detail', compact(['chatpayment', 'waktuMulai', 'waktuSelesai', 'selisihWaktu']));
     }
 
     public function create()
@@ -142,7 +143,12 @@ class ChatPaymentController extends Controller
 
             $chatpayment->save();
 
-            return response()->json(['success' => 'Data barhasil ditambahkan']);
+            $user = User::find($request->pasien);
+            $dokter = Dokter::with('user')->findOrFail($request->dokter);
+            $biaya_chat = "Rp " . number_format($request->biaya_chat, 0, ',', '.');
+            $nameStruk = "struk_transaksi_" . time() . ".pdf";
+
+            return response()->json(['success' => 'Data berhasil ditambahkan', 'chatpayment' => $chatpayment, 'user' => $user, 'dokter' => $dokter, 'biaya_chat' => $biaya_chat, 'nameStruk' => $nameStruk]);
         }
     }
 

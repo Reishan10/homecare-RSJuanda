@@ -88,12 +88,14 @@
                     </a>
                 </li>
             @endif
-            <li class="side-nav-item {{ request()->segment(1) == 'rekam-medis' ? 'active' : '' }}">
-                <a href="{{ route('rekam-medis.index') }}" class="side-nav-link">
-                    <i class="fa-solid fa-laptop-medical"></i>
-                    <span> Rekam Medis </span>
-                </a>
-            </li>
+            @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter')
+                <li class="side-nav-item {{ request()->segment(1) == 'rekam-medis' ? 'active' : '' }}">
+                    <a href="{{ route('rekam-medis.index') }}" class="side-nav-link">
+                        <i class="fa-solid fa-laptop-medical"></i>
+                        <span> Rekam Medis </span>
+                    </a>
+                </li>
+            @endif
             @if (auth()->user()->type != 'Perawat')
                 <li class="side-nav-item {{ request()->segment(1) == 'chatpayment' ? 'active' : '' }}">
                     <a href="{{ route('chatpayment.index') }}" class="side-nav-link">

@@ -94,6 +94,16 @@ Route::group(['middleware' => ['auth', 'user-access:Administrator,Dokter']], fun
     Route::delete('/rekam-medis/{id}', [RekamMedisController::class, 'destroy'])->name('rekam-medis.destroy');
 });
 
+Route::group(['middleware' => ['auth', 'user-access:Dokter']], function () {
+    //Rekam Medis
+    Route::post('/rekam-medis/delete-multiple-rekam-medis', [RekamMedisController::class, 'deleteMultiple'])->name('delete-multiple-rekam-medis');
+    Route::get('/rekam-medis/tambah', [RekamMedisController::class, 'create'])->name('rekam-medis.create');
+    Route::post('/rekam-medis', [RekamMedisController::class, 'store'])->name('rekam-medis.store');
+    Route::get('/rekam-medis/{id}/edit', [RekamMedisController::class, 'edit'])->name('rekam-medis.edit');
+    Route::post('/rekam-medis/{id}', [RekamMedisController::class, 'update'])->name('rekam-medis.update');
+    Route::delete('/rekam-medis/{id}', [RekamMedisController::class, 'destroy'])->name('rekam-medis.destroy');
+});
+
 
 Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     //Dokter

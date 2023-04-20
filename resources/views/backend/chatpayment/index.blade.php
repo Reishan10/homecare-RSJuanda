@@ -33,7 +33,6 @@
                                         <th>Waktu Selesai</th>
                                         <th>Biaya Chat</th>
                                         <th>Waktu</th>
-                                        <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -88,10 +87,6 @@
                     {
                         data: 'waktu',
                         name: 'waktu'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
                     },
                     {
                         data: 'aksi',

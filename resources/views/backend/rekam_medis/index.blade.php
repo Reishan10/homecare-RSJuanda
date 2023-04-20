@@ -15,13 +15,15 @@
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="tab-pane show active" id="basic-preview">
-                                <div class="text-sm-end">
-                                    <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
-                                        <i class="mdi mdi-trash-can"></i> Hapus Banyak
-                                    </button>
-                                    <a href="{{ route('rekam-medis.create') }}" class="btn btn-primary mb-2 btn-sm"><i
-                                            class="mdi mdi-plus-circle"></i> Tambah Rekam Medis</a>
-                                </div>
+                                @if (auth()->user()->type == 'Dokter')
+                                    <div class="text-sm-end">
+                                        <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
+                                            <i class="mdi mdi-trash-can"></i> Hapus Banyak
+                                        </button>
+                                        <a href="{{ route('rekam-medis.create') }}" class="btn btn-primary mb-2 btn-sm"><i
+                                                class="mdi mdi-plus-circle"></i> Tambah Rekam Medis</a>
+                                    </div>
+                                @endif
                                 <table id="datatable" class="table dt-responsive nowrap w-100">
                                     <thead>
                                         <tr>
