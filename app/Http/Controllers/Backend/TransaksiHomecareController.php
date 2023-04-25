@@ -13,7 +13,9 @@ use App\Models\Regency;
 use App\Models\TransaksiHomecare;
 use App\Models\User;
 use App\Models\Village;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -61,14 +63,18 @@ class TransaksiHomecareController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
-                    if ($data->status != 0) {
+                    if ($data->status != '0') {
                         $btn = $btn . '<button type="button" class="btn btn-danger btn-sm me-1" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
                     }
                     if ($data->status == '0') {
                         $btn = $btn .  '<button type="button" class="btn btn-warning btn-sm" data-id="' . $data->id . '" id="btnNonaktif" data-bs-toggle="modal" data-bs-target="#nonaktifModal"><i class="fa-solid fa-xmark"></i></button>';
-                    } else if ($data->status == '1') {
+                    }
+                    if ($data->status == '1') {
                         $btn = $btn .  '<button type="button" class="btn btn-success btn-sm" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
+                    }
+                    if ($data->status != '1') {
+                        $btn = $btn .  '<a href="' . route('transaksi-homecare.print', $data->id) . '" class="btn btn-secondary btn-sm" target="_blank"><i class="fa-solid fa-print"></i></a>';
                     }
                     return $btn;
                 })
@@ -312,5 +318,16 @@ class TransaksiHomecareController extends Controller
 
             return Response()->json(['transaksiHomecare' => $transaksiHomecare, 'success' => 'Pelayanan berhasil dinonaktifkan']);
         }
+    }
+
+    public function print($id)
+    {
+        $data = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->find($id);
+        $dateString = $data->waktu;
+        $dateObject = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+        $waktu = $dateObject->format('d/m/Y H:i:s');
+
+        $pdf = FacadePdf::loadView('backend.transaksiHomecare.print', compact('data', 'waktu'));
+        return $pdf->download('transaksi-paket-homecare-' . $data->pasien->name . '-' . time() . '.pdf');
     }
 }

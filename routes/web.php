@@ -210,8 +210,7 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/transaksi-homecare', [TransaksiHomecareController::class, 'index'])->name('transaksi-homecare.index');
     Route::get('/transaksi-homecare/tambah', [TransaksiHomecareController::class, 'create'])->name('transaksi-homecare.create');
     Route::post('/transaksi-homecare', [TransaksiHomecareController::class, 'store'])->name('transaksi-homecare.store');
-    Route::get('/transaksi-homecare/{homecare}/edit', [TransaksiHomecareController::class, 'edit'])->name('transaksi-homecare.edit');
-    Route::post('/transaksi-homecare/{homecare}', [TransaksiHomecareController::class, 'update'])->name('transaksi-homecare.update');
+    Route::get('/transaksi-homecare/print/{id}', [TransaksiHomecareController::class, 'print'])->name('transaksi-homecare.print');
     Route::post('/transaksi-homecare/detail/{homecare}', [TransaksiHomecareController::class, 'detail'])->name('transaksi-homecare.detail');
     Route::delete('/transaksi-homecare/{homecare}', [TransaksiHomecareController::class, 'destroy'])->name('transaksi-homecare.destroy');
 
