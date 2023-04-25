@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('homecare', function (Blueprint $table) {
-            $table->text('deskripsi')->after('poli_id');
-            $table->string('foto')->default('default.png')->after('deskripsi');
+        Schema::table('transaksi_homecare', function (Blueprint $table) {
+            $table->dateTime('waktu_selesai')->nullable()->after('waktu');
+            $table->text('deskripsi_kegiatan')->nullable()->after('total_biaya');
         });
     }
 
@@ -22,9 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('homecare', function (Blueprint $table) {
-            $table->dropColumn('deskripsi');
-            $table->dropColumn('foto');
+        Schema::table('transaksi_homecare', function (Blueprint $table) {
+            $table->dropColumn('deskripsi_kegiatan');
         });
     }
 };

@@ -9,7 +9,7 @@
                 <div class="page-title-box">
                     <h4 class="page-title">@yield('title')</h4>
                 </div>
-                <form action="{{ route('perawat.store') }}" method="post" id="form">
+                <form action="{{ route('perawat.store') }}" method="post" id="form" enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -18,7 +18,10 @@
                                     <label for="pasien" class="form-label">Pasien</label>
                                     <select class="form-control select2" data-toggle="select2" name="pasien"
                                         id="pasien">
-                                        <option>-- Pilih Pasien --</option>
+                                        <option value="">-- Pilih Pasien --</option>
+                                        @foreach ($pasien as $row)
+                                            <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback errorPasien"></div>
                                 </div>
@@ -26,7 +29,10 @@
                                     <label for="perawat" class="form-label">Perawat</label>
                                     <select class="form-control select2" data-toggle="select2" name="perawat"
                                         id="perawat">
-                                        <option>-- Pilih Perawat --</option>
+                                        <option value="">-- Pilih Perawat --</option>
+                                        @foreach ($perawat as $row)
+                                            <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback errorPerawat"></div>
                                 </div>
@@ -34,27 +40,24 @@
                                     <label for="dokter" class="form-label">Dokter</label>
                                     <select class="form-control select2" data-toggle="select2" name="dokter"
                                         id="dokter">
-                                        <option>-- Pilih Dokter --</option>
+                                        <option value="">-- Pilih Dokter --</option>
+                                        @foreach ($dokter as $row)
+                                            <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback errorDokter"></div>
                                 </div>
                             </div>
                             <div class="row mt-3">
-                                <div class="col-lg-4 col-md-12">
+                                <div class="col-lg-6 col-md-12">
                                     <label for="riwayat_penyakit" class="form-label">Riwayat Penyakit</label>
-                                    <input type="text" name="riwayat_penyakit" id="riwayat_penyakit"
-                                        class="form-control">
-                                    <div class="invalid-feedback errorRiwayatPernyakit"></div>
+                                    <textarea name="riwayat_penyakit" id="riwayat_penyakit" rows="1" class="form-control"></textarea>
+                                    <div class="invalid-feedback errorRiwayatPenyakit"></div>
                                 </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <label for="waktu" class="form-label">Waktu</label>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="waktu" class="form-label">Waktu Mulai</label>
                                     <input type="datetime-local" name="waktu" id="waktu" class="form-control">
                                     <div class="invalid-feedback errorWaktu"></div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <label for="jarak" class="form-label">Jarak (KM)</label>
-                                    <input type="text" name="jarak" id="jarak" class="form-control">
-                                    <div class="invalid-feedback errorJarak"></div>
                                 </div>
                             </div>
                         </div>
@@ -63,34 +66,118 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12">
+                                    <label for="provinsi" class="form-label">Provinsi</label>
+                                    <select class="form-control select2" data-toggle="select2" name="provinsi"
+                                        id="provinsi">
+                                        <option value="">-- Pilih Provinsi --</option>
+                                        @foreach ($provinces as $row)
+                                            <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback errorProvinsi"></div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="kabupaten" class="form-label">Kabupaten</label>
+                                    <select class="form-control select2" data-toggle="select2" name="kabupaten"
+                                        id="kabupaten">
+                                        <option value="">-- Pilih Kabupaten --</option>
+                                    </select>
+                                    <div class="invalid-feedback errorKabupaten"></div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="kecamatan" class="form-label">Kecamatan</label>
+                                    <select class="form-control select2" data-toggle="select2" name="kecamatan"
+                                        id="kecamatan">
+                                        <option value="">-- Pilih Kecamatan --</option>
+                                    </select>
+                                    <div class="invalid-feedback errorKecamatan"></div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="desa" class="form-label">Desa</label>
+                                    <select class="form-control select2" data-toggle="select2" name="desa"
+                                        id="desa">
+                                        <option value="">-- Pilih Desa --</option>
+                                    </select>
+                                    <div class="invalid-feedback errorDesa"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="jarak" class="form-label">Jarak (KM)</label>
+                                    <input type="number" name="jarak" id="jarak" class="form-control"
+                                        value="0">
+                                    <div class="invalid-feedback errorJarak"></div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="biaya_tambahan" class="form-label">Tambahan Biaya (Per 10 KM)</label>
+                                    <input type="text" name="biaya_tambahan" id="biaya_tambahan" class="form-control"
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-lg-6 col-md-12">
                                     <label for="homecare" class="form-label">Paket Homecare</label>
                                     <select class="form-control select2" data-toggle="select2" name="homecare"
                                         id="homecare">
-                                        <option>-- Pilih Homecare --</option>
+                                        <option value="">-- Pilih Homecare --</option>
+                                        @foreach ($homecare as $row)
+                                            <option value="{{ $row->id }}">{{ $row->kode_homecare }} -
+                                                {{ $row->name }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback errorHomecare"></div>
                                 </div>
                                 <div class="col-lg-6 col-md-12">
                                     <label for="nama" class="form-label">Nama</label>
-                                    <input type="text" name="nama" id="nama" class="form-control">
+                                    <input type="text" name="nama" id="nama" class="form-control" readonly>
                                     <div class="invalid-feedback errorNama"></div>
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 <div class="col-lg-4 col-md-12">
                                     <label for="biaya_dokter" class="form-label">Biaya Dokter</label>
-                                    <input type="text" name="biaya_dokter" id="biaya_dokter" class="form-control">
+                                    <input type="text" name="biaya_dokter" id="biaya_dokter" class="form-control"
+                                        readonly>
                                     <div class="invalid-feedback errorBiayaDokter"></div>
                                 </div>
                                 <div class="col-lg-4 col-md-12">
                                     <label for="biaya_perawat" class="form-label">Biaya Perawat</label>
-                                    <input type="text" name="biaya_perawat" id="biaya_perawat" class="form-control">
+                                    <input type="text" name="biaya_perawat" id="biaya_perawat" class="form-control"
+                                        readonly>
                                     <div class="invalid-feedback errorBiayaPerawat"></div>
                                 </div>
                                 <div class="col-lg-4 col-md-12">
                                     <label for="total_biaya" class="form-label">Total Biaya</label>
-                                    <input type="text" name="total_biaya" id="total_biaya" class="form-control">
+                                    <input type="text" name="total_biaya" id="total_biaya" class="form-control"
+                                        readonly>
                                     <div class="invalid-feedback errorTotalBiaya"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="jarak" class="form-label">Metode Pembayaran</label>
+                                    <select name="pembayaran" id="pembayaran" class="form-control">
+                                        <option value="">-- Pilih Metode --</option>
+                                        <option value="COD">COD</option>
+                                        <option value="Transfer">Transfer</option>
+                                    </select>
+                                    <div class="invalid-feedback errorPembayaran"></div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="bukti_pembayaran" class="form-label">Upload Bukti Pembayaran</label>
+                                    <input type="file" name="bukti_pembayaran" id="bukti_pembayaran"
+                                        class="form-control">
+                                    <div class="invalid-feedback errorBuktiPembayaran"></div>
                                 </div>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
@@ -114,13 +201,110 @@
                 }
             });
 
+            $('#jarak').on('input', function() {
+                var jarak = $(this).val();
+                var biaya = Math.floor(jarak / 10) * 15000; // biaya per 10 km
+                $('#biaya_tambahan').val(biaya); // tampilkan biaya dalam format rupiah
+            });
+
+            $('#provinsi').on('change', function() {
+                let id_provinsi = $('#provinsi').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('transaksi-homecare.get-kabupaten') }}",
+                    data: {
+                        id_provinsi: id_provinsi
+                    },
+                    success: function(response) {
+                        $('#kabupaten').html(response);
+                        $('#kecamatan').html('');
+                        $('#desa').html('');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#kabupaten').on('change', function() {
+                let id_kabupaten = $('#kabupaten').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('transaksi-homecare.get-kecamatan') }}",
+                    data: {
+                        id_kabupaten: id_kabupaten
+                    },
+                    success: function(response) {
+                        $('#kecamatan').html(response);
+                        $('#desa').html('');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#kecamatan').on('change', function() {
+                let id_kecamatan = $('#kecamatan').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('transaksi-homecare.get-desa') }}",
+                    data: {
+                        id_kecamatan: id_kecamatan
+                    },
+                    success: function(response) {
+                        $('#desa').html(response);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#homecare').on('change', function() {
+                var id_homecare = $('#homecare').val();
+                let biaya_tambahan = $('#biaya_tambahan').val();
+                if (id_homecare) {
+                    $.ajax({
+                        url: "{{ route('transaksi-homecare.get-homecare') }}",
+                        type: "POST",
+                        data: {
+                            id_homecare: id_homecare,
+                        },
+                        success: function(response) {
+                            let total_biaya = parseInt(response.total_biaya_perawat_dokter) +
+                                parseInt(biaya_tambahan);
+                            $('#nama').val(response.name);
+                            $('#biaya_dokter').val('Rp. ' + response.total_biaya_dokter
+                                .toLocaleString());
+                            $('#biaya_perawat').val(response.total_biaya_perawat);
+                            $('#total_biaya').val(total_biaya);
+                        }
+                    });
+                } else {
+                    $('#nama').val('');
+                    $('#biaya_dokter').val('');
+                    $('#biaya_perawat').val('');
+                    $('#total_biaya').val('');
+                }
+            });
+
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
-                    data: $(this).serialize(),
-                    url: "{{ route('perawat.store') }}",
+                    data: new FormData(this),
+                    url: "{{ route('transaksi-homecare.store') }}",
                     type: "POST",
                     dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
                     beforeSend: function() {
                         $('#simpan').attr('disable', 'disabled');
                         $('#simpan').text('Proses...');
@@ -131,44 +315,91 @@
                     },
                     success: function(response) {
                         if (response.errors) {
-                            if (response.errors.nip) {
-                                $('#nip').addClass('is-invalid');
-                                $('.errorNIP').html(response.errors.nip);
+                            if (response.errors.pasien) {
+                                $('#pasien').addClass('is-invalid');
+                                $('.errorPasien').html(response.errors.pasien);
                             } else {
-                                $('#nip').removeClass('is-invalid');
-                                $('.errorNIP').html('');
+                                $('#pasien').removeClass('is-invalid');
+                                $('.errorPasien').html('');
                             }
-
-                            if (response.errors.name) {
-                                $('#name').addClass('is-invalid');
-                                $('.errorName').html(response.errors.name);
+                            if (response.errors.perawat) {
+                                $('#perawat').addClass('is-invalid');
+                                $('.errorPerawat').html(response.errors.perawat);
                             } else {
-                                $('#name').removeClass('is-invalid');
-                                $('.errorName').html('');
+                                $('#perawat').removeClass('is-invalid');
+                                $('.errorPerawat').html('');
                             }
-
-                            if (response.errors.email) {
-                                $('#email').addClass('is-invalid');
-                                $('.errorEmail').html(response.errors.email);
+                            if (response.errors.dokter) {
+                                $('#dokter').addClass('is-invalid');
+                                $('.errorDokter').html(response.errors.dokter);
                             } else {
-                                $('#email').removeClass('is-invalid');
-                                $('.errorEmail').html('');
+                                $('#dokter').removeClass('is-invalid');
+                                $('.errorDokter').html('');
                             }
-
-                            if (response.errors.no_telepon) {
-                                $('#no_telepon').addClass('is-invalid');
-                                $('.errorNoTelepon').html(response.errors.no_telepon);
+                            if (response.errors.riwayat_penyakit) {
+                                $('#riwayat_penyakit').addClass('is-invalid');
+                                $('.errorRiwayatPenyakit').html(response.errors
+                                    .riwayat_penyakit);
                             } else {
-                                $('#no_telepon').removeClass('is-invalid');
-                                $('.errorNoTelepon').html('');
+                                $('#riwayat_penyakit').removeClass('is-invalid');
+                                $('.errorRiwayatPenyakit').html('');
                             }
-
-                            if (response.errors.jabatan) {
-                                $('#jabatan').addClass('is-invalid');
-                                $('.errorJabatan').html(response.errors.jabatan);
+                            if (response.errors.waktu) {
+                                $('#waktu').addClass('is-invalid');
+                                $('.errorWaktu').html(response.errors.waktu);
                             } else {
-                                $('#jabatan').removeClass('is-invalid');
-                                $('.errorJabatan').html('');
+                                $('#waktu').removeClass('is-invalid');
+                                $('.errorWaktu').html('');
+                            }
+                            if (response.errors.provinsi) {
+                                $('#provinsi').addClass('is-invalid');
+                                $('.errorProvinsi').html(response.errors.provinsi);
+                            } else {
+                                $('#provinsi').removeClass('is-invalid');
+                                $('.errorProvinsi').html('');
+                            }
+                            if (response.errors.kabupaten) {
+                                $('#kabupaten').addClass('is-invalid');
+                                $('.errorKabupaten').html(response.errors.kabupaten);
+                            } else {
+                                $('#kabupaten').removeClass('is-invalid');
+                                $('.errorKabupaten').html('');
+                            }
+                            if (response.errors.kecamatan) {
+                                $('#kecamatan').addClass('is-invalid');
+                                $('.errorKecamatan').html(response.errors.kecamatan);
+                            } else {
+                                $('#kecamatan').removeClass('is-invalid');
+                                $('.errorKecamatan').html('');
+                            }
+                            if (response.errors.desa) {
+                                $('#desa').addClass('is-invalid');
+                                $('.errorDesa').html(response.errors.desa);
+                            } else {
+                                $('#desa').removeClass('is-invalid');
+                                $('.errorDesa').html('');
+                            }
+                            if (response.errors.jarak) {
+                                $('#jarak').addClass('is-invalid');
+                                $('.errorJarak').html(response.errors.jarak);
+                            } else {
+                                $('#jarak').removeClass('is-invalid');
+                                $('.errorJarak').html('');
+                            }
+                            if (response.errors.homecare) {
+                                $('#homecare').addClass('is-invalid');
+                                $('.errorHomecare').html(response.errors.homecare);
+                            } else {
+                                $('#homecare').removeClass('is-invalid');
+                                $('.errorHomecare').html('');
+                            }
+                            if (response.errors.bukti_pembayaran) {
+                                $('#bukti_pembayaran').addClass('is-invalid');
+                                $('.errorBuktiPembayaran').html(response.errors
+                                    .bukti_pembayaran);
+                            } else {
+                                $('#bukti_pembayaran').removeClass('is-invalid');
+                                $('.errorBuktiPembayaran').html('');
                             }
                         } else {
                             Swal.fire({
@@ -176,7 +407,8 @@
                                 title: 'Sukses',
                                 text: 'Data berhasil disimpan',
                             }).then(function() {
-                                top.location.href = "{{ route('perawat.index') }}";
+                                top.location.href =
+                                    "{{ route('transaksi-homecare.index') }}";
                             });
                         }
                     },

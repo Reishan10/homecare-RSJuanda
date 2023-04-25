@@ -38,8 +38,8 @@
                                         <th width="1px"><input type="checkbox" id="check_all"></th>
                                         <th>No</th>
                                         <th>Pasien</th>
-                                        <th>Dokter</th>
                                         <th>Perawat</th>
+                                        <th>Dokter</th>
                                         <th>Layanan</th>
                                         <th>Status</th>
                                         <th style="width: 75px;">Aksi</th>
@@ -62,60 +62,121 @@
         <div class="modal-dialog  modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel">Detail Perawat</h5>
+                    <h5 class="modal-title" id="detailModalLabel">Detail Data</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <table class="table table-sm">
                         <tr>
-                            <td>NIP</td>
-                            <td>:</td>
-                            <td id="nip"></td>
+                            <th colspan="3">Detail Pasien</th>
                         </tr>
                         <tr>
-                            <td>Nama</td>
+                            <td>Nama Pasien</td>
                             <td>:</td>
-                            <td id="name"></td>
-                        </tr>
-                        <tr>
-                            <td>Email</td>
-                            <td>:</td>
-                            <td id="email"></td>
+                            <td id="name_pasien"></td>
                         </tr>
                         <tr>
                             <td>No Telepon</td>
                             <td>:</td>
-                            <td id="no_telepon"></td>
+                            <td id="no_telepon_pasien"></td>
                         </tr>
                         <tr>
                             <td>Jenis Kelamin</td>
                             <td>:</td>
-                            <td id="gender"></td>
+                            <td id="jenis_kelamin_pasien"></td>
                         </tr>
                         <tr>
-                            <td>Gol Darah</td>
+                            <td>Alamat</td>
                             <td>:</td>
-                            <td id="gol_darah"></td>
+                            <td id="alamat_pasien"></td>
                         </tr>
                         <tr>
-                            <td>Tempat, Tanggal Lahir</td>
-                            <td>:</td>
-                            <td id="ttl"></td>
+                            <th colspan="3">Detail Perawat</th>
                         </tr>
                         <tr>
-                            <td>Agama</td>
+                            <td>Nama Perawat</td>
                             <td>:</td>
-                            <td id="agama"></td>
+                            <td id="name_perawat"></td>
                         </tr>
                         <tr>
-                            <td>Status Nikah</td>
+                            <td>No Telepon</td>
                             <td>:</td>
-                            <td id="status_nikah"></td>
+                            <td id="no_telepon_perawat"></td>
                         </tr>
                         <tr>
-                            <td>Jabatan</td>
+                            <td>Jenis Kelamin</td>
                             <td>:</td>
-                            <td id="jabatan"></td>
+                            <td id="jenis_kelamin_perawat"></td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Detail Dokter</th>
+                        </tr>
+                        <tr>
+                            <td>Nama Dokter</td>
+                            <td>:</td>
+                            <td id="name_dokter"></td>
+                        </tr>
+                        <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td id="no_telepon_dokter"></td>
+                        </tr>
+                        <tr>
+                            <td>Jenis Kelamin</td>
+                            <td>:</td>
+                            <td id="jenis_kelamin_dokter"></td>
+                        </tr>
+                        <tr>
+                            <td>Spesialis</td>
+                            <td>:</td>
+                            <td id="spesialis"></td>
+                        </tr>
+                        <tr>
+                            <td>Pengalaman</td>
+                            <td>:</td>
+                            <td id="pengalaman"></td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Detail Transaksi</th>
+                        </tr>
+                        <tr>
+                            <td>Nama Layanan</td>
+                            <td>:</td>
+                            <td id="name_layanan"></td>
+                        </tr>
+                        <tr>
+                            <td>Waktu</td>
+                            <td>:</td>
+                            <td id="waktu"></td>
+                        </tr>
+                        <tr>
+                            <td>Jarak</td>
+                            <td>:</td>
+                            <td id="jarak"></td>
+                        </tr>
+                        <tr>
+                            <td>Metode Pembayaran</td>
+                            <td>:</td>
+                            <td id="metode_pembayaran"></td>
+                        </tr>
+                        <tr>
+                            <td>Biaya Tambahan</td>
+                            <td>:</td>
+                            <td id="biaya_tambahan"></td>
+                        </tr>
+                        <tr>
+                            <td>Total Biaya</td>
+                            <td>:</td>
+                            <td id="total_biaya"></td>
+                        </tr>
+                        <tr>
+                            <td>Bukti Pembayaran</td>
+                            <td>:</td>
+                            <td>
+                                <a href="" id="link_bukti_pembayaran" target="_blank">
+                                    <img id="bukti_pembayaran" src="" style="width: 100px;">
+                                </a>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -126,37 +187,104 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="nonaktifModal" tabindex="-1" aria-labelledby="nonaktifModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="form">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="nonaktifModalLabel">Nonaktif Layanan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <input type="text" name="id" id="id">
+                            <label for="deskripsi_kegiatan" class="form-label">Deskripsi Kegiatan</label>
+                            <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="3"></textarea>
+                            <div class="invalid-feedback errorDeskripsiKegiatan"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary" id="simpan">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         $(document).ready(function() {
-            /*   $('body').on('click', '#btn-detail', function() {
+            $('body').on('click', '#btn-detail', function() {
                 let id = $(this).data('id');
                 $.ajax({
                     type: "POST",
-                    url: "{{ url('/perawat/detail/"+id+"') }}",
+                    url: "{{ url('/transaksi-homecare/detail/"+id+"') }}",
                     data: {
                         id: id
                     },
                     dataType: 'json',
                     success: function(response) {
-                        $('#nip').text(response.perawat.nip);
-                        $('#name').text(response.perawat.user.name);
-                        $('#email').text(response.perawat.user.email);
-                        $('#no_telepon').text(response.perawat.user.no_telepon);
-                        $('#gender').text(response.perawat.user.gender == 'L' ? 'Laki-laki' :
-                            'Perempuan');
-                        $('#gol_darah').text(response.perawat.gol_darah);
-                        $('#ttl').text(response.perawat.tempat_lahir + ', ' + response.perawat
-                            .tanggal_lahir);
-                        $('#agama').text(response.perawat.agama);
-                        $('#status_nikah').text(response.perawat.status_nikah);
-                        $('#jabatan').text(response.perawat.jabatan.name);
+                        $('#name_pasien').text(response.pasien.name);
+                        $('#no_telepon_pasien').text(response.pasien.no_telepon);
+                        let gender_pasien = response.pasien.gender;
+                        if (gender_pasien === 'L') {
+                            gender_pasien = 'Laki-laki';
+                        } else if (gender_pasien === 'P') {
+                            gender_pasien = 'Perempuan';
+                        } else {
+                            gender_pasien = '-';
+                        }
+                        $('#jenis_kelamin_pasien').text(gender_pasien);
+                        $('#alamat_pasien').text(response.pasien.address);
+
+                        $('#name_perawat').text(response.perawat.name);
+                        $('#no_telepon_perawat').text(response.perawat.no_telepon);
+                        let gender_perawat = response.perawat.gender;
+                        if (gender_perawat === 'L') {
+                            gender_perawat = 'Laki-laki';
+                        } else if (gender_perawat === 'P') {
+                            gender_perawat = 'Perempuan';
+                        } else {
+                            gender_perawat = '-';
+                        }
+                        $('#jenis_kelamin_perawat').text(gender_perawat);
+
+                        $('#name_dokter').text(response.dokter.name);
+                        $('#no_telepon_dokter').text(response.dokter.no_telepon);
+                        let gender_dokter = response.dokter.gender;
+                        if (gender_dokter === 'L') {
+                            gender_dokter = 'Laki-laki';
+                        } else if (gender_dokter === 'P') {
+                            gender_dokter = 'Perempuan';
+                        } else {
+                            gender_dokter = '-';
+                        }
+                        $('#jenis_kelamin_dokter').text(gender_dokter);
+                        $('#spesialis').text(response.dokter.dokter.spesialis);
+                        $('#pengalaman').text(response.dokter.dokter.pengalaman_tahun +
+                            " Tahun");
+
+                        $('#name_layanan').text(response.transaksiHomecare.homecare.name);
+                        $('#waktu').text(response.transaksiHomecare.waktu);
+                        $('#jarak').text(response.transaksiHomecare.jarak);
+                        $('#metode_pembayaran').text(response.transaksiHomecare
+                            .metode_pembayaran);
+                        $('#biaya_tambahan').text(response.transaksiHomecare
+                            .biaya_tambahan);
+                        $('#total_biaya').text(response.transaksiHomecare
+                            .total_biaya);
+                        $('#bukti_pembayaran').attr('src', response.buktiPembayaran);
+                        $("#link_bukti_pembayaran").attr("href", response.buktiPembayaran);
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         alert(xhr.status + "\n" + xhr.responseText + "\n" +
                             thrownError);
                     }
                 })
-            });*/
+            });
 
             $.ajaxSetup({
                 headers: {
@@ -178,14 +306,17 @@
                     orderable: false,
                     searchable: false
                 }, {
-                    data: 'nip',
-                    name: 'nip'
+                    data: 'pasien',
+                    name: 'pasien'
                 }, {
-                    data: 'name',
-                    name: 'name'
+                    data: 'perawat',
+                    name: 'perawat'
                 }, {
-                    data: 'jabatan',
-                    name: 'jabatan'
+                    data: 'dokter',
+                    name: 'dokter'
+                }, {
+                    data: 'layanan',
+                    name: 'layanan'
                 }, {
                     data: 'status',
                     name: 'status'
@@ -194,7 +325,142 @@
                     name: 'Aksi'
                 }]
             });
+
+            $('body').on('click', '#btnNonaktif', function() {
+                let id = $(this).data('id');
+                $('#id').val(id);
+            })
+
+            $('#form').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "{{ url('/transaksi-homecare/nonaktif/"+id+"') }}",
+                    data: $(this).serialize(),
+                    type: "POST",
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#simpan').attr('disable', 'disabled');
+                        $('#simpan').text('Proses...');
+                    },
+                    complete: function() {
+                        $('#simpan').removeAttr('disable');
+                        $('#simpan').html('Simpan');
+                    },
+                    success: function(response) {
+                        if (response.errors) {
+                            if (response.errors.deskripsi_kegiatan) {
+                                $('#deskripsi_kegiatan').addClass('is-invalid');
+                                $('.errorDeskripsiKegiatan').html(response.errors
+                                    .deskripsi_kegiatan);
+                            } else {
+                                $('#deskripsi_kegiatan').removeClass('is-invalid');
+                                $('.errorDeskripsiKegiatan').html('');
+                            }
+                        } else {
+                            $('#nonaktifModal').modal('hide');
+                            $('#form').trigger("reset");
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sukses',
+                                text: response.success,
+                            }).then(function() {
+                                top.location.href =
+                                    "{{ route('transaksi-homecare.index') }}";
+                            });
+
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
         });
+
+        // Aktif Status
+        $('body').on('click', '#btnAktif', function() {
+            let id = $(this).data('id');
+            Swal.fire({
+                title: 'Aktif Status',
+                text: "Apakah anda yakin?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Aktifkan!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url('/transaksi-homecare/aktif/"+id+"') }}",
+                        data: {
+                            id: id
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.success,
+                                }).then(function() {
+                                    top.location.href =
+                                        "{{ route('transaksi-homecare.index') }}";
+                                });
+                            }
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                                thrownError);
+                        }
+                    })
+                }
+            })
+        })
+
+        // Nonaktif Status
+        /*   $('body').on('click', '#btnNonaktif', function() {
+               let id = $(this).data('id');
+               Swal.fire({
+                   title: 'Nonaktif Status',
+                   text: "Apakah anda yakin?",
+                   icon: 'warning',
+                   showCancelButton: true,
+                   confirmButtonColor: '#3085d6',
+                   cancelButtonColor: '#d33',
+                   confirmButtonText: 'Ya, Nonaktifkan!',
+                   cancelButtonText: 'Batal',
+               }).then((result) => {
+                   if (result.isConfirmed) {
+                       $.ajax({
+                           type: "POST",
+                           url: "{{ url('/transaksi-homecare/nonaktif/"+id+"') }}",
+                           data: {
+                               id: id
+                           },
+                           dataType: 'json',
+                           success: function(response) {
+                               if (response.success) {
+                                   Swal.fire({
+                                       icon: 'success',
+                                       title: 'Sukses',
+                                       text: response.success,
+                                   }).then(function() {
+                                       top.location.href =
+                                           "{{ route('transaksi-homecare.index') }}";
+                                   });
+                               }
+                           },
+                           error: function(xhr, ajaxOptions, thrownError) {
+                               alert(xhr.status + "\n" + xhr.responseText + "\n" +
+                                   thrownError);
+                           }
+                       })
+                   }
+               })
+           })*/
 
         // Hapus Data
         $('body').on('click', '#btnHapus', function() {
@@ -270,7 +536,7 @@
                     let strId = idArr.join(",");
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: "{{ route('delete-multiple-perawat') }}",
+                            url: "{{ route('delete-multiple-transaksi-homecare') }}",
                             type: 'POST',
                             data: 'id=' + strId,
                             success: function(response) {

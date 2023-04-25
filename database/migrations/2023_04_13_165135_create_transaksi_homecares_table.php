@@ -13,19 +13,26 @@ return new class extends Migration
     {
         Schema::create('transaksi_homecare', function (Blueprint $table) {
             $table->id();
-            $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->uuid('dokter_id');
-            $table->foreign('dokter_id')->references('id')->on('dokter')->onDelete('cascade');
+            $table->uuid('pasien_id');
+            $table->foreign('pasien_id')->references('id')->on('users')->onDelete('cascade');
             $table->uuid('perawat_id');
-            $table->foreign('perawat_id')->references('id')->on('perawat')->onDelete('cascade');
+            $table->foreign('perawat_id')->references('id')->on('users')->onDelete('cascade');
+            $table->uuid('dokter_id');
+            $table->foreign('dokter_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('homecare_id');
             $table->foreign('homecare_id')->references('id')->on('homecare')->onDelete('cascade');
             $table->string('riwayat_penyakit');
             $table->dateTime('waktu');
+            $table->char('provinsi_id', '10');
+            $table->char('kabupaten_id', '10');
+            $table->char('kecamatan_id', '10');
+            $table->char('desa_id', '10');
             $table->integer('jarak')->default(0);
+            $table->string('metode_pembayaran', '20');
+            $table->string('bukti_pembayaran')->nullable();
+            $table->string('biaya_tambahan', 100)->default(0);
             $table->string('total_biaya', 100);
-            $table->tinyInteger('status')->default('1');
+            $table->tinyInteger('status')->default('2')->comment('0 = Aktif, 1 = Pending, 2 = Tidak Aktif');
             $table->timestamps();
         });
     }

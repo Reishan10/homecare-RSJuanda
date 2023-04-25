@@ -37,10 +37,10 @@ class PerawatController extends Controller
                 })
                 ->addColumn('status', function ($data) {
                     if ($data->status == '0') {
-                        $badgeStatus = '<span class="badge bg-success">Aktif</span>';
+                        $badgeStatus = '<span class="badge bg-success">Melayani</span>';
                         return $badgeStatus;
                     } else {
-                        $badgeStatus = '<span class="badge bg-danger">Tidak Aktif</span>';
+                        $badgeStatus = '<span class="badge bg-danger">Tidak Sedang Melayani</span>';
                         return $badgeStatus;
                     }
                 })

@@ -39,7 +39,7 @@ class DokterController extends Controller
                         $badgeStatus = '<span class="badge bg-success">Melayanani</span>';
                         return $badgeStatus;
                     } else {
-                        $badgeStatus = '<span class="badge bg-danger">Sedang Melayanani</span>';
+                        $badgeStatus = '<span class="badge bg-danger">Tidak Sedang Melayanani</span>';
                         return $badgeStatus;
                     }
                 })

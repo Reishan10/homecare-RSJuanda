@@ -42,6 +42,8 @@ class Perawat extends Model
         'agama',
         'status_nikah',
         'jabatan_id',
+        'status',
+        'waktu_mulai'
     ];
 
     public function user()

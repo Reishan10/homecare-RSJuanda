@@ -21,6 +21,8 @@ return new class extends Migration
             $table->foreign('kategori_id')->references('id')->on('kategori');
             $table->unsignedBigInteger('poli_id');
             $table->foreign('poli_id')->references('id')->on('poli');
+            $table->text('deskripsi');
+            $table->string('foto')->default('default.png');
             $table->string('paket_obat')->nullable();
             $table->string('kso')->nullable();
             $table->string('jasa_medis_dokter')->nullable();

@@ -3,8 +3,20 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\District;
+use App\Models\Dokter;
+use App\Models\Homecare;
+use App\Models\Pasien;
+use App\Models\Perawat;
+use App\Models\Province;
+use App\Models\Regency;
 use App\Models\TransaksiHomecare;
+use App\Models\User;
+use App\Models\Village;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
 class TransaksiHomecareController extends Controller
@@ -12,16 +24,35 @@ class TransaksiHomecareController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $transaksiHomecare = TransaksiHomecare::get();
+            $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->orderBy('created_at', 'asc')->get();
             return DataTables::of($transaksiHomecare)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
-                    $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->user->id . "'>";
+                    $comboBox = "<input type='checkbox' class='checkbox' data-id='" . $data->id . "'>";
                     return $comboBox;
+                })
+                ->addColumn('pasien', function ($data) {
+                    $pasien = $data->pasien->name;
+                    return $pasien;
+                })
+                ->addColumn('perawat', function ($data) {
+                    $perawat = $data->perawat->name;
+                    return $perawat;
+                })
+                ->addColumn('dokter', function ($data) {
+                    $dokter = $data->dokter->name;
+                    return $dokter;
+                })
+                ->addColumn('layanan', function ($data) {
+                    $layanan = $data->homecare->name;
+                    return $layanan;
                 })
                 ->addColumn('status', function ($data) {
                     if ($data->status == '0') {
                         $badgeStatus = '<span class="badge bg-success">Aktif</span>';
+                        return $badgeStatus;
+                    } else if ($data->status == '1') {
+                        $badgeStatus = '<span class="badge bg-warning">Pending</span>';
                         return $badgeStatus;
                     } else {
                         $badgeStatus = '<span class="badge bg-danger">Tidak Aktif</span>';
@@ -30,10 +61,15 @@ class TransaksiHomecareController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
-                    $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('perawat.edit', $data->user->id) . '" ><i
-                    class="mdi mdi-pencil"></i></a>';
-                    $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->user->id . '" id="btnHapus"><i
+                    if ($data->status != 0) {
+                        $btn = $btn . '<button type="button" class="btn btn-danger btn-sm me-1" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
+                    }
+                    if ($data->status == '0') {
+                        $btn = $btn .  '<button type="button" class="btn btn-warning btn-sm" data-id="' . $data->id . '" id="btnNonaktif" data-bs-toggle="modal" data-bs-target="#nonaktifModal"><i class="fa-solid fa-xmark"></i></button>';
+                    } else if ($data->status == '1') {
+                        $btn = $btn .  '<button type="button" class="btn btn-success btn-sm" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
+                    }
                     return $btn;
                 })
                 ->rawColumns(['aksi', 'comboBox', 'status'])
@@ -42,8 +78,239 @@ class TransaksiHomecareController extends Controller
         return view('backend.transaksiHomecare.index');
     }
 
+    public function detail(Request $request)
+    {
+        $transaksiHomecare = TransaksiHomecare::with('homecare')->findOrFail($request->id);
+        $buktiPembayaran =  asset('storage/bukti-paket-homecare/' . $transaksiHomecare->bukti_pembayaran);
+        $pasien = User::with('pasien')->find($transaksiHomecare->pasien_id);
+        $perawat = User::with('perawat')->find($transaksiHomecare->perawat_id);
+        $dokter = User::with('dokter')->find($transaksiHomecare->dokter_id);
+        return response()->json(['pasien' => $pasien, 'perawat' => $perawat, 'dokter' => $dokter, 'transaksiHomecare' => $transaksiHomecare, 'buktiPembayaran' => $buktiPembayaran]);
+    }
+
+    public function getKabupaten(Request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+        $kabupaten = Regency::where('province_id', $id_provinsi)->get();
+        foreach ($kabupaten as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getKecamatan(Request $request)
+    {
+        $id_kabupaten = $request->id_kabupaten;
+        $kecamatan = District::where('regency_id', $id_kabupaten)->get();
+        foreach ($kecamatan as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getDesa(Request $request)
+    {
+        $id_kecamatan = $request->id_kecamatan;
+        $desa = Village::where('district_id', $id_kecamatan)->get();
+        foreach ($desa as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getHomecare(Request $request)
+    {
+        $id_homecare = $request->id_homecare;
+        $homecare = Homecare::findOrFail($id_homecare);
+        return response()->json($homecare);
+    }
+
     public function create()
     {
-        return view('backend.transaksiHomecare.add');
+        $provinces = Province::all();
+        $pasien = Pasien::join('users', 'users.id', '=', 'pasien.user_id')->orderBy('users.name', 'asc')->get();
+        $perawat = Perawat::join('users', 'users.id', '=', 'perawat.user_id')->orderBy('users.name', 'asc')->where('status', '0')->get();
+        $dokter = Dokter::join('users', 'users.id', '=', 'dokter.user_id')->orderBy('users.name', 'asc')->where('status', '0')->get();
+        $homecare = Homecare::orderBy('name', 'asc')->get();
+        return view('backend.transaksiHomecare.add', compact(['provinces', 'pasien', 'perawat', 'dokter', 'homecare']));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = Validator::make(
+            $request->all(),
+            [
+                'pasien' => 'required|string',
+                'perawat' => 'required|string',
+                'dokter' => 'required|string',
+                'riwayat_penyakit' => 'required|string',
+                'waktu' => 'required|string',
+                'provinsi' => 'required|string',
+                'kabupaten' => 'required|string',
+                'kecamatan' => 'required|string',
+                'desa' => 'required|string',
+                'jarak' => 'required|numeric',
+                'homecare' => 'required|string',
+                'bukti_pembayaran' => 'image|mimes:jpg,png,jpeg,webp,svg',
+            ],
+            [
+                'pasien.required' => 'Silakan pilih pasien terlebih dahulu!',
+                'perawat.required' => 'Silakan pilih perawat terlebih dahulu!',
+                'dokter.required' => 'Silakan pilih dokter terlebih dahulu!',
+                'riwayat_penyakit.required' => 'Silakan isi riwayat penyakit terlebih dahulu!',
+                'waktu.required' => 'Silakan isi waktu terlebih dahulu!',
+                'provinsi.required' => 'Silakan pilih provinsi terlebih dahulu!',
+                'kabupaten.required' => 'Silakan pilih kabupaten terlebih dahulu!',
+                'kecamatan.required' => 'Silakan pilih kecamatan terlebih dahulu!',
+                'desa.required' => 'Silakan pilih desa terlebih dahulu!',
+                'jarak.required' => 'Silakan isi jarak terlebih dahulu!',
+                'homecare.required' => 'Silakan pilih homecare terlebih dahulu!',
+                'bukti_pembayaran.image' => 'File harus berupa gambar!',
+                'bukti_pembayaran.mimes' => 'Pilihan gambar yang diunggah harus dalam format JPG, PNG, JPEG, WEBP, atau SVG.',
+            ]
+        );
+
+
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()]);
+        } else {
+            if ($request->hasFile('bukti_pembayaran')) {
+                $file = $request->file('bukti_pembayaran');
+                if ($file->isValid()) {
+                    $guessExtension = $request->file('bukti_pembayaran')->guessExtension();
+                    $request->file('bukti_pembayaran')->storeAs('bukti-paket-homecare/', 'Bukti Pembayaran - ' . $request->name . date('Ymd') . '.' . $guessExtension, 'public');
+
+                    $paketHomecare = new TransaksiHomecare();
+                    $paketHomecare->pasien_id = $request->pasien;
+                    $paketHomecare->perawat_id = $request->perawat;
+                    $paketHomecare->dokter_id = $request->dokter;
+                    $paketHomecare->homecare_id = $request->homecare;
+                    $paketHomecare->riwayat_penyakit = $request->riwayat_penyakit;
+                    $paketHomecare->waktu = $request->waktu;
+                    $paketHomecare->provinsi_id = $request->provinsi;
+                    $paketHomecare->kabupaten_id = $request->kabupaten;
+                    $paketHomecare->kecamatan_id = $request->kecamatan;
+                    $paketHomecare->desa_id = $request->desa;
+                    $paketHomecare->jarak = $request->jarak;
+                    $paketHomecare->metode_pembayaran = $request->pembayaran;
+                    $paketHomecare->bukti_pembayaran = 'Bukti Pembayaran - ' . $request->name . date('Ymd') . '.' . $guessExtension;
+                    $paketHomecare->biaya_tambahan = $request->biaya_tambahan;
+                    $paketHomecare->total_biaya = $request->total_biaya;
+                    $paketHomecare->status = 1;
+                    $paketHomecare->save();
+
+                    return response()->json(['success' => 'Data barhasil ditambahkan']);
+                }
+            } else {
+                $paketHomecare = new TransaksiHomecare();
+                $paketHomecare->pasien_id = $request->pasien;
+                $paketHomecare->perawat_id = $request->perawat;
+                $paketHomecare->dokter_id = $request->dokter;
+                $paketHomecare->homecare_id = $request->homecare;
+                $paketHomecare->riwayat_penyakit = $request->riwayat_penyakit;
+                $paketHomecare->waktu = $request->waktu;
+                $paketHomecare->provinsi_id = $request->provinsi;
+                $paketHomecare->kabupaten_id = $request->kabupaten;
+                $paketHomecare->kecamatan_id = $request->kecamatan;
+                $paketHomecare->desa_id = $request->desa;
+                $paketHomecare->jarak = $request->jarak;
+                $paketHomecare->metode_pembayaran = $request->pembayaran;
+                $paketHomecare->biaya_tambahan = $request->biaya_tambahan;
+                $paketHomecare->total_biaya = $request->total_biaya;
+                $paketHomecare->status = 1;
+                $paketHomecare->save();
+
+                return response()->json(['success' => 'Data barhasil ditambahkan']);
+            }
+        }
+    }
+
+    public function destroy(Request $request)
+    {
+        $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
+
+        if ($transaksiHomecare->bukti_pembayaran !== '') {
+            Storage::delete('bukti-paket-homecare/' . $transaksiHomecare->bukti_pembayaran);
+            $transaksiHomecare->delete();
+        } else {
+            $transaksiHomecare->delete();
+        }
+
+        return Response()->json(['transaksiHomecare' => $transaksiHomecare, 'success' => 'Data berhasil dihapus']);
+    }
+
+    public function deleteMultiple(Request $request)
+    {
+        $TransaksiHomecare = TransaksiHomecare::whereIn('id', explode(",", $request->id))->get();
+
+        foreach ($TransaksiHomecare as $row) {
+            if ($row->bukti_pembayaran !== '') {
+                Storage::delete('bukti-paket-homecare/' . $row->bukti_pembayaran);
+                $row->delete();
+            } else {
+                $row->delete();
+            }
+        }
+
+        return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function aktif(Request $request)
+    {
+        $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
+        $dokterId = User::with('dokter')->find($transaksiHomecare->dokter_id);
+        $dokter = Dokter::find($dokterId->dokter->id);
+        $dokter->update([
+            'status' => 1,
+        ]);
+
+        $perawatId = User::with('perawat')->find($transaksiHomecare->perawat_id);
+        $perawat = Perawat::find($perawatId->perawat->id);
+        $perawat->update([
+            'status' => 1,
+        ]);
+
+        $transaksiHomecare->update([
+            'status' => 0,
+        ]);
+
+        return Response()->json(['transaksiHomecare' => $transaksiHomecare, 'success' => 'Pelayanan berhasil diaktifkan']);
+    }
+
+    public function nonaktif(Request $request)
+    {
+        $validated = Validator::make(
+            $request->all(),
+            [
+                'deskripsi_kegiatan' => 'required|string',
+            ],
+            [
+                'deskripsi_kegiatan.required' => 'Silakan isi deskripsi kegiatan terlebih dahulu!',
+            ]
+        );
+
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()]);
+        } else {
+            $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
+            $transaksiHomecare->waktu_selesai = Carbon::now('Asia/Jakarta');
+            $transaksiHomecare->deskripsi_kegiatan = $request->deskripsi_kegiatan;
+            $transaksiHomecare->update([
+                'status' => 2,
+            ]);
+
+            $dokterId = User::with('dokter')->find($transaksiHomecare->dokter_id);
+            $dokter = Dokter::find($dokterId->dokter->id);
+            $dokter->update([
+                'status' => 0,
+            ]);
+
+            $perawatId = User::with('perawat')->find($transaksiHomecare->perawat_id);
+            $perawat = Perawat::find($perawatId->perawat->id);
+            $perawat->update([
+                'status' => 0,
+            ]);
+
+
+
+            return Response()->json(['transaksiHomecare' => $transaksiHomecare, 'success' => 'Pelayanan berhasil dinonaktifkan']);
+        }
     }
 }
