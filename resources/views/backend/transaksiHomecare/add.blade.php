@@ -27,24 +27,41 @@
                                 </div>
                                 <div class="col-lg-4 col-md-12">
                                     <label for="perawat" class="form-label">Perawat</label>
-                                    <select class="form-control select2" data-toggle="select2" name="perawat"
-                                        id="perawat">
-                                        <option value="">-- Pilih Perawat --</option>
-                                        @foreach ($perawat as $row)
-                                            <option value="{{ $row->id }}">{{ $row->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter')
+                                        <select class="form-control select2" data-toggle="select2" name="perawat"
+                                            id="perawat">
+                                            <option value="">-- Pilih Perawat --</option>
+                                            @foreach ($perawat as $row)
+                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
+                                    @if (auth()->user()->type == 'Perawat')
+                                        <input type="hidden" name="perawat" id="perawat"
+                                            value="{{ auth()->user()->id }}">
+                                        <input type="text" name="perawat_name" id="perawat_name" class="form-control"
+                                            value="{{ auth()->user()->name }}" readonly>
+                                    @endif
+
                                     <div class="invalid-feedback errorPerawat"></div>
                                 </div>
                                 <div class="col-lg-4 col-md-12">
                                     <label for="dokter" class="form-label">Dokter</label>
-                                    <select class="form-control select2" data-toggle="select2" name="dokter"
-                                        id="dokter">
-                                        <option value="">-- Pilih Dokter --</option>
-                                        @foreach ($dokter as $row)
-                                            <option value="{{ $row->id }}">{{ $row->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Perawat')
+                                        <select class="form-control select2" data-toggle="select2" name="dokter"
+                                            id="dokter">
+                                            <option value="">-- Pilih Dokter --</option>
+                                            @foreach ($dokter as $row)
+                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
+                                    @if (auth()->user()->type == 'Dokter')
+                                        <input type="hidden" name="dokter" id="dokter"
+                                            value="{{ auth()->user()->id }}">
+                                        <input type="text" name="dokter_name" id="dokter_name" class="form-control"
+                                            value="{{ auth()->user()->name }}" readonly>
+                                    @endif
                                     <div class="invalid-feedback errorDokter"></div>
                                 </div>
                             </div>

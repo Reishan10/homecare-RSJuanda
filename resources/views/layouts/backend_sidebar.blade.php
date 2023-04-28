@@ -62,6 +62,8 @@
                         </ul>
                     </div>
                 </li>
+            @endif
+            @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter' || auth()->user()->type == 'Perawat')
                 <li class="side-nav-item">
                     <a data-bs-toggle="collapse" href="#sidebarTransaksi" aria-expanded="false"
                         aria-controls="sidebarTransaksi" class="side-nav-link">
@@ -71,21 +73,16 @@
                     </a>
                     <div class="collapse" id="sidebarTransaksi">
                         <ul class="side-nav-second-level">
-                            <li>
-                                <a href="{{ route('layanan.index') }}">Layanan Homecare</a>
-                            </li>
+                            @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Perawat')
+                                <li>
+                                    <a href="{{ route('layanan.index') }}">Layanan Homecare</a>
+                                </li>
+                            @endif
                             <li>
                                 <a href="{{ route('transaksi-homecare.index') }}">Layanan Paket Homecare</a>
                             </li>
                         </ul>
                     </div>
-                </li>
-
-                <li class="side-nav-item {{ request()->segment(1) == 'pelayanan' ? 'active' : '' }}">
-                    <a href="{{ route('pelayanan.index') }}" class="side-nav-link">
-                        <i class="fa-solid fa-house"></i>
-                        <span> Pelayanan </span>
-                    </a>
                 </li>
             @endif
             @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter')

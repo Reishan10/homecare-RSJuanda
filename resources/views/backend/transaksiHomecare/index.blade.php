@@ -178,6 +178,14 @@
                                 </a>
                             </td>
                         </tr>
+                        <tr>
+                            <th colspan="3">Detail Kegiatan</th>
+                        </tr>
+                        <tr>
+                            <td>Deskripsi Kegiatan</td>
+                            <td>:</td>
+                            <td id="deskripsi_kegiatan"></td>
+                        </tr>
                     </table>
                 </div>
                 <div class="modal-footer">
@@ -199,10 +207,9 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <input type="text" name="id" id="id">
+                            <input type="hidden" name="id" id="id">
                             <label for="deskripsi_kegiatan" class="form-label">Deskripsi Kegiatan</label>
-                            <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="3"></textarea>
-                            <div class="invalid-feedback errorDeskripsiKegiatan"></div>
+                            <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="3" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -278,6 +285,8 @@
                             .total_biaya);
                         $('#bukti_pembayaran').attr('src', response.buktiPembayaran);
                         $("#link_bukti_pembayaran").attr("href", response.buktiPembayaran);
+                        $('#deskripsi_kegiatan').text(response.transaksiHomecare
+                            .deskripsi_kegiatan);
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         alert(xhr.status + "\n" + xhr.responseText + "\n" +
@@ -347,28 +356,17 @@
                         $('#simpan').html('Simpan');
                     },
                     success: function(response) {
-                        if (response.errors) {
-                            if (response.errors.deskripsi_kegiatan) {
-                                $('#deskripsi_kegiatan').addClass('is-invalid');
-                                $('.errorDeskripsiKegiatan').html(response.errors
-                                    .deskripsi_kegiatan);
-                            } else {
-                                $('#deskripsi_kegiatan').removeClass('is-invalid');
-                                $('.errorDeskripsiKegiatan').html('');
-                            }
-                        } else {
-                            $('#nonaktifModal').modal('hide');
-                            $('#form').trigger("reset");
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sukses',
-                                text: response.success,
-                            }).then(function() {
-                                top.location.href =
-                                    "{{ route('transaksi-homecare.index') }}";
-                            });
+                        $('#nonaktifModal').modal('hide');
+                        $('#form').trigger("reset");
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sukses',
+                            text: response.success,
+                        }).then(function() {
+                            top.location.href =
+                                "{{ route('transaksi-homecare.index') }}";
+                        });
 
-                        }
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         console.error(xhr.status + "\n" + xhr.responseText + "\n" +
@@ -419,48 +417,6 @@
                 }
             })
         })
-
-        // Nonaktif Status
-        /*   $('body').on('click', '#btnNonaktif', function() {
-               let id = $(this).data('id');
-               Swal.fire({
-                   title: 'Nonaktif Status',
-                   text: "Apakah anda yakin?",
-                   icon: 'warning',
-                   showCancelButton: true,
-                   confirmButtonColor: '#3085d6',
-                   cancelButtonColor: '#d33',
-                   confirmButtonText: 'Ya, Nonaktifkan!',
-                   cancelButtonText: 'Batal',
-               }).then((result) => {
-                   if (result.isConfirmed) {
-                       $.ajax({
-                           type: "POST",
-                           url: "{{ url('/transaksi-homecare/nonaktif/"+id+"') }}",
-                           data: {
-                               id: id
-                           },
-                           dataType: 'json',
-                           success: function(response) {
-                               if (response.success) {
-                                   Swal.fire({
-                                       icon: 'success',
-                                       title: 'Sukses',
-                                       text: response.success,
-                                   }).then(function() {
-                                       top.location.href =
-                                           "{{ route('transaksi-homecare.index') }}";
-                                   });
-                               }
-                           },
-                           error: function(xhr, ajaxOptions, thrownError) {
-                               alert(xhr.status + "\n" + xhr.responseText + "\n" +
-                                   thrownError);
-                           }
-                       })
-                   }
-               })
-           })*/
 
         // Hapus Data
         $('body').on('click', '#btnHapus', function() {

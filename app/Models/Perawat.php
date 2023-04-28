@@ -42,8 +42,11 @@ class Perawat extends Model
         'agama',
         'status_nikah',
         'jabatan_id',
+        'jam_masuk',
+        'jam_pulang',
+        'hari',
+        'deskripsi',
         'status',
-        'waktu_mulai'
     ];
 
     public function user()

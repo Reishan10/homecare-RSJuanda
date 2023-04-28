@@ -26,7 +26,15 @@ class TransaksiHomecareController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->orderBy('created_at', 'asc')->get();
+            $id = auth()->user()->id;
+            $userType = auth()->user()->type;
+            if ($userType == "Dokter") {
+                $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->where('dokter_id', $id)->orderBy('created_at', 'asc')->get();
+            } else if ($userType == "Perawat") {
+                $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->where('perawat_id', $id)->orderBy('created_at', 'asc')->get();
+            } else {
+                $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->orderBy('created_at', 'asc')->get();
+            }
             return DataTables::of($transaksiHomecare)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
@@ -68,10 +76,10 @@ class TransaksiHomecareController extends Controller
                     class="mdi mdi-trash-can"></i></button>';
                     }
                     if ($data->status == '0') {
-                        $btn = $btn .  '<button type="button" class="btn btn-warning btn-sm" data-id="' . $data->id . '" id="btnNonaktif" data-bs-toggle="modal" data-bs-target="#nonaktifModal"><i class="fa-solid fa-xmark"></i></button>';
+                        $btn = $btn .  '<button type="button" class="btn btn-warning btn-sm me-1" data-id="' . $data->id . '" id="btnNonaktif" data-bs-toggle="modal" data-bs-target="#nonaktifModal"><i class="fa-solid fa-xmark"></i></button>';
                     }
                     if ($data->status == '1') {
-                        $btn = $btn .  '<button type="button" class="btn btn-success btn-sm" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
+                        $btn = $btn .  '<button type="button" class="btn btn-success btn-sm me-1" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
                     }
                     if ($data->status != '1') {
                         $btn = $btn .  '<a href="' . route('transaksi-homecare.print', $data->id) . '" class="btn btn-secondary btn-sm" target="_blank"><i class="fa-solid fa-print"></i></a>';
@@ -282,42 +290,25 @@ class TransaksiHomecareController extends Controller
 
     public function nonaktif(Request $request)
     {
-        $validated = Validator::make(
-            $request->all(),
-            [
-                'deskripsi_kegiatan' => 'required|string',
-            ],
-            [
-                'deskripsi_kegiatan.required' => 'Silakan isi deskripsi kegiatan terlebih dahulu!',
-            ]
-        );
+        $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
+        $transaksiHomecare->waktu_selesai = Carbon::now('Asia/Jakarta');
+        $transaksiHomecare->deskripsi_kegiatan = $request->deskripsi_kegiatan;
+        $transaksiHomecare->update([
+            'status' => 2,
+        ]);
 
-        if ($validated->fails()) {
-            return response()->json(['errors' => $validated->errors()]);
-        } else {
-            $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
-            $transaksiHomecare->waktu_selesai = Carbon::now('Asia/Jakarta');
-            $transaksiHomecare->deskripsi_kegiatan = $request->deskripsi_kegiatan;
-            $transaksiHomecare->update([
-                'status' => 2,
-            ]);
+        $dokterId = User::with('dokter')->find($transaksiHomecare->dokter_id);
+        $dokter = Dokter::find($dokterId->dokter->id);
+        $dokter->update([
+            'status' => 0,
+        ]);
 
-            $dokterId = User::with('dokter')->find($transaksiHomecare->dokter_id);
-            $dokter = Dokter::find($dokterId->dokter->id);
-            $dokter->update([
-                'status' => 0,
-            ]);
-
-            $perawatId = User::with('perawat')->find($transaksiHomecare->perawat_id);
-            $perawat = Perawat::find($perawatId->perawat->id);
-            $perawat->update([
-                'status' => 0,
-            ]);
-
-
-
-            return Response()->json(['transaksiHomecare' => $transaksiHomecare, 'success' => 'Pelayanan berhasil dinonaktifkan']);
-        }
+        $perawatId = User::with('perawat')->find($transaksiHomecare->perawat_id);
+        $perawat = Perawat::find($perawatId->perawat->id);
+        $perawat->update([
+            'status' => 0,
+        ]);
+        return Response()->json(['transaksiHomecare' => $transaksiHomecare, 'success' => 'Pelayanan berhasil dinonaktifkan']);
     }
 
     public function print($id)

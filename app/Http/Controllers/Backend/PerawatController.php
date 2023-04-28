@@ -80,6 +80,10 @@ class PerawatController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'no_telepon' => 'required|unique:users,no_telepon|min:11|max:15',
                 'jabatan' => 'required|string',
+                'jam_masuk' => 'required|string',
+                'jam_pulang' => 'required|string',
+                'deskripsi' => 'required|string',
+                'hari' => 'required|array',
             ],
             [
                 'nip.required' => 'Silakan isi nip terlebih dahulu!',
@@ -92,6 +96,10 @@ class PerawatController extends Controller
                 'no_telepon.unique' => 'No telepon sudah digunakan!',
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
+                'jam_masuk.required' => 'Silakan isi jam masuk terlebih dahulu!',
+                'jam_pulang.required' => 'Silakan isi jam pulang terlebih dahulu!',
+                'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
+                'hari.required' => 'Silakan isi hari terlebih dahulu!',
             ]
         );
 
@@ -118,6 +126,10 @@ class PerawatController extends Controller
             $perawat->agama = $request->agama;
             $perawat->status_nikah = $request->status_nikah;
             $perawat->jabatan_id = $request->jabatan;
+            $perawat->jam_masuk = $request->jam_masuk;
+            $perawat->jam_pulang = $request->jam_pulang;
+            $perawat->hari = implode(',', $request->hari);
+            $perawat->deskripsi = $request->deskripsi;
             $perawat->save();
 
             return response()->json(['success' => 'Data barhasil ditambahkan']);
@@ -127,8 +139,9 @@ class PerawatController extends Controller
     public function edit($id)
     {
         $perawat = User::with('perawat')->findOrFail($id);
+        $hari = explode(",", $perawat->perawat->hari);
         $jabatan = Jabatan::orderBy('name', 'asc')->get();
-        return view('backend.perawat.edit', compact(['perawat', 'jabatan']));
+        return view('backend.perawat.edit', compact(['perawat', 'jabatan', 'hari']));
     }
 
     public function update(Request $request)
@@ -143,6 +156,10 @@ class PerawatController extends Controller
                 'jabatan' => 'required|string',
                 'email' => 'required|email|unique:users,email,' . $id . ',id',
                 'no_telepon' => 'required|unique:users,no_telepon,' . $id . ',id|min:11|max:15',
+                'jam_masuk' => 'required|string',
+                'jam_pulang' => 'required|string',
+                'deskripsi' => 'required|string',
+                'hari' => 'required|array',
             ],
             [
                 'nip.required' => 'Silakan isi nip terlebih dahulu!',
@@ -155,6 +172,10 @@ class PerawatController extends Controller
                 'no_telepon.unique' => 'No telepon sudah digunakan!',
                 'no_telepon.min' => 'No telepon harus memiliki panjang minimal 11 karakter.',
                 'no_telepon.max' => 'No telepon harus memiliki panjang maksimal 15 karakter.',
+                'jam_masuk.required' => 'Silakan isi jam masuk terlebih dahulu!',
+                'jam_pulang.required' => 'Silakan isi jam pulang terlebih dahulu!',
+                'deskripsi.required' => 'Silakan isi deskripsi terlebih dahulu!',
+                'hari.required' => 'Silakan isi hari terlebih dahulu!',
             ]
         );
 
@@ -181,7 +202,11 @@ class PerawatController extends Controller
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'agama' => $request->agama,
                 'status_nikah' => $request->status_nikah,
-                'jabatan_id' => $request->jabatan
+                'jabatan_id' => $request->jabatan,
+                'jam_masuk' => $request->jam_masuk,
+                'jam_pulang' => $request->jam_pulang,
+                'hari' => implode(',', $request->hari),
+                'deskripsi' => $request->deskripsi,
             ]);
             return response()->json(['success' => 'Data barhasil diedit']);
         }

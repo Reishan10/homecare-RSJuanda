@@ -23,6 +23,10 @@ return new class extends Migration
             $table->string('status_nikah', 100)->nullable();
             $table->unsignedBigInteger('jabatan_id');
             $table->foreign('jabatan_id')->references('id')->on('jabatan');
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_pulang')->nullable();
+            $table->string('hari', 100);
+            $table->text('deskripsi');
             $table->tinyInteger('status')->default('0');
             $table->timestamps();
         });

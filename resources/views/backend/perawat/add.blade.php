@@ -70,8 +70,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <div class="row">
                                             <label class="form-label" for="tempat_lahir">Tempat, Tanggal Lahir</label>
@@ -95,6 +93,9 @@
                                         <div class="invalid-feedback errorAddress">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+
                                     <div class="mb-3">
                                         <div class="row">
                                             <div class="col-sm-6">
@@ -132,6 +133,65 @@
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback errorJabatan">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="jam_masuk">Jam Masuk</label>
+                                                <input type="time" name="jam_masuk" id="jam_masuk"
+                                                    class="form-control">
+                                                <div class="invalid-feedback errorJamMasuk">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="jam_pulang">Jam Pulang</label>
+                                                <input type="time" name="jam_pulang" id="jam_pulang"
+                                                    class="form-control">
+                                                <div class="invalid-feedback errorJamPulang">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                                        <textarea name="deskripsi" id="deskripsi" rows="1" class="form-control"></textarea>
+                                        <div class="invalid-feedback errorDeskripsi">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Pilih Hari</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Senin">
+                                            <label class="form-check-label">Senin</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Selasa">
+                                            <label class="form-check-label">Selasa</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Rabu">
+                                            <label class="form-check-label">Rabu</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Kamis">
+                                            <label class="form-check-label">Kamis</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Jumat">
+                                            <label class="form-check-label">Jumat</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="hari"
+                                                name="hari[]" value="Sabtu">
+                                            <label class="form-check-label">Sabtu</label>
+                                        </div>
+                                        <div class="text-danger errorHari text-sm">
                                         </div>
                                     </div>
                                 </div>
@@ -212,6 +272,36 @@
                             } else {
                                 $('#jabatan').removeClass('is-invalid');
                                 $('.errorJabatan').html('');
+                            }
+
+                            if (response.errors.jam_masuk) {
+                                $('#jam_masuk').addClass('is-invalid');
+                                $('.errorJamMasuk').html(response.errors.jam_masuk);
+                            } else {
+                                $('#jam_masuk').removeClass('is-invalid');
+                                $('.errorJamMasuk').html('');
+                            }
+
+                            if (response.errors.jam_pulang) {
+                                $('#jam_pulang').addClass('is-invalid');
+                                $('.errorJamPulang').html(response.errors.jam_pulang);
+                            } else {
+                                $('#jam_pulang').removeClass('is-invalid');
+                                $('.errorJamPulang').html('');
+                            }
+
+                            if (response.errors.deskripsi) {
+                                $('#deskripsi').addClass('is-invalid');
+                                $('.errorDeskripsi').html(response.errors.deskripsi);
+                            } else {
+                                $('#deskripsi').removeClass('is-invalid');
+                                $('.errorDeskripsi').html('');
+                            }
+
+                            if (response.errors.hari) {
+                                $('.errorHari').html(response.errors.hari);
+                            } else {
+                                $('.errorHari').html('');
                             }
                         } else {
                             Swal.fire({
