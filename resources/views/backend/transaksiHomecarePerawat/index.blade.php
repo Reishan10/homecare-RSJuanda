@@ -1,5 +1,5 @@
 @extends('layouts.backend_main')
-@section('title', 'Transaksi Paket Homecare')
+@section('title', 'Transaksi Homecare')
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
@@ -24,7 +24,7 @@
                                     <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
                                         <i class="mdi mdi-trash-can"></i> Hapus Banyak
                                     </button>
-                                    <a href="{{ route('transaksi-homecare.create') }}"
+                                    <a href="{{ route('transaksi-homecare-perawat.create') }}"
                                         class="btn btn-primary mb-2 btn-sm"><i class="mdi mdi-plus-circle"></i> Tambah
                                         data</a>
                                 </div>
@@ -39,8 +39,7 @@
                                         <th>No</th>
                                         <th>Pasien</th>
                                         <th>Perawat</th>
-                                        <th>Dokter</th>
-                                        <th>Layanan</th>
+                                        <th>Pembayaran</th>
                                         <th>Status</th>
                                         <th style="width: 75px;">Aksi</th>
                                     </tr>
@@ -109,40 +108,12 @@
                             <td id="jenis_kelamin_perawat"></td>
                         </tr>
                         <tr>
-                            <th colspan="3">Detail Dokter</th>
-                        </tr>
-                        <tr>
-                            <td>Nama Dokter</td>
-                            <td>:</td>
-                            <td id="name_dokter"></td>
-                        </tr>
-                        <tr>
-                            <td>No Telepon</td>
-                            <td>:</td>
-                            <td id="no_telepon_dokter"></td>
-                        </tr>
-                        <tr>
-                            <td>Jenis Kelamin</td>
-                            <td>:</td>
-                            <td id="jenis_kelamin_dokter"></td>
-                        </tr>
-                        <tr>
-                            <td>Spesialis</td>
-                            <td>:</td>
-                            <td id="spesialis"></td>
-                        </tr>
-                        <tr>
-                            <td>Pengalaman</td>
-                            <td>:</td>
-                            <td id="pengalaman"></td>
-                        </tr>
-                        <tr>
                             <th colspan="3">Detail Transaksi</th>
                         </tr>
                         <tr>
-                            <td>Nama Layanan</td>
+                            <td>Layanan</td>
                             <td>:</td>
-                            <td id="name_layanan"></td>
+                            <td id="layanan"></td>
                         </tr>
                         <tr>
                             <td>Waktu</td>
@@ -228,7 +199,7 @@
                 let id = $(this).data('id');
                 $.ajax({
                     type: "POST",
-                    url: "{{ url('/transaksi-homecare/detail/"+id+"') }}",
+                    url: "{{ url('/transaksi-homecare-perawat/detail/"+id+"') }}",
                     data: {
                         id: id
                     },
@@ -259,22 +230,7 @@
                         }
                         $('#jenis_kelamin_perawat').text(gender_perawat);
 
-                        $('#name_dokter').text(response.dokter.name);
-                        $('#no_telepon_dokter').text(response.dokter.no_telepon);
-                        let gender_dokter = response.dokter.gender;
-                        if (gender_dokter === 'L') {
-                            gender_dokter = 'Laki-laki';
-                        } else if (gender_dokter === 'P') {
-                            gender_dokter = 'Perempuan';
-                        } else {
-                            gender_dokter = '-';
-                        }
-                        $('#jenis_kelamin_dokter').text(gender_dokter);
-                        $('#spesialis').text(response.dokter.dokter.spesialis);
-                        $('#pengalaman').text(response.dokter.dokter.pengalaman_tahun +
-                            " Tahun");
-
-                        $('#name_layanan').text(response.transaksiHomecare.homecare.name);
+                        $('#layanan').text(response.transaksiHomecare.homecare);
                         $('#waktu').text(response.transaksiHomecare.waktu);
                         $('#jarak').text(response.transaksiHomecare.jarak);
                         $('#metode_pembayaran').text(response.transaksiHomecare
@@ -304,7 +260,7 @@
             $('#datatable').DataTable({
                 processing: true,
                 serverside: true,
-                ajax: "{{ route('transaksi-homecare.index') }}",
+                ajax: "{{ route('transaksi-homecare-perawat.index') }}",
                 columns: [{
                     data: 'comboBox',
                     orderable: false,
@@ -321,11 +277,8 @@
                     data: 'perawat',
                     name: 'perawat'
                 }, {
-                    data: 'dokter',
-                    name: 'dokter'
-                }, {
-                    data: 'layanan',
-                    name: 'layanan'
+                    data: 'metode_pembayaran',
+                    name: 'metode_pembayaran'
                 }, {
                     data: 'status',
                     name: 'status'
@@ -343,7 +296,7 @@
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
-                    url: "{{ url('/transaksi-homecare/nonaktif/"+id+"') }}",
+                    url: "{{ url('/transaksi-homecare-perawat/nonaktif/"+id+"') }}",
                     data: $(this).serialize(),
                     type: "POST",
                     dataType: 'json',
@@ -364,7 +317,7 @@
                             text: response.success,
                         }).then(function() {
                             top.location.href =
-                                "{{ route('transaksi-homecare.index') }}";
+                                "{{ route('transaksi-homecare-perawat.index') }}";
                         });
 
                     },
@@ -392,7 +345,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
-                        url: "{{ url('/transaksi-homecare/aktif/"+id+"') }}",
+                        url: "{{ url('/transaksi-homecare-perawat/aktif/"+id+"') }}",
                         data: {
                             id: id
                         },
@@ -405,7 +358,7 @@
                                     text: response.success,
                                 }).then(function() {
                                     top.location.href =
-                                        "{{ route('transaksi-homecare.index') }}";
+                                        "{{ route('transaksi-homecare-perawat.index') }}";
                                 });
                             }
                         },
@@ -434,7 +387,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('transaksi-homecare/"+id+"') }}",
+                        url: "{{ url('transaksi-homecare-perawat/"+id+"') }}",
                         data: {
                             id: id
                         },
@@ -492,7 +445,7 @@
                     let strId = idArr.join(",");
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: "{{ route('delete-multiple-transaksi-homecare') }}",
+                            url: "{{ route('delete-multiple-transaksi-homecare-perawat') }}",
                             type: 'POST',
                             data: 'id=' + strId,
                             success: function(response) {

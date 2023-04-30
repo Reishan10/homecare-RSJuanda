@@ -75,7 +75,7 @@
                         <ul class="side-nav-second-level">
                             @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Perawat')
                                 <li>
-                                    <a href="{{ route('layanan.index') }}">Layanan Homecare</a>
+                                    <a href="{{ route('transaksi-homecare-perawat.index') }}">Layanan Homecare</a>
                                 </li>
                             @endif
                             <li>

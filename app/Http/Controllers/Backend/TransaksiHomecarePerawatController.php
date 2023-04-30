@@ -4,16 +4,15 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\District;
-use App\Models\Dokter;
-use App\Models\Homecare;
+use App\Models\Layanan;
 use App\Models\Pasien;
 use App\Models\Perawat;
 use App\Models\Province;
 use App\Models\Regency;
-use App\Models\TransaksiHomecare;
+use App\Models\TransaksiHomecarePerawat;
 use App\Models\User;
 use App\Models\Village;
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -21,20 +20,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
-class TransaksiHomecareController extends Controller
+class TransaksiHomecarePerawatController extends Controller
 {
     public function index()
     {
         if (request()->ajax()) {
-            $id = auth()->user()->id;
-            $userType = auth()->user()->type;
-            if ($userType == "Dokter") {
-                $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->where('dokter_id', $id)->orderBy('created_at', 'asc')->get();
-            } else if ($userType == "Perawat") {
-                $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->where('perawat_id', $id)->orderBy('created_at', 'asc')->get();
-            } else {
-                $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->orderBy('created_at', 'asc')->get();
-            }
+            $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->orderBy('created_at', 'asc')->get();
             return DataTables::of($transaksiHomecare)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
@@ -48,14 +39,6 @@ class TransaksiHomecareController extends Controller
                 ->addColumn('perawat', function ($data) {
                     $perawat = $data->perawat->name;
                     return $perawat;
-                })
-                ->addColumn('dokter', function ($data) {
-                    $dokter = $data->dokter->name;
-                    return $dokter;
-                })
-                ->addColumn('layanan', function ($data) {
-                    $layanan = $data->homecare->name;
-                    return $layanan;
                 })
                 ->addColumn('status', function ($data) {
                     if ($data->status == '0') {
@@ -82,24 +65,23 @@ class TransaksiHomecareController extends Controller
                         $btn = $btn .  '<button type="button" class="btn btn-success btn-sm me-1" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
                     }
                     if ($data->status != '1') {
-                        $btn = $btn .  '<a href="' . route('transaksi-homecare.print', $data->id) . '" class="btn btn-secondary btn-sm"><i class="fa-solid fa-print"></i></a>';
+                        $btn = $btn .  '<a href="' . route('transaksi-homecare-perawat.print', $data->id) . '" class="btn btn-secondary btn-sm"><i class="fa-solid fa-print"></i></a>';
                     }
                     return $btn;
                 })
                 ->rawColumns(['aksi', 'comboBox', 'status'])
                 ->make(true);
         }
-        return view('backend.transaksiHomecare.index');
+        return view('backend.transaksiHomecarePerawat.index');
     }
 
     public function detail(Request $request)
     {
-        $transaksiHomecare = TransaksiHomecare::with('homecare')->findOrFail($request->id);
-        $buktiPembayaran =  asset('storage/bukti-paket-homecare/' . $transaksiHomecare->bukti_pembayaran);
+        $transaksiHomecare = TransaksiHomecarePerawat::findOrFail($request->id);
+        $buktiPembayaran = asset('storage/bukti-homecare/' . $transaksiHomecare->bukti_pembayaran);
         $pasien = User::with('pasien')->find($transaksiHomecare->pasien_id);
         $perawat = User::with('perawat')->find($transaksiHomecare->perawat_id);
-        $dokter = User::with('dokter')->find($transaksiHomecare->dokter_id);
-        return response()->json(['pasien' => $pasien, 'perawat' => $perawat, 'dokter' => $dokter, 'transaksiHomecare' => $transaksiHomecare, 'buktiPembayaran' => $buktiPembayaran]);
+        return response()->json(['pasien' => $pasien, 'perawat' => $perawat, 'transaksiHomecare' => $transaksiHomecare, 'buktiPembayaran' => $buktiPembayaran]);
     }
 
     public function getKabupaten(Request $request)
@@ -129,21 +111,22 @@ class TransaksiHomecareController extends Controller
         }
     }
 
-    public function getHomecare(Request $request)
+    public function getHomecarePrice(Request $request)
     {
-        $id_homecare = $request->id_homecare;
-        $homecare = Homecare::findOrFail($id_homecare);
-        return response()->json($homecare);
+        $homecareId = $request->homecare_id;
+        $homecare = Layanan::findOrFail($homecareId);
+        return response()->json(['price' => $homecare->harga]);
     }
 
     public function create()
     {
         $provinces = Province::all();
         $pasien = Pasien::join('users', 'users.id', '=', 'pasien.user_id')->orderBy('users.name', 'asc')->get();
-        $perawat = Perawat::join('users', 'users.id', '=', 'perawat.user_id')->orderBy('users.name', 'asc')->where('status', '0')->get();
-        $dokter = Dokter::join('users', 'users.id', '=', 'dokter.user_id')->orderBy('users.name', 'asc')->where('status', '0')->get();
-        $homecare = Homecare::orderBy('name', 'asc')->get();
-        return view('backend.transaksiHomecare.add', compact(['provinces', 'pasien', 'perawat', 'dokter', 'homecare']));
+        $perawat = Perawat::join('users', 'users.id', '=', 'perawat.user_id')->orderBy('users.name', 'asc')->where('status', '0')->get()->filter(function ($perawat) {
+            return $perawat->transaksi()->whereDate('waktu', date('Y-m-d'))->count() == 0;
+        });
+        $homecare = Layanan::orderBy('name', 'asc')->get();
+        return view('backend.transaksiHomecarePerawat.add', compact(['provinces', 'pasien', 'perawat', 'homecare']));
     }
 
     public function store(Request $request)
@@ -153,7 +136,6 @@ class TransaksiHomecareController extends Controller
             [
                 'pasien' => 'required|string',
                 'perawat' => 'required|string',
-                'dokter' => 'required|string',
                 'riwayat_penyakit' => 'required|string',
                 'waktu' => 'required|string',
                 'provinsi' => 'required|string',
@@ -161,14 +143,13 @@ class TransaksiHomecareController extends Controller
                 'kecamatan' => 'required|string',
                 'desa' => 'required|string',
                 'jarak' => 'required|numeric',
-                'homecare' => 'required|string',
+                'homecare' => 'required|array',
                 'bukti_pembayaran' => 'image|mimes:jpg,png,jpeg,webp,svg',
                 'pembayaran' => 'required|string',
             ],
             [
                 'pasien.required' => 'Silakan pilih pasien terlebih dahulu!',
                 'perawat.required' => 'Silakan pilih perawat terlebih dahulu!',
-                'dokter.required' => 'Silakan pilih dokter terlebih dahulu!',
                 'riwayat_penyakit.required' => 'Silakan isi riwayat penyakit terlebih dahulu!',
                 'waktu.required' => 'Silakan isi waktu terlebih dahulu!',
                 'provinsi.required' => 'Silakan pilih provinsi terlebih dahulu!',
@@ -191,47 +172,45 @@ class TransaksiHomecareController extends Controller
                 $file = $request->file('bukti_pembayaran');
                 if ($file->isValid()) {
                     $guessExtension = $request->file('bukti_pembayaran')->guessExtension();
-                    $request->file('bukti_pembayaran')->storeAs('bukti-paket-homecare/', 'Bukti Pembayaran - ' . $request->name . date('Ymd') . '.' . $guessExtension, 'public');
+                    $request->file('bukti_pembayaran')->storeAs('bukti-homecare/', 'Bukti Pembayaran - ' . $request->name . date('Ymd') . '.' . $guessExtension, 'public');
 
-                    $paketHomecare = new TransaksiHomecare();
-                    $paketHomecare->pasien_id = $request->pasien;
-                    $paketHomecare->perawat_id = $request->perawat;
-                    $paketHomecare->dokter_id = $request->dokter;
-                    $paketHomecare->homecare_id = $request->homecare;
-                    $paketHomecare->riwayat_penyakit = $request->riwayat_penyakit;
-                    $paketHomecare->waktu = $request->waktu;
-                    $paketHomecare->provinsi_id = $request->provinsi;
-                    $paketHomecare->kabupaten_id = $request->kabupaten;
-                    $paketHomecare->kecamatan_id = $request->kecamatan;
-                    $paketHomecare->desa_id = $request->desa;
-                    $paketHomecare->jarak = $request->jarak;
-                    $paketHomecare->metode_pembayaran = $request->pembayaran;
-                    $paketHomecare->bukti_pembayaran = 'Bukti Pembayaran - ' . $request->name . date('Ymd') . '.' . $guessExtension;
-                    $paketHomecare->biaya_tambahan = $request->biaya_tambahan;
-                    $paketHomecare->total_biaya = $request->total_biaya;
-                    $paketHomecare->status = 1;
-                    $paketHomecare->save();
+                    $homecare = new TransaksiHomecarePerawat();
+                    $homecare->pasien_id = $request->pasien;
+                    $homecare->perawat_id = $request->perawat;
+                    $homecare->homecare = implode(', ', $request->homecare);
+                    $homecare->riwayat_penyakit = $request->riwayat_penyakit;
+                    $homecare->waktu = $request->waktu;
+                    $homecare->provinsi_id = $request->provinsi;
+                    $homecare->kabupaten_id = $request->kabupaten;
+                    $homecare->kecamatan_id = $request->kecamatan;
+                    $homecare->desa_id = $request->desa;
+                    $homecare->jarak = $request->jarak;
+                    $homecare->metode_pembayaran = $request->pembayaran;
+                    $homecare->bukti_pembayaran = 'Bukti Pembayaran - ' . $request->name . date('Ymd') . '.' . $guessExtension;
+                    $homecare->biaya_tambahan = $request->biaya_tambahan;
+                    $homecare->total_biaya = $request->total_biaya;
+                    $homecare->status = 1;
+                    $homecare->save();
 
                     return response()->json(['success' => 'Data barhasil ditambahkan']);
                 }
             } else {
-                $paketHomecare = new TransaksiHomecare();
-                $paketHomecare->pasien_id = $request->pasien;
-                $paketHomecare->perawat_id = $request->perawat;
-                $paketHomecare->dokter_id = $request->dokter;
-                $paketHomecare->homecare_id = $request->homecare;
-                $paketHomecare->riwayat_penyakit = $request->riwayat_penyakit;
-                $paketHomecare->waktu = $request->waktu;
-                $paketHomecare->provinsi_id = $request->provinsi;
-                $paketHomecare->kabupaten_id = $request->kabupaten;
-                $paketHomecare->kecamatan_id = $request->kecamatan;
-                $paketHomecare->desa_id = $request->desa;
-                $paketHomecare->jarak = $request->jarak;
-                $paketHomecare->metode_pembayaran = $request->pembayaran;
-                $paketHomecare->biaya_tambahan = $request->biaya_tambahan;
-                $paketHomecare->total_biaya = $request->total_biaya;
-                $paketHomecare->status = 1;
-                $paketHomecare->save();
+                $homecare = new TransaksiHomecarePerawat();
+                $homecare->pasien_id = $request->pasien;
+                $homecare->perawat_id = $request->perawat;
+                $homecare->homecare = implode(', ', $request->homecare);
+                $homecare->riwayat_penyakit = $request->riwayat_penyakit;
+                $homecare->waktu = $request->waktu;
+                $homecare->provinsi_id = $request->provinsi;
+                $homecare->kabupaten_id = $request->kabupaten;
+                $homecare->kecamatan_id = $request->kecamatan;
+                $homecare->desa_id = $request->desa;
+                $homecare->jarak = $request->jarak;
+                $homecare->metode_pembayaran = $request->pembayaran;
+                $homecare->biaya_tambahan = $request->biaya_tambahan;
+                $homecare->total_biaya = $request->total_biaya;
+                $homecare->status = 1;
+                $homecare->save();
 
                 return response()->json(['success' => 'Data barhasil ditambahkan']);
             }
@@ -240,10 +219,10 @@ class TransaksiHomecareController extends Controller
 
     public function destroy(Request $request)
     {
-        $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
+        $transaksiHomecare = TransaksiHomecarePerawat::findOrFail($request->id);
 
         if ($transaksiHomecare->bukti_pembayaran !== '') {
-            Storage::delete('bukti-paket-homecare/' . $transaksiHomecare->bukti_pembayaran);
+            Storage::delete('bukti-homecare/' . $transaksiHomecare->bukti_pembayaran);
             $transaksiHomecare->delete();
         } else {
             $transaksiHomecare->delete();
@@ -254,11 +233,11 @@ class TransaksiHomecareController extends Controller
 
     public function deleteMultiple(Request $request)
     {
-        $TransaksiHomecare = TransaksiHomecare::whereIn('id', explode(",", $request->id))->get();
+        $TransaksiHomecare = TransaksiHomecarePerawat::whereIn('id', explode(",", $request->id))->get();
 
         foreach ($TransaksiHomecare as $row) {
             if ($row->bukti_pembayaran !== '') {
-                Storage::delete('bukti-paket-homecare/' . $row->bukti_pembayaran);
+                Storage::delete('bukti-homecare/' . $row->bukti_pembayaran);
                 $row->delete();
             } else {
                 $row->delete();
@@ -270,12 +249,7 @@ class TransaksiHomecareController extends Controller
 
     public function aktif(Request $request)
     {
-        $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
-        $dokterId = User::with('dokter')->find($transaksiHomecare->dokter_id);
-        $dokter = Dokter::find($dokterId->dokter->id);
-        $dokter->update([
-            'status' => 1,
-        ]);
+        $transaksiHomecare = TransaksiHomecarePerawat::findOrFail($request->id);
 
         $perawatId = User::with('perawat')->find($transaksiHomecare->perawat_id);
         $perawat = Perawat::find($perawatId->perawat->id);
@@ -292,17 +266,11 @@ class TransaksiHomecareController extends Controller
 
     public function nonaktif(Request $request)
     {
-        $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
+        $transaksiHomecare = TransaksiHomecarePerawat::findOrFail($request->id);
         $transaksiHomecare->waktu_selesai = Carbon::now('Asia/Jakarta');
         $transaksiHomecare->deskripsi_kegiatan = $request->deskripsi_kegiatan;
         $transaksiHomecare->update([
             'status' => 2,
-        ]);
-
-        $dokterId = User::with('dokter')->find($transaksiHomecare->dokter_id);
-        $dokter = Dokter::find($dokterId->dokter->id);
-        $dokter->update([
-            'status' => 0,
         ]);
 
         $perawatId = User::with('perawat')->find($transaksiHomecare->perawat_id);
@@ -315,12 +283,19 @@ class TransaksiHomecareController extends Controller
 
     public function print($id)
     {
-        $data = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->find($id);
+        $data = TransaksiHomecarePerawat::with('pasien', 'perawat')->find($id);
+        $homecare = explode(', ', $data->homecare);
+        $hargaLayanan = [];
+
+        foreach ($homecare as $namaLayanan) {
+            $hargaLayanan[$namaLayanan] = Layanan::where('name', $namaLayanan)->value('harga');
+        }
+
         $dateString = $data->waktu;
         $dateObject = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
         $waktu = $dateObject->format('d/m/Y H:i:s');
 
-        $pdf = FacadePdf::loadView('backend.transaksiHomecare.print', compact('data', 'waktu'));
-        return $pdf->download('transaksi-paket-homecare-' . $data->pasien->name . '-' . time() . '.pdf');
+        $pdf = Pdf::loadView('backend.transaksiHomecarePerawat.print', compact('data', 'waktu', 'hargaLayanan'));
+        return $pdf->download('transaksi-homecare-' . $data->pasien->name . '-' . time() . '.pdf');
     }
 }

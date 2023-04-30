@@ -14,7 +14,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-4 col-md-12">
+                                <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="pasien" class="form-label">Pasien</label>
                                         <select class="form-control select2" data-toggle="select2" name="pasien"
@@ -27,7 +27,7 @@
                                         <div class="invalid-feedback errorPasien"></div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-12">
+                                <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="perawat" class="form-label">Perawat</label>
                                         @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter')
@@ -47,27 +47,6 @@
                                         @endif
 
                                         <div class="invalid-feedback errorPerawat"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="dokter" class="form-label">Dokter</label>
-                                        @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Perawat')
-                                            <select class="form-control select2" data-toggle="select2" name="dokter"
-                                                id="dokter">
-                                                <option value="">-- Pilih Dokter --</option>
-                                                @foreach ($dokter as $row)
-                                                    <option value="{{ $row->id }}">{{ $row->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        @endif
-                                        @if (auth()->user()->type == 'Dokter')
-                                            <input type="hidden" name="dokter" id="dokter"
-                                                value="{{ auth()->user()->id }}">
-                                            <input type="text" name="dokter_name" id="dokter_name" class="form-control"
-                                                value="{{ auth()->user()->name }}" readonly>
-                                        @endif
-                                        <div class="invalid-feedback errorDokter"></div>
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +95,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row ">
+                            <div class="row">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="kecamatan" class="form-label">Kecamatan</label>
@@ -154,53 +133,36 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="biaya_tambahan" class="form-label">Tambahan Biaya (Per 10 KM)</label>
-                                        <input type="text" name="biaya_tambahan" id="biaya_tambahan"
+                                        <input type="text" name="biaya_tambahan" id="biaya_tambahan" value="0"
                                             class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row ">
+                            <div class="row">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
-                                        <label for="homecare" class="form-label">Paket Homecare</label>
-                                        <select class="form-control select2" data-toggle="select2" name="homecare"
-                                            id="homecare">
-                                            <option value="">-- Pilih Homecare --</option>
-                                            @foreach ($homecare as $row)
-                                                <option value="{{ $row->id }}">{{ $row->kode_homecare }} -
-                                                    {{ $row->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback errorHomecare"></div>
+                                        <label for="homecare" class="form-label">Homecare</label>
+                                        <div style="overflow-y:scroll;height:150px;margin-bottom:30px;">
+                                            <div class="form-group">
+                                                <label>
+                                                    @foreach ($homecare as $row)
+                                                        <div class="form-group">
+                                                            <label>
+                                                                <input type="checkbox" name="homecare[]" id="homecare"
+                                                                    class="homecare-checkbox" value="{{ $row->name }}"
+                                                                    data-id="{{ $row->id }}">
+                                                                {{ $row->name }}
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-danger errorHomecare text-sm">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="nama" class="form-label">Nama</label>
-                                        <input type="text" name="nama" id="nama" class="form-control"
-                                            readonly>
-                                        <div class="invalid-feedback errorNama"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="biaya_dokter" class="form-label">Biaya Dokter</label>
-                                        <input type="text" name="biaya_dokter" id="biaya_dokter" class="form-control"
-                                            readonly>
-                                        <div class="invalid-feedback errorBiayaDokter"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="biaya_perawat" class="form-label">Biaya Perawat</label>
-                                        <input type="text" name="biaya_perawat" id="biaya_perawat"
-                                            class="form-control" readonly>
-                                        <div class="invalid-feedback errorBiayaPerawat"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
                                     <div class="mb-3">
                                         <label for="total_biaya" class="form-label">Total Biaya</label>
                                         <input type="text" name="total_biaya" id="total_biaya" class="form-control"
@@ -234,9 +196,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <button type="button" class="btn btn-secondary mb-2"
-                                    onclick="window.location='{{ route('transaksi-homecare.index') }}'">Kembali</button>
+                                    onclick="window.location='{{ route('transaksi-homecare-perawat.index') }}'">Kembali</button>
                                 <button type="submit" class="btn btn-primary mb-2" id="simpan">Simpan</button>
                             </div>
                         </div>
@@ -255,18 +217,97 @@
                 }
             });
 
+            var total_biaya = 0;
+            var jumlah_checked = 0;
+            $('.homecare-checkbox').change(function() {
+                let biaya_tambahan = parseInt($('#biaya_tambahan').val());
+                let homecare_id = $(this).data('id');
+                let is_checked = $(this).is(':checked');
+
+                // cek apakah checkbox di-check atau di-uncheck
+                if (is_checked) {
+                    if (jumlah_checked < 3) {
+                        $.ajax({
+                            url: '/transaksi-homecare-perawat/getHomecarePrice',
+                            method: 'POST',
+                            data: {
+                                homecare_id: homecare_id
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                let price = parseInt(response.price);
+                                total_biaya += price;
+                                if (total_biaya <= 0) {
+                                    $('#total_biaya').val(0);
+                                } else {
+                                    $('#total_biaya').val(total_biaya);
+                                }
+
+                                // tambahkan biaya tambahan jarak hanya sekali saat layanan pertama dipilih
+                                if (jumlah_checked == 0) {
+                                    let jarak = $('#jarak').val();
+                                    let biaya_jarak = Math.floor(jarak / 10) * 15000;
+                                    total_biaya += biaya_jarak;
+                                    $('#biaya_tambahan').val(biaya_jarak);
+                                    $('#total_biaya').val(total_biaya);
+                                }
+                                jumlah_checked++;
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Anda hanya dapat memilih maksimal 3 layanan!',
+                        });
+
+                        $(this).prop('checked', false);
+                    }
+                } else {
+                    $.ajax({
+                        url: '/transaksi-homecare-perawat/getHomecarePrice',
+                        method: 'POST',
+                        data: {
+                            homecare_id: homecare_id
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            let price = parseInt(response.price);
+                            total_biaya -= price;
+                            if (total_biaya <= 0) {
+                                $('#total_biaya').val(0);
+                            } else {
+                                $('#total_biaya').val(total_biaya);
+                            }
+
+                            // kurangi biaya tambahan jarak hanya saat layanan terakhir di-uncheck
+                            jumlah_checked--;
+                            if (jumlah_checked == 0) {
+                                $('#biaya_tambahan').val(0);
+                                $('#total_biaya').val(total_biaya);
+                            }
+                        }
+                    });
+                }
+            });
+
+
             $('#jarak').on('input', function() {
                 var jarak = $(this).val();
                 var biaya = Math.floor(jarak / 10) * 15000; // biaya per 10 km
                 $('#biaya_tambahan').val(biaya); // tampilkan biaya dalam format rupiah
+                if (total_biaya > 0) {
+                    $('#total_biaya').val(total_biaya + biaya);
+                }
             });
+
 
             $('#provinsi').on('change', function() {
                 let id_provinsi = $('#provinsi').val();
 
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('transaksi-homecare.get-kabupaten') }}",
+                    url: "{{ route('transaksi-homecare-perawat.get-kabupaten') }}",
                     data: {
                         id_provinsi: id_provinsi
                     },
@@ -287,7 +328,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('transaksi-homecare.get-kecamatan') }}",
+                    url: "{{ route('transaksi-homecare-perawat.get-kecamatan') }}",
                     data: {
                         id_kabupaten: id_kabupaten
                     },
@@ -307,7 +348,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('transaksi-homecare.get-desa') }}",
+                    url: "{{ route('transaksi-homecare-perawat.get-desa') }}",
                     data: {
                         id_kecamatan: id_kecamatan
                     },
@@ -321,39 +362,11 @@
                 });
             });
 
-            $('#homecare').on('change', function() {
-                var id_homecare = $('#homecare').val();
-                let biaya_tambahan = $('#biaya_tambahan').val();
-                if (id_homecare) {
-                    $.ajax({
-                        url: "{{ route('transaksi-homecare.get-homecare') }}",
-                        type: "POST",
-                        data: {
-                            id_homecare: id_homecare,
-                        },
-                        success: function(response) {
-                            let total_biaya = parseInt(response.total_biaya_perawat_dokter) +
-                                parseInt(biaya_tambahan);
-                            $('#nama').val(response.name);
-                            $('#biaya_dokter').val('Rp. ' + response.total_biaya_dokter
-                                .toLocaleString());
-                            $('#biaya_perawat').val(response.total_biaya_perawat);
-                            $('#total_biaya').val(total_biaya);
-                        }
-                    });
-                } else {
-                    $('#nama').val('');
-                    $('#biaya_dokter').val('');
-                    $('#biaya_perawat').val('');
-                    $('#total_biaya').val('');
-                }
-            });
-
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
                     data: new FormData(this),
-                    url: "{{ route('transaksi-homecare.store') }}",
+                    url: "{{ route('transaksi-homecare-perawat.store') }}",
                     type: "POST",
                     dataType: 'json',
                     processData: false,
@@ -441,10 +454,8 @@
                                 $('.errorJarak').html('');
                             }
                             if (response.errors.homecare) {
-                                $('#homecare').addClass('is-invalid');
                                 $('.errorHomecare').html(response.errors.homecare);
                             } else {
-                                $('#homecare').removeClass('is-invalid');
                                 $('.errorHomecare').html('');
                             }
                             if (response.errors.bukti_pembayaran) {
@@ -470,7 +481,7 @@
                                 text: 'Data berhasil disimpan',
                             }).then(function() {
                                 top.location.href =
-                                    "{{ route('transaksi-homecare.index') }}";
+                                    "{{ route('transaksi-homecare-perawat.index') }}";
                             });
                         }
                     },
