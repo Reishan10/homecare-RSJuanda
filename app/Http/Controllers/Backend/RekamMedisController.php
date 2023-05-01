@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\backend;
 
+use App\Exports\RekamMedisExport;
 use App\Http\Controllers\Controller;
 use App\Models\Dokter;
 use App\Models\RekamMedis;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RekamMedisController extends Controller
 {
@@ -178,5 +181,19 @@ class RekamMedisController extends Controller
         }
 
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $rekamMedis = RekamMedis::with(['user', 'dokter'])->get();
+
+        $pdf = Pdf::loadView('backend.rekam_medis.printPDF', compact('rekamMedis'));
+        return $pdf->download('data-rekam-medis-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $rekamMedis = RekamMedis::with(['user', 'dokter'])->get();
+        return Excel::download(new RekamMedisExport($rekamMedis), 'data-rekam-medis.xlsx');
     }
 }

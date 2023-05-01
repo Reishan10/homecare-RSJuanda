@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\DokterExport;
 use App\Http\Controllers\Controller;
 use App\Models\Dokter;
 use App\Models\Jabatan;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DokterController extends Controller
 {
@@ -233,5 +236,19 @@ class DokterController extends Controller
         $id = $request->id;
         User::whereIn('id', explode(",", $id))->delete();
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $dokter = Dokter::with('user', 'jabatan')->get();
+
+        $pdf = Pdf::loadView('backend.dokter.printPDF', compact('dokter'));
+        return $pdf->download('data-dokter-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $dokter = Dokter::with('user', 'jabatan')->get();
+        return Excel::download(new DokterExport($dokter), 'data-dokter.xlsx');
     }
 }

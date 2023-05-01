@@ -15,13 +15,24 @@
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="tab-pane show active" id="basic-preview">
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <button type="button" class="btn btn-danger mb-3 btn-sm" id="btnHapusBanyak">
-                                        <i class="mdi mdi-trash-can"></i> Hapus Banyak
-                                    </button>
-                                    <button type="button" class="btn btn-primary mb-3 btn-sm" id="btnTambah">
-                                        <i class="mdi mdi-plus"></i> Tambah Data
-                                    </button>
+                                <div class="d-md-flex justify-content-between">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <a href="{{ route('kategori.printPDF') }}" class="btn btn-secondary btn-sm"
+                                            id="btnExportPDF"> <i class="mdi mdi-file-pdf"></i> Export PDF</a>
+                                        <a href="{{ route('kategori.exportExcel') }}" class="btn btn-secondary btn-sm ms-1"
+                                            id="btnExportExcel"> <i class="mdi mdi-file-excel"></i> Export Excel</a>
+                                        <button class="btn btn-secondary btn-sm ms-1" id="btnPrint">
+                                            <i class="mdi mdi-printer"></i> Print
+                                        </button>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3 text-md-end">
+                                        <button type="button" class="btn btn-danger btn-sm" id="btnHapusBanyak">
+                                            <i class="mdi mdi-trash-can"></i> Hapus Banyak
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm ms-md-1" id="btnTambah">
+                                            <i class="mdi mdi-plus"></i> Tambah Data
+                                        </button>
+                                    </div>
                                 </div>
                                 <table id="datatable" class="table dt-responsive nowrap w-100">
                                     <thead>
@@ -108,6 +119,32 @@
                         name: 'Aksi'
                     }
                 ]
+            });
+
+            $('#btnPrint').on('click', function() {
+                var table = $('#datatable').DataTable();
+                var data = table.data().toArray();
+
+                var printContent =
+                    '<table class="table"><thead><tr><th>No</th><th>Kode Kategori</th><th>Nama</th></tr></thead><tbody>';
+
+                $.each(data, function(index, value) {
+                    printContent += '<tr><td>' + (index + 1) + '</td><td>' + value.kode_kategori +
+                        '</td><td>' + value.name + '</td></tr>';
+                });
+
+                printContent += '</tbody></table>';
+
+                var printWindow = window.open('', '', 'height=500,width=800');
+                printWindow.document.write('<html><head><title>Print Kategori</title>');
+                printWindow.document.write(
+                    '<style>body{font-family: Arial, sans-serif;font-size: 14px;}table {width: 100%;border-collapse: collapse;}td,th {padding: 5px;border: 1px solid #ddd;}th {background - color: #f2f2f2;text - align: left;}h2 {font - size: 18 px;margin - top: 0;}.text - bold {font - weight: bold;}.text - center {text - align: center;}.text - right {text - align: right;}.mb - 10 {margin - bottom: 10 px;}</style>'
+                );
+                printWindow.document.write('</head><body>');
+                printWindow.document.write(printContent);
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+                printWindow.print();
             });
 
             // Tambah Data

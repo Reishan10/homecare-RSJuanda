@@ -44,9 +44,6 @@
                                 <a href="{{ route('fisioterapi.index') }}">Fisioterapi</a>
                             </li>
                             <li>
-                                <a href="{{ route('kota.index') }}">Kota</a>
-                            </li>
-                            <li>
                                 <a href="{{ route('bayar.index') }}">Bayar</a>
                             </li>
                             <li>

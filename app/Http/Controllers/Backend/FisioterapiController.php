@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\FisioterapiExport;
 use App\Http\Controllers\Controller;
 use App\Models\Fisioterapi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FisioterapiController extends Controller
 {
@@ -105,5 +108,19 @@ class FisioterapiController extends Controller
         $id = $request->id;
         Fisioterapi::whereIn('id', explode(",", $id))->delete();
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $fisioterapi = Fisioterapi::all();
+
+        $pdf = Pdf::loadView('backend.fisioterapi.printPDF', compact('fisioterapi'));
+        return $pdf->download('data-fisioterapi-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $fisioterapi = Fisioterapi::get(['kode_fisioterapi', 'name', 'harga']);
+        return Excel::download(new FisioterapiExport($fisioterapi), 'data-fisioterapi.xlsx');
     }
 }

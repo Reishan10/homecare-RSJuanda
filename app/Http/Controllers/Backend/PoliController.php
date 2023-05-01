@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\PoliExport;
 use App\Http\Controllers\Controller;
 use App\Models\Poli;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PoliController extends Controller
 {
@@ -88,5 +91,19 @@ class PoliController extends Controller
         $id = $request->id;
         Poli::whereIn('id', explode(",", $id))->delete();
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $poli = Poli::all();
+
+        $pdf = Pdf::loadView('backend.poli.printPDF', compact('poli'));
+        return $pdf->download('data-poli-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $poli = Poli::get(['kode_poli', 'name']);
+        return Excel::download(new PoliExport($poli), 'data-poli.xlsx');
     }
 }

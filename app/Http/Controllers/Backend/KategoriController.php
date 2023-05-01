@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\KategoriExport;
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KategoriController extends Controller
 {
@@ -88,5 +91,19 @@ class KategoriController extends Controller
         $id = $request->id;
         Kategori::whereIn('id', explode(",", $id))->delete();
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $kategori = Kategori::all();
+
+        $pdf = Pdf::loadView('backend.kategori.printPDF', compact('kategori'));
+        return $pdf->download('data-kategori-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $kategori = Kategori::get(['kode_kategori', 'name']);
+        return Excel::download(new KategoriExport($kategori), 'data-kategori.xlsx');
     }
 }

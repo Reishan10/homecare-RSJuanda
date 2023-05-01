@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\JabatanExport;
 use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class JabatanController extends Controller
 {
@@ -88,5 +91,19 @@ class JabatanController extends Controller
         $id = $request->id;
         Jabatan::whereIn('id', explode(",", $id))->delete();
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $jabatan = Jabatan::all();
+
+        $pdf = Pdf::loadView('backend.jabatan.printPDF', compact('jabatan'));
+        return $pdf->download('data-jabatan-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $jabatan = Jabatan::get(['kode_jabatan', 'name']);
+        return Excel::download(new JabatanExport($jabatan), 'data-jabatan.xlsx');
     }
 }

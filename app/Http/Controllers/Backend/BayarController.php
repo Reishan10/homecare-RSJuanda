@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\BayarExport;
 use App\Http\Controllers\Controller;
 use App\Models\Bayar;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BayarController extends Controller
 {
@@ -88,5 +91,19 @@ class BayarController extends Controller
         $id = $request->id;
         Bayar::whereIn('id', explode(",", $id))->delete();
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $bayar = Bayar::all();
+
+        $pdf = Pdf::loadView('backend.bayar.printPDF', compact('bayar'));
+        return $pdf->download('data-bayar-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $bayar = Bayar::get(['kode_bayar', 'name']);
+        return Excel::download(new BayarExport($bayar), 'data-bayar.xlsx');
     }
 }

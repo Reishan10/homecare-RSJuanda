@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\PasienExport;
 use App\Http\Controllers\Controller;
 use App\Models\Pasien;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PasienController extends Controller
 {
@@ -252,5 +255,19 @@ class PasienController extends Controller
         }
 
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $pasien = User::where('type', 0)->orderBy('name', 'asc')->get();
+
+        $pdf = Pdf::loadView('backend.pasien.printPDF', compact('pasien'));
+        return $pdf->download('data-pasien-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $pasien = User::where('type', 0)->orderBy('name', 'asc')->get(['name', 'email', 'no_telepon', 'address']);
+        return Excel::download(new PasienExport($pasien), 'data-pasien.xlsx');
     }
 }

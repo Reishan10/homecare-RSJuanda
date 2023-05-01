@@ -9,7 +9,6 @@ use App\Http\Controllers\Backend\GantiPasswordController;
 use App\Http\Controllers\Backend\HomecareController;
 use App\Http\Controllers\Backend\JabatanController;
 use App\Http\Controllers\Backend\KategoriController;
-use App\Http\Controllers\Backend\KotaController;
 use App\Http\Controllers\Backend\LayananController;
 use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PerawatController;
@@ -70,6 +69,8 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter'
     Route::post('/chatpayment/{chatpayment}', [ChatPaymentController::class, 'update'])->name('chatpayment.update');
     Route::get('/chatpayment/detail/{chatpayment}', [ChatPaymentController::class, 'detail'])->name('chatpayment.detail');
     Route::delete('chatpayment/{chatpayment}', [ChatPaymentController::class, 'destroy'])->name('chatpayment.destroy');
+    Route::get('/chatpayment/printPDF', [ChatPaymentController::class, 'printPDF'])->name('chatpayment.printPDF');
+    Route::get('/chatpayment/exportExcel', [ChatPaymentController::class, 'exportExcel'])->name('chatpayment.exportExcel');
 
     //Pasien
     Route::post('/pasien/delete-multiple-pasien', [PasienController::class, 'deleteMultiple'])->name('delete-multiple-pasien');
@@ -80,6 +81,8 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter'
     Route::post('/pasien/{pasien}', [PasienController::class, 'update'])->name('pasien.update');
     Route::post('/pasien/detail/{pasien}', [PasienController::class, 'detail'])->name('pasien.detail');
     Route::delete('pasien/{pasien}', [PasienController::class, 'destroy'])->name('pasien.destroy');
+    Route::get('/pasien/printPDF', [PasienController::class, 'printPDF'])->name('pasien.printPDF');
+    Route::get('/pasien/exportExcel', [PasienController::class, 'exportExcel'])->name('pasien.exportExcel');
 });
 
 Route::group(['middleware' => ['auth', 'user-access:Administrator,Dokter,Perawat']], function () {
@@ -109,6 +112,8 @@ Route::group(['middleware' => ['auth', 'user-access:Administrator,Dokter']], fun
     Route::post('/rekam-medis/{id}', [RekamMedisController::class, 'update'])->name('rekam-medis.update');
     Route::post('/rekam-medis/detail/{id}', [RekamMedisController::class, 'detail'])->name('rekam-medis.detail');
     Route::delete('/rekam-medis/{id}', [RekamMedisController::class, 'destroy'])->name('rekam-medis.destroy');
+    Route::get('/rekam-medis/printPDF', [RekamMedisController::class, 'printPDF'])->name('rekam-medis.printPDF');
+    Route::get('/rekam-medis/exportExcel', [RekamMedisController::class, 'exportExcel'])->name('rekam-medis.exportExcel');
 });
 
 Route::group(['middleware' => ['auth', 'user-access:Dokter']], function () {
@@ -132,6 +137,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/dokter/{dokter}', [DokterController::class, 'update'])->name('dokter.update');
     Route::post('/dokter/detail/{dokter}', [DokterController::class, 'detail'])->name('dokter.detail');
     Route::delete('dokter/{dokter}', [DokterController::class, 'destroy'])->name('dokter.destroy');
+    Route::get('/dokter/printPDF', [DokterController::class, 'printPDF'])->name('dokter.printPDF');
+    Route::get('/dokter/exportExcel', [DokterController::class, 'exportExcel'])->name('dokter.exportExcel');
 
     //Perawat
     Route::post('/perawat/delete-multiple-perawat', [PerawatController::class, 'deleteMultiple'])->name('delete-multiple-perawat');
@@ -142,13 +149,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/perawat/{perawat}', [PerawatController::class, 'update'])->name('perawat.update');
     Route::post('/perawat/detail/{perawat}', [PerawatController::class, 'detail'])->name('perawat.detail');
     Route::delete('perawat/{perawat}', [PerawatController::class, 'destroy'])->name('perawat.destroy');
-
-    //Kota
-    Route::post('/kota/delete-multiple-kota', [KotaController::class, 'deleteMultiple'])->name('delete-multiple-kota');
-    Route::get('/kota', [KotaController::class, 'index'])->name('kota.index');
-    Route::post('/kota', [KotaController::class, 'store'])->name('kota.store');
-    Route::get('/kota/{kota}/edit', [KotaController::class, 'edit'])->name('kota.edit');
-    Route::delete('kota/{kota}', [KotaController::class, 'destroy'])->name('kota.destroy');
+    Route::get('/perawat/printPDF', [PerawatController::class, 'printPDF'])->name('perawat.printPDF');
+    Route::get('/perawat/exportExcel', [PerawatController::class, 'exportExcel'])->name('perawat.exportExcel');
 
     // User
     Route::post('/pengguna/delete-multiple-user', [UserController::class, 'deleteMultiple'])->name('delete-multiple-user');
@@ -158,6 +160,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::post('/pengguna/{user}', [UserController::class, 'update'])->name('user.update');
     Route::delete('pengguna/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/pengguna/printPDF', [UserController::class, 'printPDF'])->name('pengguna.printPDF');
+    Route::get('/pengguna/exportExcel', [UserController::class, 'exportExcel'])->name('pengguna.exportExcel');
 
     //Layanan
     Route::post('/layanan/delete-multiple-layanan', [LayananController::class, 'deleteMultiple'])->name('delete-multiple-layanan');
@@ -166,6 +170,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/layanan/{layanan}/edit', [LayananController::class, 'edit'])->name('layanan.edit');
     Route::post('/layanan/detail/{layanan}', [LayananController::class, 'detail'])->name('layanan.detail');
     Route::delete('layanan/{layanan}', [LayananController::class, 'destroy'])->name('layanan.destroy');
+    Route::get('/layanan/printPDF', [LayananController::class, 'printPDF'])->name('layanan.printPDF');
+    Route::get('/layanan/exportExcel', [LayananController::class, 'exportExcel'])->name('layanan.exportExcel');
 
     //Bayar
     Route::post('/bayar/delete-multiple-bayar', [BayarController::class, 'deleteMultiple'])->name('delete-multiple-bayar');
@@ -173,6 +179,9 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/bayar', [BayarController::class, 'store'])->name('bayar.store');
     Route::get('/bayar/{bayar}/edit', [BayarController::class, 'edit'])->name('bayar.edit');
     Route::delete('bayar/{bayar}', [BayarController::class, 'destroy'])->name('bayar.destroy');
+    Route::get('/bayar/printPDF', [BayarController::class, 'printPDF'])->name('bayar.printPDF');
+    Route::get('/bayar/exportExcel', [BayarController::class, 'exportExcel'])->name('bayar.exportExcel');
+
 
     //Kategori
     Route::post('/kategori/delete-multiple-kategori', [KategoriController::class, 'deleteMultiple'])->name('delete-multiple-kategori');
@@ -180,6 +189,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
     Route::get('/kategori/{kategori}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
     Route::delete('kategori/{kategori}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+    Route::get('/kategori/printPDF', [KategoriController::class, 'printPDF'])->name('kategori.printPDF');
+    Route::get('/kategori/exportExcel', [KategoriController::class, 'exportExcel'])->name('kategori.exportExcel');
 
     //Poli
     Route::post('/poli/delete-multiple-poli', [PoliController::class, 'deleteMultiple'])->name('delete-multiple-poli');
@@ -187,6 +198,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/poli', [PoliController::class, 'store'])->name('poli.store');
     Route::get('/poli/{poli}/edit', [PoliController::class, 'edit'])->name('poli.edit');
     Route::delete('poli/{poli}', [PoliController::class, 'destroy'])->name('poli.destroy');
+    Route::get('/poli/printPDF', [PoliController::class, 'printPDF'])->name('poli.printPDF');
+    Route::get('/poli/exportExcel', [PoliController::class, 'exportExcel'])->name('poli.exportExcel');
 
     //Jabatan
     Route::post('/jabatan/delete-multiple-jabatan', [JabatanController::class, 'deleteMultiple'])->name('delete-multiple-jabatan');
@@ -194,6 +207,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/jabatan', [JabatanController::class, 'store'])->name('jabatan.store');
     Route::get('/jabatan/{jabatan}/edit', [JabatanController::class, 'edit'])->name('jabatan.edit');
     Route::delete('jabatan/{jabatan}', [JabatanController::class, 'destroy'])->name('jabatan.destroy');
+    Route::get('/jabatan/printPDF', [JabatanController::class, 'printPDF'])->name('jabatan.printPDF');
+    Route::get('/jabatan/exportExcel', [JabatanController::class, 'exportExcel'])->name('jabatan.exportExcel');
 
     //Homecare
     Route::post('/homecare/delete-multiple-homecare', [HomecareController::class, 'deleteMultiple'])->name('delete-multiple-homecare');
@@ -204,6 +219,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::post('/homecare/{homecare}', [HomecareController::class, 'update'])->name('homecare.update');
     Route::post('/homecare/detail/{homecare}', [HomecareController::class, 'detail'])->name('homecare.detail');
     Route::delete('/homecare/{homecare}', [HomecareController::class, 'destroy'])->name('homecare.destroy');
+    Route::get('/homecare/printPDF', [HomecareController::class, 'printPDF'])->name('homecare.printPDF');
+    Route::get('/homecare/exportExcel', [HomecareController::class, 'exportExcel'])->name('homecare.exportExcel');
 
     //Fisioterapi
     Route::post('/fisioterapi/delete-multiple-fisioterapi', [BackendFisioterapiController::class, 'deleteMultiple'])->name('delete-multiple-fisioterapi');
@@ -212,6 +229,8 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/fisioterapi/{fisioterapi}/edit', [BackendFisioterapiController::class, 'edit'])->name('fisioterapi.edit');
     Route::post('/fisioterapi/detail/{fisioterapi}', [BackendFisioterapiController::class, 'detail'])->name('fisioterapi.detail');
     Route::delete('fisioterapi/{fisioterapi}', [BackendFisioterapiController::class, 'destroy'])->name('fisioterapi.destroy');
+    Route::get('/fisioterapi/printPDF', [BackendFisioterapiController::class, 'printPDF'])->name('fisioterapi.printPDF');
+    Route::get('/fisioterapi/exportExcel', [BackendFisioterapiController::class, 'exportExcel'])->name('fisioterapi.exportExcel');
 
     //Transaksi Homecare
     Route::post('/transaksi-homecare-perawat/getKabupaten', [TransaksiHomecarePerawatController::class, 'getKabupaten'])->name('transaksi-homecare-perawat.get-kabupaten');

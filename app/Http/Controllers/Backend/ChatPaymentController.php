@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\ChatpaymentExport;
 use App\Http\Controllers\Controller;
 use App\Models\ChatPayment;
 use App\Models\Dokter;
 use App\Models\Pasien;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ChatPaymentController extends Controller
 {
@@ -157,5 +160,19 @@ class ChatPaymentController extends Controller
         $chatpayment = ChatPayment::findOrFail($request->id);
         $chatpayment->delete();
         return Response()->json(['chatpayment' => $chatpayment, 'success' => 'Data berhasil dihapus']);
+    }
+
+    public function printPDF()
+    {
+        $chatpayments = Chatpayment::with(['user', 'dokter'])->orderBy('created_at', 'desc')->get();
+
+        $pdf = Pdf::loadView('backend.chatpayment.printPDF', compact('chatpayments'));
+        return $pdf->download('data-chatpayment-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $chatpayments = Chatpayment::with(['user', 'dokter'])->orderBy('created_at', 'desc')->get();
+        return Excel::download(new ChatpaymentExport($chatpayments), 'data-chatpayments.xlsx');
     }
 }

@@ -18,16 +18,23 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-sm-12">
-                                <div class="text-sm-end">
-                                    <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
-                                        <i class="mdi mdi-trash-can"></i> Hapus Banyak
-                                    </button>
-                                    <a href="{{ route('dokter.create') }}" class="btn btn-primary mb-2 btn-sm"><i
-                                            class="mdi mdi-plus-circle"></i> Tambah Dokter</a>
-                                </div>
-                            </div><!-- end col-->
+                        <div class="d-md-flex justify-content-between">
+                            <div class="d-flex align-items-center mb-3">
+                                <a href="{{ route('dokter.printPDF') }}" class="btn btn-secondary btn-sm" id="btnExportPDF">
+                                    <i class="mdi mdi-file-pdf"></i> Export PDF</a>
+                                <a href="{{ route('dokter.exportExcel') }}" class="btn btn-secondary btn-sm ms-1"
+                                    id="btnExportExcel"> <i class="mdi mdi-file-excel"></i> Export Excel</a>
+                                <button class="btn btn-secondary btn-sm ms-1" id="btnPrint">
+                                    <i class="mdi mdi-printer"></i> Print
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center mb-3 text-md-end">
+                                <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
+                                    <i class="mdi mdi-trash-can"></i> Hapus Banyak
+                                </button>
+                                <a href="{{ route('dokter.create') }}" class="btn btn-primary mb-2 btn-sm ms-1"><i
+                                        class="mdi mdi-plus-circle"></i> Tambah Dokter</a>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -232,6 +239,34 @@
                     }
                 ]
             });
+        });
+
+        $('#btnPrint').on('click', function() {
+            var table = $('#datatable').DataTable();
+            var data = table.data().toArray();
+
+            var printContent =
+                '<table class="table"><thead><tr><th>No</th><th>Nama</th><th>Email</th><th>No Telepon</th><th>Status</th></tr></thead><tbody>';
+
+            $.each(data, function(index, value) {
+                printContent += '<tr><td>' + (index + 1) + '</td><td>' + value.name +
+                    '</td><td>' + value.email + '</td><td>' + value.no_telepon + '</td><td>' + value
+                    .status +
+                    '</td></tr>';
+            });
+
+            printContent += '</tbody></table>';
+
+            var printWindow = window.open('', '', 'height=500,width=800');
+            printWindow.document.write('<html><head><title>Print Dokter</title>');
+            printWindow.document.write(
+                '<style>body{font-family: Arial, sans-serif;font-size: 14px;}table {width: 100%;border-collapse: collapse;}td,th {padding: 5px;border: 1px solid #ddd;}th {background - color: #f2f2f2;text - align: left;}h2 {font - size: 18 px;margin - top: 0;}.text - bold {font - weight: bold;}.text - center {text - align: center;}.text - right {text - align: right;}.mb - 10 {margin - bottom: 10 px;}</style>'
+            );
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printContent);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
         });
 
         // Hapus Data

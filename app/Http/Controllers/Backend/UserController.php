@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\PenggunaExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
     public function index()
     {
         if (request()->ajax()) {
-            $user = $user = User::where('id', '!=', auth()->user()->id)->orderBy('name', 'asc')->get();
+            $user = User::where('id', '!=', auth()->user()->id)->orderBy('name', 'asc')->get();
             return DataTables::of($user)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
@@ -263,5 +266,19 @@ class UserController extends Controller
                 return response()->json($user);
             }
         }
+    }
+
+    public function printPDF()
+    {
+        $pengguna = User::orderBy('name', 'asc')->get();
+
+        $pdf = Pdf::loadView('backend.user.printPDF', compact('pengguna'));
+        return $pdf->download('data-pengguna-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $pengguna = User::orderBy('name', 'asc')->get();
+        return Excel::download(new PenggunaExport($pengguna), 'data-pengguna.xlsx');
     }
 }

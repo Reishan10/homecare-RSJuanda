@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\PerawatExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
 use App\Models\Perawat;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PerawatController extends Controller
 {
@@ -240,5 +243,19 @@ class PerawatController extends Controller
         }
 
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $perawat =  Perawat::with('jabatan', 'user')->get();
+
+        $pdf = Pdf::loadView('backend.perawat.printPDF', compact('perawat'));
+        return $pdf->download('data-perawat-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $perawat =  Perawat::with('jabatan', 'user')->get();
+        return Excel::download(new PerawatExport($perawat), 'data-perawat.xlsx');
     }
 }

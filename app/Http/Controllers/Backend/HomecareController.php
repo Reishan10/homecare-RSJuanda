@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\HomecareExport;
 use App\Http\Controllers\Controller;
 use App\Models\Bayar;
 use App\Models\Homecare;
 use App\Models\Kategori;
 use App\Models\Poli;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HomecareController extends Controller
 {
@@ -264,5 +267,18 @@ class HomecareController extends Controller
             }
         }
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $homecare = Homecare::with('bayar', 'kategori', 'poli')->orderBy('kode_homecare', 'asc')->get();
+        $pdf = Pdf::loadView('backend.homecare.printPDF', compact('homecare'));
+        return $pdf->download('data-homecare-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $homecare = Homecare::with('bayar', 'kategori', 'poli')->orderBy('kode_homecare', 'asc')->get();
+        return Excel::download(new HomecareExport($homecare), 'data-homecare.xlsx');
     }
 }

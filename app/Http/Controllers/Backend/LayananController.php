@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\LayananExport;
 use App\Http\Controllers\Controller;
 use App\Models\Layanan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LayananController extends Controller
 {
@@ -105,5 +108,19 @@ class LayananController extends Controller
         $id = $request->id;
         Layanan::whereIn('id', explode(",", $id))->delete();
         return response()->json(['success' => "Data berhasil dihapus"]);
+    }
+
+    public function printPDF()
+    {
+        $layanan = Layanan::all();
+
+        $pdf = Pdf::loadView('backend.layanan.printPDF', compact('layanan'));
+        return $pdf->download('data-layanan-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $layanan = Layanan::get(['kode_layanan', 'name', 'harga']);
+        return Excel::download(new LayananExport($layanan), 'data-layanan.xlsx');
     }
 }
