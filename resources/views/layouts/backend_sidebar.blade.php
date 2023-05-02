@@ -78,6 +78,9 @@
                             <li>
                                 <a href="{{ route('transaksi-homecare.index') }}">Layanan Paket Homecare</a>
                             </li>
+                            <li>
+                                <a href="{{ route('transaksi-fisioterapi.index') }}">Layanan Fisioterapi</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -130,12 +133,77 @@
                 </li>
             @endif
 
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false"
+                    aria-controls="sidebarMultiLevel" class="side-nav-link">
+                    <i class="uil-folder-plus"></i>
+                    <span> Laporan Transaksi </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarMultiLevel">
+                    <ul class="side-nav-second-level">
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarThirdLevelHomecare" aria-expanded="false"
+                                aria-controls="sidebarThirdLevelHomecare">
+                                <span> Homecare </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarThirdLevelHomecare">
+                                <ul class="side-nav-third-level">
+                                    <li>
+                                        <a href="javascript: void(0);">Rentang Waktu</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript: void(0);">Alamat</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarThirdLevelPaket" aria-expanded="false"
+                                aria-controls="sidebarThirdLevelPaket">
+                                <span> Paket Homecare </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarThirdLevelPaket">
+                                <ul class="side-nav-third-level">
+                                    <li>
+                                        <a href="javascript: void(0);">Rentang Waktu</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript: void(0);">Alamat</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarThirdLevelFisioterapi" aria-expanded="false"
+                                aria-controls="sidebarThirdLevelFisioterapi">
+                                <span> Fisioterapi </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarThirdLevelFisioterapi">
+                                <ul class="side-nav-third-level">
+                                    <li>
+                                        <a href="{{ route('laporan-fisioterapi.waktu') }}">Waktu</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript: void(0);">Wilayah</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             <li class="side-nav-item {{ request()->segment(1) == 'ganti-password' ? 'active' : '' }}">
                 <a href="{{ route('ganti-password.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-lock"></i>
                     <span> Ganti Password </span>
                 </a>
             </li>
+
             <li class="side-nav-item">
                 <a href="{{ route('logout') }}" class="side-nav-link"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

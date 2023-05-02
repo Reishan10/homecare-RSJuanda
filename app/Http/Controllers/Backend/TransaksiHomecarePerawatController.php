@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exports\TransaksiHomecarePerawatExport;
 use App\Http\Controllers\Controller;
 use App\Models\District;
 use App\Models\Layanan;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransaksiHomecarePerawatController extends Controller
 {
@@ -297,5 +299,19 @@ class TransaksiHomecarePerawatController extends Controller
 
         $pdf = Pdf::loadView('backend.transaksiHomecarePerawat.print', compact('data', 'waktu', 'hargaLayanan'));
         return $pdf->download('transaksi-homecare-' . $data->pasien->name . '-' . time() . '.pdf');
+    }
+
+    public function printPDF()
+    {
+        $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->orderBy('created_at', 'asc')->get();
+
+        $pdf = Pdf::loadView('backend.transaksiHomecarePerawat.printPDF', compact('transaksiHomecare'));
+        return $pdf->download('data-transaksi-homecare-' . time() . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->orderBy('created_at', 'asc')->get();
+        return Excel::download(new TransaksiHomecarePerawatExport($transaksiHomecare), 'data-transaksi-homecare.xlsx');
     }
 }
