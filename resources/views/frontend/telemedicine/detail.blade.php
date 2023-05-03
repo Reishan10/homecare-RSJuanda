@@ -10,12 +10,14 @@
                 </div>
                 <div class="col-12 col-lg-8">
                     <h6 class="font-family-tertiary font-small fw-normal uppercase">{{ $user->dokter->spesialis }} -
-                        {{ $user->dokter->pengalaman_tahun }}Tahun</h6>
+                        {{ $user->dokter->pengalaman_tahun }} Tahun | Jam Kerja : {{ $user->dokter->jam_masuk }} -
+                        {{ $user->dokter->jam_pulang }}</h6>
                     <h3>{{ $user->name }}</h3>
+                    <h6 class="font-family-tertiary font-small fw-normal uppercase">Hari Kerja :
+                        {{ $user->dokter->hari }}</h6>
                     <p>{{ $user->dokter->deskripsi }}</p>
                     <a class="button button-reveal-right-dark button-lg margin-top-10 btn-"
-                        href="{{ url('chat-RSJuanda/' . $user->id) }}"><i class="bi bi-arrow-right"></i><span>CHAT</span></a>
-
+                        href="{{ route('chatpayment.index') }}"><i class="bi bi-arrow-right"></i><span>CHAT</span></a>
                 </div>
             </div><!-- end row -->
         </div><!-- end container -->

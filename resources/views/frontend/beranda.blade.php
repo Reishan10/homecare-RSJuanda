@@ -5,7 +5,7 @@
     <div class="owl-carousel owl-nav-overlay owl-dots-overlay" data-owl-autoplay="true" data-owl-nav="true" data-owl-dots="true"
         data-owl-items="1">
         <!-- Slider Item 1 -->
-        <div class="section-2xl bg-image" data-bg-src="{{ asset('assets') }}/images/header_juanda.jpg">
+        <div class="section-2xl bg-image" data-bg-src="{{ asset('assets') }}/images/header_beranda.png">
             <div class="bg-black-06">
                 <div class="container text-center">
                     <h3 class="fw-normal uppercase margin-bottom-10">Selamat Datang</h3>
@@ -49,15 +49,26 @@
             </div>
             <div class="owl-carousel" data-owl-margin="10" data-owl-xs="1" data-owl-sm="2" data-owl-md="2" data-owl-lg="3"
                 data-owl-xl="3">
-                <!-- Slide box 1 -->
                 <div class="border-all">
                     <div class="hoverbox-9">
                         <a href="#">
-                            <img src="{{ asset('assets') }}/images/perawat.png" alt="">
+                            <img src="{{ asset('assets') }}/images/homecare.jpg" alt="">
                         </a>
                     </div>
                     <div class="padding-30">
-                        <h5 class="fw-normal margin-0">Perawat</h5>
+                        <h5 class="fw-normal margin-0">Homecare</h5>
+                        <p>Perawat profesional yang akan memenuhi kebutuhan anda</p>
+                        <a class="button button-sm button-radius button-green margin-top-20" href="#">Lihat</a>
+                    </div>
+                </div>
+                <div class="border-all">
+                    <div class="hoverbox-9">
+                        <a href="#">
+                            <img src="{{ asset('assets') }}/images/paket-homecare.png" alt="">
+                        </a>
+                    </div>
+                    <div class="padding-30">
+                        <h5 class="fw-normal margin-0">Paket Homecare</h5>
                         <p>Perawat profesional yang akan memenuhi kebutuhan anda</p>
                         <a class="button button-sm button-radius button-green margin-top-20" href="#">Lihat</a>
                     </div>
@@ -244,7 +255,7 @@
     <!-- end Patnership section -->
 
     <!-- Kontak kami section -->
-    <div class="section-xl bg-image parallax" data-bg-src="{{ asset('assets') }}/images/background.jpg">
+    <div class="section-xl bg-image parallax" data-bg-src="{{ asset('assets') }}/images/footer_beranda.png">
         <div class="bg-black-06">
             <div class="container">
                 <div class="row align-items-center">
@@ -257,7 +268,8 @@
                         </p>
                     </div>
                     <div class="col-12 col-lg-6 text-lg-end">
-                        <a class="button button-xl button-radius button-white-3" href="#">Kontak Kami</a>
+                        <a class="button button-xl button-radius button-white-3" href="https://wa.me/6281111112207"
+                            target="_blank">Kontak Kami</a>
                     </div>
                 </div><!-- end row -->
             </div><!-- end container -->

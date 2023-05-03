@@ -17,20 +17,27 @@
                                 <div class="col-lg-4 col-md-12">
                                     <div class="mb-3">
                                         <label for="pasien" class="form-label">Pasien</label>
-                                        <select class="form-control select2" data-toggle="select2" name="pasien"
-                                            id="pasien">
-                                            <option value="">-- Pilih Pasien --</option>
-                                            @foreach ($pasien as $row)
-                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        @if (auth()->user()->type != 'Pasien')
+                                            <select class="form-control select2" data-toggle="select2" name="pasien"
+                                                id="pasien">
+                                                <option value="">-- Pilih Pasien --</option>
+                                                @foreach ($pasien as $row)
+                                                    <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <input type="hidden" name="pasien" id="pasien"
+                                                value="{{ auth()->user()->id }}">
+                                            <input type="text" name="pasien_name" id="pasien_name" class="form-control"
+                                                value="{{ auth()->user()->name }}" readonly>
+                                        @endif
                                         <div class="invalid-feedback errorPasien"></div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-12">
                                     <div class="mb-3">
                                         <label for="perawat" class="form-label">Perawat</label>
-                                        @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter')
+                                        @if (auth()->user()->type != 'Perawat')
                                             <select class="form-control select2" data-toggle="select2" name="perawat"
                                                 id="perawat">
                                                 <option value="">-- Pilih Perawat --</option>
@@ -38,8 +45,7 @@
                                                     <option value="{{ $row->id }}">{{ $row->name }}</option>
                                                 @endforeach
                                             </select>
-                                        @endif
-                                        @if (auth()->user()->type == 'Perawat')
+                                        @else
                                             <input type="hidden" name="perawat" id="perawat"
                                                 value="{{ auth()->user()->id }}">
                                             <input type="text" name="perawat_name" id="perawat_name" class="form-control"
@@ -52,7 +58,7 @@
                                 <div class="col-lg-4 col-md-12">
                                     <div class="mb-3">
                                         <label for="dokter" class="form-label">Dokter</label>
-                                        @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Perawat')
+                                        @if (auth()->user()->type != 'Dokter')
                                             <select class="form-control select2" data-toggle="select2" name="dokter"
                                                 id="dokter">
                                                 <option value="">-- Pilih Dokter --</option>
@@ -60,8 +66,7 @@
                                                     <option value="{{ $row->id }}">{{ $row->name }}</option>
                                                 @endforeach
                                             </select>
-                                        @endif
-                                        @if (auth()->user()->type == 'Dokter')
+                                        @else
                                             <input type="hidden" name="dokter" id="dokter"
                                                 value="{{ auth()->user()->id }}">
                                             <input type="text" name="dokter_name" id="dokter_name" class="form-control"
@@ -154,7 +159,7 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="biaya_tambahan" class="form-label">Tambahan Biaya (Per 10 KM)</label>
-                                        <input type="text" name="biaya_tambahan" id="biaya_tambahan"
+                                        <input type="text" name="biaya_tambahan" id="biaya_tambahan" value="0"
                                             class="form-control" readonly>
                                     </div>
                                 </div>

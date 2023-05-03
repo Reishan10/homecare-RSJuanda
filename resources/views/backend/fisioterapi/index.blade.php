@@ -30,7 +30,7 @@
                                         <button type="button" class="btn btn-danger btn-sm" id="btnHapusBanyak">
                                             <i class="mdi mdi-trash-can"></i> Hapus Banyak
                                         </button>
-                                        <button type="button" class="btn btn-primary btn-sm ms-md-1" id="btnTambah">
+                                        <button type="button" class="btn btn-primary btn-sm ms-1" id="btnTambah">
                                             <i class="mdi mdi-plus"></i> Tambah Data
                                         </button>
                                     </div>

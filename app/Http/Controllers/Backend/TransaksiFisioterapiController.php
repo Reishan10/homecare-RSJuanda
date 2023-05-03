@@ -34,6 +34,8 @@ class TransaksiFisioterapiController extends Controller
                 $transaksiFisioterapi = TransaksiFisioterapi::with('pasien', 'perawat', 'dokter', 'fisioterapi')->where('dokter_id', $id)->orderBy('created_at', 'asc')->get();
             } else if ($userType == "Perawat") {
                 $transaksiFisioterapi = TransaksiFisioterapi::with('pasien', 'perawat', 'dokter', 'fisioterapi')->where('perawat_id', $id)->orderBy('created_at', 'asc')->get();
+            } else if ($userType == "Pasien") {
+                $transaksiFisioterapi = TransaksiFisioterapi::with('pasien', 'perawat', 'dokter', 'fisioterapi')->where('pasien_id', $id)->orderBy('created_at', 'asc')->get();
             } else {
                 $transaksiFisioterapi = TransaksiFisioterapi::with('pasien', 'perawat', 'dokter', 'fisioterapi')->orderBy('created_at', 'asc')->get();
             }
@@ -73,15 +75,17 @@ class TransaksiFisioterapiController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
-                    if ($data->status != '0') {
-                        $btn = $btn . '<button type="button" class="btn btn-danger btn-sm me-1" data-id="' . $data->id . '" id="btnHapus"><i
-                    class="mdi mdi-trash-can"></i></button>';
-                    }
-                    if ($data->status == '0') {
-                        $btn = $btn .  '<button type="button" class="btn btn-warning btn-sm me-1" data-id="' . $data->id . '" id="btnNonaktif" data-bs-toggle="modal" data-bs-target="#nonaktifModal"><i class="fa-solid fa-xmark"></i></button>';
-                    }
-                    if ($data->status == '1') {
-                        $btn = $btn .  '<button type="button" class="btn btn-success btn-sm me-1" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
+                    if (auth()->user()->type != "Pasien") {
+                        if ($data->status != '0') {
+                            $btn = $btn . '<button type="button" class="btn btn-danger btn-sm me-1" data-id="' . $data->id . '" id="btnHapus"><i
+                            class="mdi mdi-trash-can"></i></button>';
+                        }
+                        if ($data->status == '0') {
+                            $btn = $btn .  '<button type="button" class="btn btn-warning btn-sm me-1" data-id="' . $data->id . '" id="btnNonaktif" data-bs-toggle="modal" data-bs-target="#nonaktifModal"><i class="fa-solid fa-xmark"></i></button>';
+                        }
+                        if ($data->status == '1') {
+                            $btn = $btn .  '<button type="button" class="btn btn-success btn-sm me-1" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
+                        }
                     }
                     if ($data->status != '1') {
                         $btn = $btn .  '<a href="' . route('transaksi-fisioterapi.print', $data->id) . '" class="btn btn-secondary btn-sm"><i class="fa-solid fa-print"></i></a>';

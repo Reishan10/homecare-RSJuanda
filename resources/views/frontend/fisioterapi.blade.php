@@ -28,21 +28,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row g-3 text-center icon-5xl margin-top-10">
-                <div class="col-12 col-lg-10 col-md-4 offset-lg-1">
-                    <!-- Snippet -->
-                    <form>
-                        <div class="row g-4">
-                            <div class="col">
-                                <input type="text" name="search" id="search" class="form-control form-control-sm"
-                                    placeholder="Search">
-                            </div>
-                        </div>
-                    </form>
-                    <!-- end Snippet -->
-                </div>
-            </div>
-            <row class="row g-2">
+            <div class="row g-2">
                 <div class="col-12 col-md-6">
                     <div class="border-radius-05 bg-white border-all padding-20 padding-lg-30">
                         <img src="{{ asset('assets') }}/images/col-3@2x.jpg" alt="">
@@ -140,7 +126,7 @@
                     </div>
 
                 </div>
-            </row>
+            </div>
         </div><!-- end container -->
     </div>
     <!-- end Fisioterapi section -->

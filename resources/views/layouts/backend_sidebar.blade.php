@@ -60,31 +60,29 @@
                     </div>
                 </li>
             @endif
-            @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter' || auth()->user()->type == 'Perawat')
-                <li class="side-nav-item">
-                    <a data-bs-toggle="collapse" href="#sidebarTransaksi" aria-expanded="false"
-                        aria-controls="sidebarTransaksi" class="side-nav-link">
-                        <i class="fa-sharp fa-solid fa-money-bill-1-wave"></i>
-                        <span> Transaksi </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <div class="collapse" id="sidebarTransaksi">
-                        <ul class="side-nav-second-level">
-                            @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Perawat')
-                                <li>
-                                    <a href="{{ route('transaksi-homecare-perawat.index') }}">Layanan Homecare</a>
-                                </li>
-                            @endif
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarTransaksi" aria-expanded="false"
+                    aria-controls="sidebarTransaksi" class="side-nav-link">
+                    <i class="fa-sharp fa-solid fa-money-bill-1-wave"></i>
+                    <span> Transaksi </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarTransaksi">
+                    <ul class="side-nav-second-level">
+                        @if (auth()->user()->type != 'Dokter')
                             <li>
-                                <a href="{{ route('transaksi-homecare.index') }}">Layanan Paket Homecare</a>
+                                <a href="{{ route('transaksi-homecare-perawat.index') }}">Layanan Homecare</a>
                             </li>
-                            <li>
-                                <a href="{{ route('transaksi-fisioterapi.index') }}">Layanan Fisioterapi</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-            @endif
+                        @endif
+                        <li>
+                            <a href="{{ route('transaksi-homecare.index') }}">Layanan Paket Homecare</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('transaksi-fisioterapi.index') }}">Layanan Fisioterapi</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             @if (auth()->user()->type == 'Administrator' || auth()->user()->type == 'Dokter')
                 <li class="side-nav-item {{ request()->segment(1) == 'rekam-medis' ? 'active' : '' }}">
                     <a href="{{ route('rekam-medis.index') }}" class="side-nav-link">
@@ -131,73 +129,73 @@
                         <span> Pengguna </span>
                     </a>
                 </li>
-            @endif
 
-            <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false"
-                    aria-controls="sidebarMultiLevel" class="side-nav-link">
-                    <i class="uil-folder-plus"></i>
-                    <span> Laporan Transaksi </span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="sidebarMultiLevel">
-                    <ul class="side-nav-second-level">
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarThirdLevelHomecare" aria-expanded="false"
-                                aria-controls="sidebarThirdLevelHomecare">
-                                <span> Homecare </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="sidebarThirdLevelHomecare">
-                                <ul class="side-nav-third-level">
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false"
+                        aria-controls="sidebarMultiLevel" class="side-nav-link">
+                        <i class="uil-folder-plus"></i>
+                        <span> Laporan Transaksi </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMultiLevel">
+                        <ul class="side-nav-second-level">
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarThirdLevelHomecare" aria-expanded="false"
+                                    aria-controls="sidebarThirdLevelHomecare">
+                                    <span> Homecare </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarThirdLevelHomecare">
+                                    <ul class="side-nav-third-level">
+                                        <ul class="side-nav-third-level">
+                                            <li>
+                                                <a href="{{ route('laporan-homecare.waktu') }}">Waktu</a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('laporan-homecare.wilayah') }}">Wilayah</a>
+                                            </li>
+                                        </ul>
+                                </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarThirdLevelPaket" aria-expanded="false"
+                                    aria-controls="sidebarThirdLevelPaket">
+                                    <span> Paket Homecare </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarThirdLevelPaket">
+                                    <ul class="side-nav-third-level">
+                                        <ul class="side-nav-third-level">
+                                            <li>
+                                                <a href="{{ route('laporan-paket-homecare.waktu') }}">Waktu</a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('laporan-paket-homecare.wilayah') }}">Wilayah</a>
+                                            </li>
+                                        </ul>
+                                </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarThirdLevelFisioterapi"
+                                    aria-expanded="false" aria-controls="sidebarThirdLevelFisioterapi">
+                                    <span> Fisioterapi </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarThirdLevelFisioterapi">
                                     <ul class="side-nav-third-level">
                                         <li>
-                                            <a href="{{ route('laporan-homecare.waktu') }}">Waktu</a>
+                                            <a href="{{ route('laporan-fisioterapi.waktu') }}">Waktu</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('laporan-homecare.wilayah') }}">Wilayah</a>
+                                            <a href="{{ route('laporan-fisioterapi.wilayah') }}">Wilayah</a>
                                         </li>
                                     </ul>
-                            </div>
-                        </li>
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarThirdLevelPaket" aria-expanded="false"
-                                aria-controls="sidebarThirdLevelPaket">
-                                <span> Paket Homecare </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="sidebarThirdLevelPaket">
-                                <ul class="side-nav-third-level">
-                                    <ul class="side-nav-third-level">
-                                        <li>
-                                            <a href="{{ route('laporan-paket-homecare.waktu') }}">Waktu</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('laporan-paket-homecare.wilayah') }}">Wilayah</a>
-                                        </li>
-                                    </ul>
-                            </div>
-                        </li>
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarThirdLevelFisioterapi" aria-expanded="false"
-                                aria-controls="sidebarThirdLevelFisioterapi">
-                                <span> Fisioterapi </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="sidebarThirdLevelFisioterapi">
-                                <ul class="side-nav-third-level">
-                                    <li>
-                                        <a href="{{ route('laporan-fisioterapi.waktu') }}">Waktu</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('laporan-fisioterapi.wilayah') }}">Wilayah</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            @endif
 
             <li class="side-nav-item {{ request()->segment(1) == 'ganti-password' ? 'active' : '' }}">
                 <a href="{{ route('ganti-password.index') }}" class="side-nav-link">

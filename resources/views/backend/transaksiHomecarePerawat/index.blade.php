@@ -20,20 +20,24 @@
                     <div class="card-body">
                         <div class="d-md-flex justify-content-between">
                             <div class="d-flex align-items-center mb-3">
-                                <a href="{{ route('transaksi-homecare-perawat.printPDF') }}"
-                                    class="btn btn-secondary btn-sm" id="btnExportPDF"> <i class="mdi mdi-file-pdf"></i>
-                                    Export PDF</a>
-                                <a href="{{ route('transaksi-homecare-perawat.exportExcel') }}"
-                                    class="btn btn-secondary btn-sm ms-1" id="btnExportExcel"> <i
-                                        class="mdi mdi-file-excel"></i> Export Excel</a>
-                                <button class="btn btn-secondary btn-sm ms-1" id="btnPrint">
-                                    <i class="mdi mdi-printer"></i> Print
-                                </button>
+                                @if (auth()->user()->type != 'Pasien')
+                                    <a href="{{ route('transaksi-homecare-perawat.printPDF') }}"
+                                        class="btn btn-secondary btn-sm" id="btnExportPDF"> <i class="mdi mdi-file-pdf"></i>
+                                        Export PDF</a>
+                                    <a href="{{ route('transaksi-homecare-perawat.exportExcel') }}"
+                                        class="btn btn-secondary btn-sm ms-1" id="btnExportExcel"> <i
+                                            class="mdi mdi-file-excel"></i> Export Excel</a>
+                                    <button class="btn btn-secondary btn-sm ms-1" id="btnPrint">
+                                        <i class="mdi mdi-printer"></i> Print
+                                    </button>
+                                @endif
                             </div>
                             <div class="d-flex align-items-center mb-3 text-md-end">
-                                <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
-                                    <i class="mdi mdi-trash-can"></i> Hapus Banyak
-                                </button>
+                                @if (auth()->user()->type != 'Pasien')
+                                    <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
+                                        <i class="mdi mdi-trash-can"></i> Hapus Banyak
+                                    </button>
+                                @endif
                                 <a href="{{ route('transaksi-homecare-perawat.create') }}"
                                     class="btn btn-primary mb-2 btn-sm ms-1"><i class="mdi mdi-plus-circle"></i> Tambah
                                     data</a>

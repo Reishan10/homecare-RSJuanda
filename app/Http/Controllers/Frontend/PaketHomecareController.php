@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Homecare;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class TelemedicineController extends Controller
+class PaketHomecareController extends Controller
 {
     public function index()
     {
@@ -15,12 +16,7 @@ class TelemedicineController extends Controller
             ->where('dokter.status', '=', '0')
             ->orderBy('users.created_at', 'asc')
             ->paginate(9, ['users.*']);
-        return view('frontend.telemedicine.index', compact('user'));
-    }
-
-    public function detail($id)
-    {
-        $user = User::with('dokter')->find($id);
-        return view('frontend.telemedicine.detail', compact('user'));
+        $paketHomecare = Homecare::orderBy('created_at', 'asc')->take(9)->get();
+        return view('frontend.paketHomecare.index', compact('user', 'paketHomecare'));
     }
 }

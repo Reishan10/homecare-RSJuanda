@@ -15,20 +15,16 @@
                     <a class="nav-link" href="{{ route('beranda') }}">Beranda</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Layanan</a>
-                    <ul class="nav-dropdown">
-                        <li class="nav-dropdown-item"><a class="nav-dropdown-link"
-                                href="{{ route('frontend.perawat') }}">Homecare</a></li>
-                        <li class="nav-dropdown-item"><a class="nav-dropdown-link"
-                                href="{{ route('frontend.perawat') }}">Paket Homecare</a></li>
-                        <li class="nav-dropdown-item"><a class="nav-dropdown-link"
-                                href="{{ route('frontend.fisioterapi') }}">Fisioterapi</a></li>
-                        <li class="nav-dropdown-item"><a class="nav-dropdown-link"
-                                href="{{ route('frontend.telemedicine') }}">Telemedicine</a></li>
-                    </ul>
+                    <a class="nav-link" href="{{ route('frontend.homecare') }}">Homecare</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Tentang Kami</a>
+                    <a class="nav-link" href="{{ route('frontend.paket-homecare') }}">Paket Homecare</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('frontend.fisioterapi') }}">Fisioterapi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('frontend.telemedicine') }}">Telemedicine</a>
                 </li>
                 <li class="nav-item">
                     @auth

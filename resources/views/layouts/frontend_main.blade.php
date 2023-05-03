@@ -38,15 +38,16 @@
                     <div class="col-6 col-sm-6 col-lg-3">
                         <h6 class="font-small fw-normal uppercase">Navigasi Link</h6>
                         <ul class="list-dash">
-                            <li><a href="#">Beranda</a></li>
-                            <li><a href="#">Layanan</a></li>
-                            <li><a href="#">Hubungi Kami</a></li>
+                            <li><a href="{{ route('beranda') }}">Beranda</a></li>
                         </ul>
                     </div>
                     <div class="col-6 col-sm-6 col-lg-3">
-                        <h6 class="font-small fw-normal uppercase">Tentang Kami</h6>
+                        <h6 class="font-small fw-normal uppercase">Layanan</h6>
                         <ul class="list-dash">
-                            <li><a href="#">Profil</a></li>
+                            <li><a href="{{ route('frontend.homecare') }}">Homecare</a></li>
+                            <li><a href="{{ route('frontend.paket-homecare') }}">Paket Homecare</a></li>
+                            <li><a href="{{ route('frontend.fisioterapi') }}">Fisioterapi</a></li>
+                            <li><a href="{{ route('frontend.telemedicine') }}">Telemedicine</a></li>
                         </ul>
                     </div>
                     <div class="col-6 col-sm-6 col-lg-3">

@@ -27,7 +27,13 @@ class TransaksiHomecarePerawatController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->orderBy('created_at', 'asc')->get();
+            $id = auth()->user()->id;
+            $userType = auth()->user()->type;
+            if ($userType == "Pasien") {
+                $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->where('pasien_id', $id)->orderBy('created_at', 'asc')->get();
+            } else {
+                $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->orderBy('created_at', 'asc')->get();
+            }
             return DataTables::of($transaksiHomecare)
                 ->addIndexColumn()
                 ->addColumn('comboBox', function ($data) {
@@ -56,15 +62,19 @@ class TransaksiHomecarePerawatController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
-                    if ($data->status != '0') {
-                        $btn = $btn . '<button type="button" class="btn btn-danger btn-sm me-1" data-id="' . $data->id . '" id="btnHapus"><i
-                    class="mdi mdi-trash-can"></i></button>';
+                    if (auth()->user()->type != 'Pasien') {
+                        if ($data->status != '0') {
+                            $btn = $btn . '<button type="button" class="btn btn-danger btn-sm me-1" data-id="' . $data->id . '" id="btnHapus"><i
+                            class="mdi mdi-trash-can"></i></button>';
+                        }
                     }
-                    if ($data->status == '0') {
-                        $btn = $btn .  '<button type="button" class="btn btn-warning btn-sm me-1" data-id="' . $data->id . '" id="btnNonaktif" data-bs-toggle="modal" data-bs-target="#nonaktifModal"><i class="fa-solid fa-xmark"></i></button>';
-                    }
-                    if ($data->status == '1') {
-                        $btn = $btn .  '<button type="button" class="btn btn-success btn-sm me-1" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
+                    if (auth()->user()->type != 'Pasien') {
+                        if ($data->status == '0') {
+                            $btn = $btn .  '<button type="button" class="btn btn-warning btn-sm me-1" data-id="' . $data->id . '" id="btnNonaktif" data-bs-toggle="modal" data-bs-target="#nonaktifModal"><i class="fa-solid fa-xmark"></i></button>';
+                        }
+                        if ($data->status == '1') {
+                            $btn = $btn .  '<button type="button" class="btn btn-success btn-sm me-1" data-id="' . $data->id . '" id="btnAktif"><i class="fa-solid fa-check"></i></button>';
+                        }
                     }
                     if ($data->status != '1') {
                         $btn = $btn .  '<a href="' . route('transaksi-homecare-perawat.print', $data->id) . '" class="btn btn-secondary btn-sm"><i class="fa-solid fa-print"></i></a>';
