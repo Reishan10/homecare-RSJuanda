@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Laporan Transaksi Fisioterapi</title>
+    <title>Laporan Transaksi Homecare</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,16 +58,30 @@
 </head>
 
 <body>
-    <h2>Laporan Transaksi Fisioterapi</h2>
-    <h4>Tanggal: {{ $start_date }} - {{ $end_date }}</h4>
+    <h2>Laporan Transaksi Homecare</h2>
+    <div>
+        <span class="text-bold">Provinsi:</span>
+        <span>{{ $provinsi ? $provinsi->name : '-' }}</span>
+    </div>
+    <div>
+        <span class="text-bold">Kabupaten/Kota:</span>
+        <span>{{ $kabupaten ? $kabupaten->name : '-' }}</span>
+    </div>
+    <div>
+        <span class="text-bold">Kecamatan:</span>
+        <span>{{ $kecamatan ? $kecamatan->name : '-' }}</span>
+    </div>
+    <div class="mb-10">
+        <span class="text-bold">Desa/Kelurahan:</span>
+        <span>{{ $desa ? $desa->name : '-' }}</span>
+    </div>
     <table>
         <thead>
             <tr>
                 <th>No</th>
                 <th>Pasien</th>
                 <th>Perawat</th>
-                <th>Dokter</th>
-                <th>Fisioterapi</th>
+                <th>Jarak</th>
                 <th>Waktu</th>
                 <th>Pembayaran</th>
                 <th>Total Biaya</th>
@@ -78,21 +92,12 @@
                 $totalData = 0;
                 $totalBiaya = 0;
             @endphp
-            @forelse($transaksiFisioterapi as $row)
-                <?php
-                // tambahkan jumlah transaksi pada layanan yang bersangkutan
-                if (!isset($totals[$row->fisioterapi->name])) {
-                    $totals[$row->fisioterapi->name] = 1;
-                } else {
-                    $totals[$row->fisioterapi->name] += 1;
-                }
-                ?>
+            @forelse($transaksiHomecare as $row)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $row->pasien->name }}</td>
                     <td>{{ $row->perawat->name }}</td>
-                    <td>{{ $row->dokter->name }}</td>
-                    <td>{{ $row->fisioterapi->name }}</td>
+                    <td>{{ $row->jarak }} KM</td>
                     <td>{{ $row->waktu }}</td>
                     <td>{{ $row->metode_pembayaran }}</td>
                     <td>{{ 'Rp. ' . number_format($row->total_biaya, 0, ',', '.') }}</td>
@@ -102,26 +107,13 @@
                     $totalBiaya += $row->total_biaya;
                 @endphp
             @empty
-                <td colspan="8" style="text-align:center;">Data tidak tersedia</td>
+                <td colspan="7" style="text-align:center;">Data tidak tersedia</td>
             @endforelse
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="7" class="text-right text-bold">Total Biaya</td>
+                <td colspan="6" class="text-right text-bold">Total</td>
                 <td class="text-bold">{{ 'Rp. ' . number_format($totalBiaya, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <th colspan="7" class="text-right text-bold">Total:</th>
-                <td>
-                    <table>
-                        @foreach ($totals as $layanan => $jumlah)
-                            <tr>
-                                <td>{{ $layanan }}</td>
-                                <td>{{ $jumlah }}</td>
-                            </tr>
-                        @endforeach
-                    </table>
-                </td>
             </tr>
         </tfoot>
     </table>

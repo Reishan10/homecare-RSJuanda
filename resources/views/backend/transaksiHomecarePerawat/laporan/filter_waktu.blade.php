@@ -1,5 +1,5 @@
 @extends('layouts.backend_main')
-@section('title', 'Laporan Fisioterapi')
+@section('title', 'Laporan Homecare')
 @section('content')
     <!-- Start Content-->
     <div class="container-fluid">
@@ -65,8 +65,7 @@
                                         <th>No</th>
                                         <th>Pasien</th>
                                         <th>Perawat</th>
-                                        <th>Dokter</th>
-                                        <th>Fisioterapi</th>
+                                        <th>Jarak (KM)</th>
                                         <th>Waktu</th>
                                         <th>Pembayaran</th>
                                         <th>Total Biaya</th>
@@ -99,7 +98,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: '{{ route('laporan-fisioterapi.waktu') }}',
+                        url: '{{ route('laporan-homecare.waktu') }}',
                         data: {
                             start_date: start_date,
                             end_date: end_date
@@ -120,12 +119,8 @@
                             name: 'perawat'
                         },
                         {
-                            data: 'dokter',
-                            name: 'dokter'
-                        },
-                        {
-                            data: 'layanan',
-                            name: 'layanan'
+                            data: 'jarak',
+                            name: 'jarak'
                         },
                         {
                             data: 'waktu',
@@ -172,13 +167,12 @@
                 var data = table.data().toArray();
 
                 var printContent =
-                    '<table class="table"><thead><tr><th>No</th><th>Pasien</th><th>Perawat</th><th>Dokter</th><th>Fisioterapi</th><th>Waktu</th><th>Pembayaran</th><th>Total Biaya</th></tr></thead><tbody>';
+                    '<table class="table"><thead><tr><th>No</th><th>Pasien</th><th>Perawat</th><th>Jarak (KM)</th><th>Waktu</th><th>Pembayaran</th><th>Total Biaya</th></tr></thead><tbody>';
 
                 $.each(data, function(index, value) {
                     printContent += '<tr><td>' + (index + 1) + '</td><td>' + value
                         .pasien +
-                        '</td><td>' + value.perawat + '</td><td>' + value.dokter +
-                        '</td><td>' + value.layanan +
+                        '</td><td>' + value.perawat + '</td><td>' + value.jarak +
                         '</td><td>' + value.waktu +
                         '</td><td>' + value.metode_pembayaran +
                         '</td><td>' + value.total_biaya +
@@ -188,7 +182,7 @@
                 printContent += '</tbody></table>';
 
                 var printWindow = window.open('', '', 'height=500,width=800');
-                printWindow.document.write('<html><head><title>Print Laporan Fisioterapi</title>');
+                printWindow.document.write('<html><head><title>Print Laporan Homecare</title>');
                 printWindow.document.write(
                     '<style>body{font-family: Arial, sans-serif;font-size: 14px;}table {width: 100%;border-collapse: collapse;}td,th {padding: 5px;border: 1px solid #ddd;}th {background - color: #f2f2f2;text - align: left;}h2 {font - size: 18 px;margin - top: 0;}.text - bold {font - weight: bold;}.text - center {text - align: center;}.text - right {text - align: right;}.mb - 10 {margin - bottom: 10 px;}</style>'
                 );
@@ -204,7 +198,7 @@
                 var endDate = $('#end_date').val();
 
                 $.ajax({
-                    url: '{{ route('laporan-fisioterapi.printPDF') }}',
+                    url: '{{ route('laporan-homecare.printPDF') }}',
                     type: 'GET',
                     data: {
                         start_date: startDate,
@@ -228,7 +222,7 @@
 
                 // mengirim request ke server dengan menggunakan AJAX
                 $.ajax({
-                    url: '{{ route('laporan-fisioterapi.exportExcel') }}',
+                    url: '{{ route('laporan-homecare.exportExcel') }}',
                     method: 'POST',
                     data: {
                         start_date: startDate,
@@ -246,7 +240,7 @@
                         // membuat link download dengan menggunakan URL blob
                         var downloadLink = document.createElement('a');
                         downloadLink.href = blobUrl;
-                        downloadLink.download = 'laporan-transaksi-fisioterapi.xlsx';
+                        downloadLink.download = 'laporan-transaksi-homecare.xlsx';
                         downloadLink.style.display = 'none';
                         document.body.appendChild(downloadLink);
 

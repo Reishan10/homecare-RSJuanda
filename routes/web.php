@@ -10,6 +10,8 @@ use App\Http\Controllers\Backend\HomecareController;
 use App\Http\Controllers\Backend\JabatanController;
 use App\Http\Controllers\Backend\KategoriController;
 use App\Http\Controllers\backend\LaporanTransaksiFisioeterapiController;
+use App\Http\Controllers\Backend\LaporanTransaksiHomecareController;
+use App\Http\Controllers\Backend\LaporanTransaksiPaketHomecareController;
 use App\Http\Controllers\Backend\LayananController;
 use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PerawatController;
@@ -271,7 +273,35 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/transaksi-homecare-perawat/exportExcel/', [TransaksiHomecarePerawatController::class, 'exportExcel'])->name('transaksi-homecare-perawat.exportExcel');
 
     //Laporan Fisioterapi
+    Route::post('/laporan-fisioterapi/getKabupaten', [LaporanTransaksiFisioeterapiController::class, 'getKabupaten'])->name('laporan-fisioterapi.get-kabupaten');
+    Route::post('/laporan-fisioterapi/getKecamatan', [LaporanTransaksiFisioeterapiController::class, 'getKecamatan'])->name('laporan-fisioterapi.get-kecamatan');
+    Route::post('/laporan-fisioterapi/getDesa', [LaporanTransaksiFisioeterapiController::class, 'getDesa'])->name('laporan-fisioterapi.get-desa');
     Route::get('/laporan-fisioterapi/waktu', [LaporanTransaksiFisioeterapiController::class, 'waktu'])->name('laporan-fisioterapi.waktu');
+    Route::get('/laporan-fisioterapi/wilayah', [LaporanTransaksiFisioeterapiController::class, 'wilayah'])->name('laporan-fisioterapi.wilayah');
     Route::get('/laporan-fisioterapi/printPDF', [LaporanTransaksiFisioeterapiController::class, 'printPDF'])->name('laporan-fisioterapi.printPDF');
     Route::post('/laporan-fisioterapi/exportExcel', [LaporanTransaksiFisioeterapiController::class, 'exportExcel'])->name('laporan-fisioterapi.exportExcel');
+    Route::get('/laporan-fisioterapi/printPDFWilayah', [LaporanTransaksiFisioeterapiController::class, 'printPDFWilayah'])->name('laporan-fisioterapi.printPDFWilayah');
+    Route::post('/laporan-fisioterapi/exportExcelWilayah', [LaporanTransaksiFisioeterapiController::class, 'exportExcelWilayah'])->name('laporan-fisioterapi.exportExcelWilayah');
+
+    //Laporan Homecare
+    Route::post('/laporan-homecare/getKabupaten', [LaporanTransaksiHomecareController::class, 'getKabupaten'])->name('laporan-homecare.get-kabupaten');
+    Route::post('/laporan-homecare/getKecamatan', [LaporanTransaksiHomecareController::class, 'getKecamatan'])->name('laporan-homecare.get-kecamatan');
+    Route::post('/laporan-homecare/getDesa', [LaporanTransaksiHomecareController::class, 'getDesa'])->name('laporan-homecare.get-desa');
+    Route::get('/laporan-homecare/waktu', [LaporanTransaksiHomecareController::class, 'waktu'])->name('laporan-homecare.waktu');
+    Route::get('/laporan-homecare/wilayah', [LaporanTransaksiHomecareController::class, 'wilayah'])->name('laporan-homecare.wilayah');
+    Route::get('/laporan-homecare/printPDF', [LaporanTransaksiHomecareController::class, 'printPDF'])->name('laporan-homecare.printPDF');
+    Route::post('/laporan-homecare/exportExcel', [LaporanTransaksiHomecareController::class, 'exportExcel'])->name('laporan-homecare.exportExcel');
+    Route::get('/laporan-homecare/printPDFWilayah', [LaporanTransaksiHomecareController::class, 'printPDFWilayah'])->name('laporan-homecare.printPDFWilayah');
+    Route::post('/laporan-homecare/exportExcelWilayah', [LaporanTransaksiHomecareController::class, 'exportExcelWilayah'])->name('laporan-homecare.exportExcelWilayah');
+
+    //Laporan Homecare
+    Route::post('/laporan-paket-homecare/getKabupaten', [LaporanTransaksiPaketHomecareController::class, 'getKabupaten'])->name('laporan-paket-homecare.get-kabupaten');
+    Route::post('/laporan-paket-homecare/getKecamatan', [LaporanTransaksiPaketHomecareController::class, 'getKecamatan'])->name('laporan-paket-homecare.get-kecamatan');
+    Route::post('/laporan-paket-homecare/getDesa', [LaporanTransaksiPaketHomecareController::class, 'getDesa'])->name('laporan-paket-homecare.get-desa');
+    Route::get('/laporan-paket-homecare/waktu', [LaporanTransaksiPaketHomecareController::class, 'waktu'])->name('laporan-paket-homecare.waktu');
+    Route::get('/laporan-paket-homecare/wilayah', [LaporanTransaksiPaketHomecareController::class, 'wilayah'])->name('laporan-paket-homecare.wilayah');
+    Route::get('/laporan-paket-homecare/printPDF', [LaporanTransaksiPaketHomecareController::class, 'printPDF'])->name('laporan-paket-homecare.printPDF');
+    Route::post('/laporan-paket-homecare/exportExcel', [LaporanTransaksiPaketHomecareController::class, 'exportExcel'])->name('laporan-paket-homecare.exportExcel');
+    Route::get('/laporan-paket-homecare/printPDFWilayah', [LaporanTransaksiPaketHomecareController::class, 'printPDFWilayah'])->name('laporan-paket-homecare.printPDFWilayah');
+    Route::post('/laporan-paket-homecare/exportExcelWilayah', [LaporanTransaksiPaketHomecareController::class, 'exportExcelWilayah'])->name('laporan-paket-homecare.exportExcelWilayah');
 });

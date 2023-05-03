@@ -150,13 +150,14 @@
                             </a>
                             <div class="collapse" id="sidebarThirdLevelHomecare">
                                 <ul class="side-nav-third-level">
-                                    <li>
-                                        <a href="javascript: void(0);">Rentang Waktu</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript: void(0);">Alamat</a>
-                                    </li>
-                                </ul>
+                                    <ul class="side-nav-third-level">
+                                        <li>
+                                            <a href="{{ route('laporan-homecare.waktu') }}">Waktu</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('laporan-homecare.wilayah') }}">Wilayah</a>
+                                        </li>
+                                    </ul>
                             </div>
                         </li>
                         <li class="side-nav-item">
@@ -167,13 +168,14 @@
                             </a>
                             <div class="collapse" id="sidebarThirdLevelPaket">
                                 <ul class="side-nav-third-level">
-                                    <li>
-                                        <a href="javascript: void(0);">Rentang Waktu</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript: void(0);">Alamat</a>
-                                    </li>
-                                </ul>
+                                    <ul class="side-nav-third-level">
+                                        <li>
+                                            <a href="{{ route('laporan-paket-homecare.waktu') }}">Waktu</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('laporan-paket-homecare.wilayah') }}">Wilayah</a>
+                                        </li>
+                                    </ul>
                             </div>
                         </li>
                         <li class="side-nav-item">
@@ -188,7 +190,7 @@
                                         <a href="{{ route('laporan-fisioterapi.waktu') }}">Waktu</a>
                                     </li>
                                     <li>
-                                        <a href="javascript: void(0);">Wilayah</a>
+                                        <a href="{{ route('laporan-fisioterapi.wilayah') }}">Wilayah</a>
                                     </li>
                                 </ul>
                             </div>

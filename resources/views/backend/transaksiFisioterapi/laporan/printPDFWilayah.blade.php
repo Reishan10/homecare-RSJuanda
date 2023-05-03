@@ -59,7 +59,22 @@
 
 <body>
     <h2>Laporan Transaksi Fisioterapi</h2>
-    <h4>Tanggal: {{ $start_date }} - {{ $end_date }}</h4>
+    <div>
+        <span class="text-bold">Provinsi:</span>
+        <span>{{ $provinsi ? $provinsi->name : '-' }}</span>
+    </div>
+    <div>
+        <span class="text-bold">Kabupaten/Kota:</span>
+        <span>{{ $kabupaten ? $kabupaten->name : '-' }}</span>
+    </div>
+    <div>
+        <span class="text-bold">Kecamatan:</span>
+        <span>{{ $kecamatan ? $kecamatan->name : '-' }}</span>
+    </div>
+    <div class="mb-10">
+        <span class="text-bold">Desa/Kelurahan:</span>
+        <span>{{ $desa ? $desa->name : '-' }}</span>
+    </div>
     <table>
         <thead>
             <tr>
@@ -79,14 +94,6 @@
                 $totalBiaya = 0;
             @endphp
             @forelse($transaksiFisioterapi as $row)
-                <?php
-                // tambahkan jumlah transaksi pada layanan yang bersangkutan
-                if (!isset($totals[$row->fisioterapi->name])) {
-                    $totals[$row->fisioterapi->name] = 1;
-                } else {
-                    $totals[$row->fisioterapi->name] += 1;
-                }
-                ?>
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $row->pasien->name }}</td>
@@ -107,21 +114,8 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="7" class="text-right text-bold">Total Biaya</td>
+                <td colspan="7" class="text-right text-bold">Total</td>
                 <td class="text-bold">{{ 'Rp. ' . number_format($totalBiaya, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <th colspan="7" class="text-right text-bold">Total:</th>
-                <td>
-                    <table>
-                        @foreach ($totals as $layanan => $jumlah)
-                            <tr>
-                                <td>{{ $layanan }}</td>
-                                <td>{{ $jumlah }}</td>
-                            </tr>
-                        @endforeach
-                    </table>
-                </td>
             </tr>
         </tfoot>
     </table>
