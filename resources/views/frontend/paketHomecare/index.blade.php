@@ -79,7 +79,7 @@
                             </p>
                             <a class="button button-reveal-right-dark button-lg margin-top-10"
                                 href="{{ route('transaksi-homecare.index') }}"><i
-                                    class="bi bi-arrow-right"></i><span>Pilih</span></a>
+                                    class="bi bi-arrow-right"></i><span>pesan</span></a>
                         </div>
                     </div>
                 @empty

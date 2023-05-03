@@ -16,7 +16,7 @@ class PaketHomecareController extends Controller
             ->where('dokter.status', '=', '0')
             ->orderBy('users.created_at', 'asc')
             ->paginate(9, ['users.*']);
-        $paketHomecare = Homecare::orderBy('created_at', 'asc')->take(9)->get();
+        $paketHomecare = Homecare::orderBy('created_at', 'asc')->take(8)->get();
         return view('frontend.paketHomecare.index', compact('user', 'paketHomecare'));
     }
 }

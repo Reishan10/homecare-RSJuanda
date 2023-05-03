@@ -27,10 +27,12 @@ class PasienController extends Controller
                 })
                 ->addColumn('aksi', function ($data) {
                     $btn = '<button type="button" class="btn btn-info btn-sm me-1" id="btn-detail" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#detailModal"><i class="fa-solid fa-circle-info"></i></button>';
-                    $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('pasien.edit', $data->id) . '" ><i
+                    if (auth()->user()->type == 'Administrator') {
+                        $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('pasien.edit', $data->id) . '" ><i
                     class="mdi mdi-pencil"></i></a>';
-                    $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
+                        $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i
                     class="mdi mdi-trash-can"></i></button>';
+                    }
                     return $btn;
                 })
                 ->rawColumns(['aksi', 'comboBox'])

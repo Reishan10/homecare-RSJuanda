@@ -31,6 +31,8 @@ class TransaksiHomecarePerawatController extends Controller
             $userType = auth()->user()->type;
             if ($userType == "Pasien") {
                 $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->where('pasien_id', $id)->orderBy('created_at', 'asc')->get();
+            } else if ($userType == "Perawat") {
+                $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->where('perawat_id', $id)->orderBy('created_at', 'asc')->get();
             } else {
                 $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->orderBy('created_at', 'asc')->get();
             }

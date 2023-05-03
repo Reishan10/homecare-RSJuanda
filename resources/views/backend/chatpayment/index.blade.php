@@ -19,8 +19,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-md-flex justify-content-between">
-                            @if (auth()->user()->type == 'Administrator')
-                                <div class="d-flex align-items-center mb-3">
+                            <div class="d-flex align-items-center mb-3">
+                                @if (auth()->user()->type != 'Pasien' && auth()->user()->type != 'Perawat')
                                     <a href="{{ route('chatpayment.printPDF') }}" class="btn btn-secondary btn-sm"
                                         id="btnExportPDF">
                                         <i class="mdi mdi-file-pdf"></i> Export PDF</a>
@@ -29,8 +29,8 @@
                                     <button class="btn btn-secondary btn-sm ms-1" id="btnPrint">
                                         <i class="mdi mdi-printer"></i> Print
                                     </button>
-                                </div>
-                            @endif
+                                @endif
+                            </div>
                             <div class="d-flex align-items-center mb-3 text-md-end">
                                 <a href="{{ route('chatpayment.create') }}" class="btn btn-primary mb-2 btn-sm"><i
                                         class="mdi mdi-plus-circle"></i> Tambah Data</a>

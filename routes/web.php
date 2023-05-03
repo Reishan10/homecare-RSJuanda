@@ -100,6 +100,23 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat
     Route::delete('/transaksi-homecare-perawat/{homecare}', [TransaksiHomecarePerawatController::class, 'destroy'])->name('transaksi-homecare-perawat.destroy');
     Route::get('/transaksi-homecare-perawat/printPDF', [TransaksiHomecarePerawatController::class, 'printPDF'])->name('transaksi-homecare-perawat.printPDF');
     Route::get('/transaksi-homecare-perawat/exportExcel/', [TransaksiHomecarePerawatController::class, 'exportExcel'])->name('transaksi-homecare-perawat.exportExcel');
+
+    //Transaksi Fisioterapi
+    Route::post('/transaksi-fisioterapi/getKabupaten', [TransaksiFisioterapiController::class, 'getKabupaten'])->name('transaksi-fisioterapi.get-kabupaten');
+    Route::post('/transaksi-fisioterapi/getKecamatan', [TransaksiFisioterapiController::class, 'getKecamatan'])->name('transaksi-fisioterapi.get-kecamatan');
+    Route::post('/transaksi-fisioterapi/getDesa', [TransaksiFisioterapiController::class, 'getDesa'])->name('transaksi-fisioterapi.get-desa');
+    Route::post('/transaksi-fisioterapi/getFisioterapi', [TransaksiFisioterapiController::class, 'getFisioterapi'])->name('transaksi-fisioterapi.get-fisioterapi');
+    Route::post('/transaksi-fisioterapi/delete-multiple-transaksi-fisioterapi', [TransaksiFisioterapiController::class, 'deleteMultiple'])->name('delete-multiple-transaksi-fisioterapi');
+    Route::post('/transaksi-fisioterapi/aktif/{fisioterapi}', [TransaksiFisioterapiController::class, 'aktif'])->name('transaksi-fisioterapi.aktif');
+    Route::post('/transaksi-fisioterapi/nonaktif/{fisioterapi}', [TransaksiFisioterapiController::class, 'nonaktif'])->name('transaksi-fisioterapi.nonaktif');
+    Route::get('/transaksi-fisioterapi', [TransaksiFisioterapiController::class, 'index'])->name('transaksi-fisioterapi.index');
+    Route::get('/transaksi-fisioterapi/tambah', [TransaksiFisioterapiController::class, 'create'])->name('transaksi-fisioterapi.create');
+    Route::post('/transaksi-fisioterapi', [TransaksiFisioterapiController::class, 'store'])->name('transaksi-fisioterapi.store');
+    Route::get('/transaksi-fisioterapi/print/{id}', [TransaksiFisioterapiController::class, 'print'])->name('transaksi-fisioterapi.print');
+    Route::post('/transaksi-fisioterapi/detail/{fisioterapi}', [TransaksiFisioterapiController::class, 'detail'])->name('transaksi-fisioterapi.detail');
+    Route::delete('/transaksi-fisioterapi/{fisioterapi}', [TransaksiFisioterapiController::class, 'destroy'])->name('transaksi-fisioterapi.destroy');
+    Route::get('/transaksi-fisioterapi/printPDF', [TransaksiFisioterapiController::class, 'printPDF'])->name('transaksi-fisioterapi.printPDF');
+    Route::get('/transaksi-fisioterapi/exportExcel', [TransaksiFisioterapiController::class, 'exportExcel'])->name('transaksi-fisioterapi.exportExcel');
 });
 
 Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter']], function () {
@@ -127,25 +144,6 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter'
     Route::delete('pasien/{pasien}', [PasienController::class, 'destroy'])->name('pasien.destroy');
     Route::get('/pasien/printPDF', [PasienController::class, 'printPDF'])->name('pasien.printPDF');
     Route::get('/pasien/exportExcel', [PasienController::class, 'exportExcel'])->name('pasien.exportExcel');
-});
-
-Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat']], function () {
-    //Transaksi Fisioterapi
-    Route::post('/transaksi-fisioterapi/getKabupaten', [TransaksiFisioterapiController::class, 'getKabupaten'])->name('transaksi-fisioterapi.get-kabupaten');
-    Route::post('/transaksi-fisioterapi/getKecamatan', [TransaksiFisioterapiController::class, 'getKecamatan'])->name('transaksi-fisioterapi.get-kecamatan');
-    Route::post('/transaksi-fisioterapi/getDesa', [TransaksiFisioterapiController::class, 'getDesa'])->name('transaksi-fisioterapi.get-desa');
-    Route::post('/transaksi-fisioterapi/getFisioterapi', [TransaksiFisioterapiController::class, 'getFisioterapi'])->name('transaksi-fisioterapi.get-fisioterapi');
-    Route::post('/transaksi-fisioterapi/delete-multiple-transaksi-fisioterapi', [TransaksiFisioterapiController::class, 'deleteMultiple'])->name('delete-multiple-transaksi-fisioterapi');
-    Route::post('/transaksi-fisioterapi/aktif/{fisioterapi}', [TransaksiFisioterapiController::class, 'aktif'])->name('transaksi-fisioterapi.aktif');
-    Route::post('/transaksi-fisioterapi/nonaktif/{fisioterapi}', [TransaksiFisioterapiController::class, 'nonaktif'])->name('transaksi-fisioterapi.nonaktif');
-    Route::get('/transaksi-fisioterapi', [TransaksiFisioterapiController::class, 'index'])->name('transaksi-fisioterapi.index');
-    Route::get('/transaksi-fisioterapi/tambah', [TransaksiFisioterapiController::class, 'create'])->name('transaksi-fisioterapi.create');
-    Route::post('/transaksi-fisioterapi', [TransaksiFisioterapiController::class, 'store'])->name('transaksi-fisioterapi.store');
-    Route::get('/transaksi-fisioterapi/print/{id}', [TransaksiFisioterapiController::class, 'print'])->name('transaksi-fisioterapi.print');
-    Route::post('/transaksi-fisioterapi/detail/{fisioterapi}', [TransaksiFisioterapiController::class, 'detail'])->name('transaksi-fisioterapi.detail');
-    Route::delete('/transaksi-fisioterapi/{fisioterapi}', [TransaksiFisioterapiController::class, 'destroy'])->name('transaksi-fisioterapi.destroy');
-    Route::get('/transaksi-fisioterapi/printPDF', [TransaksiFisioterapiController::class, 'printPDF'])->name('transaksi-fisioterapi.printPDF');
-    Route::get('/transaksi-fisioterapi/exportExcel', [TransaksiFisioterapiController::class, 'exportExcel'])->name('transaksi-fisioterapi.exportExcel');
 });
 
 Route::group(['middleware' => ['auth', 'user-access:Administrator,Dokter']], function () {

@@ -73,7 +73,7 @@
                             <p>{{ \Illuminate\Support\Str::limit($row->deskripsi, $limit = 100, $end = '...') }}
                             </p>
                             <a class="button button-reveal-right-dark button-lg margin-top-10"
-                                href="{{ route('transaksi-homecare.index') }}"><i
+                                href="{{ route('transaksi-homecare-perawat.index') }}"><i
                                     class="bi bi-arrow-right"></i><span>Pesan</span></a>
                         </div>
                     </div>

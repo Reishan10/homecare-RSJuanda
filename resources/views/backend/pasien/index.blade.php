@@ -29,9 +29,11 @@
                                 </button>
                             </div>
                             <div class="d-flex align-items-center mb-3 text-md-end">
-                                <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
-                                    <i class="mdi mdi-trash-can"></i> Hapus Banyak
-                                </button>
+                                @if (auth()->user()->type == 'Administrator')
+                                    <button type="button" class="btn btn-danger mb-2 btn-sm" id="btnHapusBanyak">
+                                        <i class="mdi mdi-trash-can"></i> Hapus Banyak
+                                    </button>
+                                @endif
                                 <a href="{{ route('pasien.create') }}" class="btn btn-primary mb-2 btn-sm ms-1"><i
                                         class="mdi mdi-plus-circle"></i> Tambah Pasien</a>
                             </div>

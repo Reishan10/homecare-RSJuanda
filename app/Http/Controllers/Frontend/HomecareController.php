@@ -11,7 +11,7 @@ class HomecareController extends Controller
 {
     public function index()
     {
-        $homecare = Layanan::orderBy('created_at', 'asc')->take(9)->get();
+        $homecare = Layanan::orderBy('created_at', 'asc')->take(8)->get();
         $perawat = Perawat::with('user')->where('status', '=', '0')->orderBy('created_at', 'asc')->paginate(9);
         return view('frontend.homecare.index', compact('homecare', 'perawat'));
     }

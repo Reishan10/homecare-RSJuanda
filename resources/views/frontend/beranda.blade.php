@@ -1,6 +1,13 @@
 @extends('layouts.frontend_main')
 @section('title', 'Beranda')
 @section('content')
+    <style>
+        .image-container {
+            height: 300px;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
     <!-- Hero section -->
     <div class="owl-carousel owl-nav-overlay owl-dots-overlay" data-owl-autoplay="true" data-owl-nav="true" data-owl-dots="true"
         data-owl-items="1">
@@ -8,7 +15,7 @@
         <div class="section-2xl bg-image" data-bg-src="{{ asset('assets') }}/images/header_beranda.png">
             <div class="bg-black-06">
                 <div class="container text-center">
-                    <h3 class="fw-normal uppercase margin-bottom-10">Selamat Datang</h3>
+                    <h3 class="fw-normal uppercase margin-bottom-10">Selamat Datang Di</h3>
                     <h1 class="fw-bold">Rumah Sakit Juanda</h1>
                 </div>
             </div>
@@ -47,56 +54,63 @@
                     </div>
                 </div>
             </div>
+
             <div class="owl-carousel" data-owl-margin="10" data-owl-xs="1" data-owl-sm="2" data-owl-md="2" data-owl-lg="3"
                 data-owl-xl="3">
                 <div class="border-all">
                     <div class="hoverbox-9">
-                        <a href="#">
-                            <img src="{{ asset('assets') }}/images/homecare.jpg" alt="">
+                        <a href="{{ route('frontend.homecare') }}">
+                            <img src="{{ asset('assets') }}/images/homecare.jpg" alt="" class="image-container">
                         </a>
                     </div>
                     <div class="padding-30">
                         <h5 class="fw-normal margin-0">Homecare</h5>
-                        <p>Perawat profesional yang akan memenuhi kebutuhan anda</p>
-                        <a class="button button-sm button-radius button-green margin-top-20" href="#">Lihat</a>
+                        <p>Layanan perawatan terbaik dirumah</p>
+                        <a class="button button-sm button-radius button-green margin-top-20"
+                            href="{{ route('frontend.homecare') }}">Lihat</a>
                     </div>
                 </div>
                 <div class="border-all">
                     <div class="hoverbox-9">
-                        <a href="#">
-                            <img src="{{ asset('assets') }}/images/paket-homecare.png" alt="">
+                        <a href="{{ route('frontend.paket-homecare') }}">
+                            <img src="{{ asset('assets') }}/images/paket-homecare.png" alt=""
+                                class="image-container">
                         </a>
                     </div>
                     <div class="padding-30">
                         <h5 class="fw-normal margin-0">Paket Homecare</h5>
-                        <p>Perawat profesional yang akan memenuhi kebutuhan anda</p>
-                        <a class="button button-sm button-radius button-green margin-top-20" href="#">Lihat</a>
+                        <p>Paket layanan home care adalah pilihan layanan home care terbaik bagi anda</p>
+                        <a class="button button-sm button-radius button-green margin-top-20"
+                            href="{{ route('frontend.paket-homecare') }}">Lihat</a>
                     </div>
                 </div>
                 <!-- Slide box 2 -->
                 <div class="border-all">
                     <div class="hoverbox-9">
-                        <a href="#">
-                            <img src="{{ asset('assets') }}/images/fisioterapi.png" alt="">
+                        <a href="{{ route('frontend.fisioterapi') }}">
+                            <img src="{{ asset('assets') }}/images/fisioterapi.png" alt="" class="image-container">
                         </a>
                     </div>
                     <div class="padding-30">
                         <h5 class="fw-normal margin-0">Fisioterapi</h5>
-                        <p>Fisioterapi profesional yang akan memberikan tindakan rehabilitas untuk anda</p>
-                        <a class="button button-sm button-radius button-green margin-top-20" href="#">Lihat</a>
+                        <p>Fisioterapi profesional yang akan memberikan tindakan rehabilitas untuk anda.</p>
+                        <a class="button button-sm button-radius button-green margin-top-20"
+                            href="{{ route('frontend.fisioterapi') }}">Lihat</a>
                     </div>
                 </div>
                 <!-- Slide box 3 -->
                 <div class="border-all">
                     <div class="hoverbox-9">
-                        <a href="#">
-                            <img src="{{ asset('assets') }}/images/telemedicine.png" alt="">
+                        <a href="{{ route('frontend.telemedicine') }}">
+                            <img src="{{ asset('assets') }}/images/telemedicine.png" alt=""
+                                class="image-container">
                         </a>
                     </div>
                     <div class="padding-30">
                         <h5 class="fw-normal margin-0">Telemedicine</h5>
-                        <p>Konsultasi mengenai kesehatan Lansia dengan dokter profesional</p>
-                        <a class="button button-sm button-radius button-green margin-top-20" href="#">Lihat</a>
+                        <p>Konsultasi mengenai kesehatan dengan dokter profesional</p>
+                        <a class="button button-sm button-radius button-green margin-top-20"
+                            href="{{ route('frontend.telemedicine') }}">Lihat</a>
                     </div>
                 </div>
             </div>

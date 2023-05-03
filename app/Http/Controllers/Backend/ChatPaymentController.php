@@ -77,6 +77,9 @@ class ChatPaymentController extends Controller
                         if (auth()->user()->type != 'Dokter') {
                             $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . url('chat-RSJuanda/' . $data->dokter->user->id) . '" target="_blank"><i class="fa-solid fa-comment"></i></i></a>';
                         }
+                        if (auth()->user()->type == 'Dokter') {
+                            $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . url('chat-RSJuanda/' . $data->user->id) . '" target="_blank"><i class="fa-solid fa-comment"></i></i></a>';
+                        }
                     }
                     if (auth()->user()->type != 'Pasien') {
                         $btn = $btn . '<button type="button" class="btn btn-danger btn-sm" data-id="' . $data->id . '" id="btnHapus"><i

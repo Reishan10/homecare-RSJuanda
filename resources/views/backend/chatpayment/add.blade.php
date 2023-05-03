@@ -17,7 +17,7 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="pasien" class="form-label">Pasien</label>
-                                        @if (auth()->user()->type == 'Administrator')
+                                        @if (auth()->user()->type != 'Pasien')
                                             <select name="pasien" id="pasien" class="form-control select2"
                                                 data-toggle="select2">
                                                 <option value="">-- Pilih Pasien --</option>
@@ -37,13 +37,19 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="dokter" class="form-label">Dokter</label>
-                                        <select name="dokter" id="dokter" class="form-control select2"
-                                            data-toggle="select2">
-                                            <option value="">-- Pilih Dokter --</option>
-                                            @foreach ($dokter as $row)
-                                                <option value="{{ $row->id }}">{{ $row->user->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        @if (auth()->user()->type != 'Dokter')
+                                            <select name="dokter" id="dokter" class="form-control select2"
+                                                data-toggle="select2">
+                                                <option value="">-- Pilih Dokter --</option>
+                                                @foreach ($dokter as $row)
+                                                    <option value="{{ $row->id }}">{{ $row->user->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <input type="hidden" name="pasien" value="{{ auth()->user()->id }}">
+                                            <input type="text" name="nama" id="nama" class="form-control"
+                                                value="{{ auth()->user()->name }}" readonly>
+                                        @endif
                                         <div class="invalid-feedback errorDokter">
                                         </div>
                                     </div>
