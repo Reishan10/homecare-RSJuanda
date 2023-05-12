@@ -16,7 +16,7 @@
             <div class="bg-black-06">
                 <div class="container text-center">
                     <h3 class="fw-normal uppercase margin-bottom-10">Selamat Datang Di</h3>
-                    <h1 class="fw-bold">Rumah Sakit Juanda</h1>
+                    <h1 class="fw-bold">Home Care Rumah Sakit Juanda</h1>
                 </div>
             </div>
         </div>

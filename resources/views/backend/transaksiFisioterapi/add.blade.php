@@ -98,57 +98,6 @@
                             <div class="row">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
-                                        <label for="provinsi" class="form-label">Provinsi</label>
-                                        <select class="form-control select2" data-toggle="select2" name="provinsi"
-                                            id="provinsi">
-                                            <option value="">-- Pilih Provinsi --</option>
-                                            @foreach ($provinces as $row)
-                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback errorProvinsi"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="kabupaten" class="form-label">Kabupaten</label>
-                                        <select class="form-control select2" data-toggle="select2" name="kabupaten"
-                                            id="kabupaten">
-                                            <option value="">-- Pilih Kabupaten --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorKabupaten"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="kecamatan" class="form-label">Kecamatan</label>
-                                        <select class="form-control select2" data-toggle="select2" name="kecamatan"
-                                            id="kecamatan">
-                                            <option value="">-- Pilih Kecamatan --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorKecamatan"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="desa" class="form-label">Desa</label>
-                                        <select class="form-control select2" data-toggle="select2" name="desa"
-                                            id="desa">
-                                            <option value="">-- Pilih Desa --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorDesa"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
                                         <label for="jarak" class="form-label">Jarak (KM)</label>
                                         <input type="number" name="jarak" id="jarak" class="form-control"
                                             value="0">
@@ -192,6 +141,57 @@
                                         <input type="text" name="total_biaya" id="total_biaya" class="form-control"
                                             readonly>
                                         <div class="invalid-feedback errorTotalBiaya"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="provinsi" class="form-label">Provinsi</label>
+                                        <select class="form-control select2" data-toggle="select2" name="provinsi"
+                                            id="provinsi">
+                                            <option value="">-- Pilih Provinsi --</option>
+                                            @foreach ($provinces as $row)
+                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback errorProvinsi"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="kabupaten" class="form-label">Kabupaten</label>
+                                        <select class="form-control select2" data-toggle="select2" name="kabupaten"
+                                            id="kabupaten">
+                                            <option value="">-- Pilih Kabupaten --</option>
+                                        </select>
+                                        <div class="invalid-feedback errorKabupaten"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="kecamatan" class="form-label">Kecamatan</label>
+                                        <select class="form-control select2" data-toggle="select2" name="kecamatan"
+                                            id="kecamatan">
+                                            <option value="">-- Pilih Kecamatan --</option>
+                                        </select>
+                                        <div class="invalid-feedback errorKecamatan"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="desa" class="form-label">Desa</label>
+                                        <select class="form-control select2" data-toggle="select2" name="desa"
+                                            id="desa">
+                                            <option value="">-- Pilih Desa --</option>
+                                        </select>
+                                        <div class="invalid-feedback errorDesa"></div>
                                     </div>
                                 </div>
                             </div>

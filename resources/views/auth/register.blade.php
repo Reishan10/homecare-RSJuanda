@@ -55,6 +55,38 @@
                 @enderror
             </div>
             <div class="mb-3">
+                <label for="provinsi" class="form-label">Provinsi</label>
+                    <select class="form-control select2" data-toggle="select2" name="provinsi"
+                        id="provinsi">
+                        <option value="">-- Pilih Provinsi --</option>
+                    </select>
+                <div class="invalid-feedback errorProvinsi"></div>
+            </div>
+            <div class="mb-3">
+                <label for="kabupaten" class="form-label">Kabupaten</label>
+                <select class="form-control select2" data-toggle="select2" name="kabupaten"
+                    id="kabupaten">
+                    <option value="">-- Pilih Kabupaten --</option>
+                </select>
+                <div class="invalid-feedback errorKabupaten"></div>
+            </div>
+            <div class="mb-3">
+                <label for="kecamatan" class="form-label">Kecamatan</label>
+                <select class="form-control select2" data-toggle="select2" name="kecamatan"
+                    id="kecamatan">
+                    <option value="">-- Pilih Kecamatan --</option>
+                </select>
+                <div class="invalid-feedback errorKecamatan"></div>
+            </div>
+            <div class="mb-3">
+                <label for="desa" class="form-label">Desa</label>
+                <select class="form-control select2" data-toggle="select2" name="desa"
+                    id="desa">
+                    <option value="">-- Pilih Desa --</option>
+                </select>
+                <div class="invalid-feedback errorDesa"></div>
+            </div>
+            <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" id="password" name="password"
                     class="form-control @error('password') is-invalid @enderror">

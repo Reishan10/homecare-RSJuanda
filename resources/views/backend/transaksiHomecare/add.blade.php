@@ -99,6 +99,78 @@
                             <div class="row">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
+                                        <label for="jarak" class="form-label">Jarak (KM)</label>
+                                        <input type="number" name="jarak" id="jarak" class="form-control"
+                                            value="0">
+                                        <div class="invalid-feedback errorJarak"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="biaya_tambahan" class="form-label">Tambahan Biaya (Per 10 KM)</label>
+                                        <input type="text" name="biaya_tambahan" id="biaya_tambahan" value="0"
+                                            class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="homecare" class="form-label">Paket Homecare</label>
+                                        <select class="form-control select2" data-toggle="select2" name="homecare"
+                                            id="homecare">
+                                            <option value="">-- Pilih Homecare --</option>
+                                            @foreach ($homecare as $row)
+                                                <option value="{{ $row->id }}">{{ $row->kode_homecare }} -
+                                                    {{ $row->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback errorHomecare"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="nama" class="form-label">Nama</label>
+                                        <input type="text" name="nama" id="nama" class="form-control"
+                                            readonly>
+                                        <div class="invalid-feedback errorNama"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="row ">
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="biaya_dokter" class="form-label">Biaya Dokter</label>
+                                        <input type="text" name="biaya_dokter" id="biaya_dokter" class="form-control"
+                                            readonly>
+                                        <div class="invalid-feedback errorBiayaDokter"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="biaya_perawat" class="form-label">Biaya Perawat</label>
+                                        <input type="text" name="biaya_perawat" id="biaya_perawat"
+                                            class="form-control" readonly>
+                                        <div class="invalid-feedback errorBiayaPerawat"></div>
+                                    </div>
+                                </div>-->
+                                <!-- <div class="col-lg-4 col-md-12"> -->
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="total_biaya" class="form-label">Total Biaya</label>
+                                        <input type="text" name="total_biaya" id="total_biaya" class="form-control"
+                                            readonly>
+                                        <div class="invalid-feedback errorTotalBiaya"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
                                         <label for="provinsi" class="form-label">Provinsi</label>
                                         <select class="form-control select2" data-toggle="select2" name="provinsi"
                                             id="provinsi">
@@ -140,77 +212,6 @@
                                             <option value="">-- Pilih Desa --</option>
                                         </select>
                                         <div class="invalid-feedback errorDesa"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="jarak" class="form-label">Jarak (KM)</label>
-                                        <input type="number" name="jarak" id="jarak" class="form-control"
-                                            value="0">
-                                        <div class="invalid-feedback errorJarak"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="biaya_tambahan" class="form-label">Tambahan Biaya (Per 10 KM)</label>
-                                        <input type="text" name="biaya_tambahan" id="biaya_tambahan" value="0"
-                                            class="form-control" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="homecare" class="form-label">Paket Homecare</label>
-                                        <select class="form-control select2" data-toggle="select2" name="homecare"
-                                            id="homecare">
-                                            <option value="">-- Pilih Homecare --</option>
-                                            @foreach ($homecare as $row)
-                                                <option value="{{ $row->id }}">{{ $row->kode_homecare }} -
-                                                    {{ $row->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback errorHomecare"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="nama" class="form-label">Nama</label>
-                                        <input type="text" name="nama" id="nama" class="form-control"
-                                            readonly>
-                                        <div class="invalid-feedback errorNama"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="biaya_dokter" class="form-label">Biaya Dokter</label>
-                                        <input type="text" name="biaya_dokter" id="biaya_dokter" class="form-control"
-                                            readonly>
-                                        <div class="invalid-feedback errorBiayaDokter"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="biaya_perawat" class="form-label">Biaya Perawat</label>
-                                        <input type="text" name="biaya_perawat" id="biaya_perawat"
-                                            class="form-control" readonly>
-                                        <div class="invalid-feedback errorBiayaPerawat"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="total_biaya" class="form-label">Total Biaya</label>
-                                        <input type="text" name="total_biaya" id="total_biaya" class="form-control"
-                                            readonly>
-                                        <div class="invalid-feedback errorTotalBiaya"></div>
                                     </div>
                                 </div>
                             </div>

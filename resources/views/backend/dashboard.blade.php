@@ -32,6 +32,24 @@
                                 Anda secepat mungkin untuk menghindari kerentanan keamanan pada akun Anda.
                             </div>
                         </div>
+
+                        <table class="table table-striped">
+                            <tr>
+                                <th colspan="2">No Rekening</th>
+                            </tr>
+                            <tr>
+                                <td>BCA</td>
+                                <td>12345689</td>
+                            </tr>
+                            <tr>
+                                <td>BRI</td>
+                                <td>12345689</td>
+                            </tr>
+                            <tr>
+                                <td>BJB</td>
+                                <td>12345689</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

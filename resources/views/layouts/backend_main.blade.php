@@ -53,7 +53,7 @@
                             &copy;
                             <script>
                                 document.write(new Date().getFullYear())
-                            </script> Hak CIpta Dilindungi | Tim Troubleslayer Juanda.
+                            </script> Hak Cipta Dilindungi | Defitri Nur Erdila.
                         </div>
                     </div>
                 </div>

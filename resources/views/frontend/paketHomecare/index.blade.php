@@ -32,13 +32,13 @@
 
             <div class="row g-4 text-center icon-5xl margin-top-10">
                 @forelse($paketHomecare as $row)
-                    <div class="col-12 col-md-3">
+                    <div class="col-15 col-md-4">
                         <i class="bi bi-box2-heart-fill text-dark"></i>
                         <h5 class="fw-normal margin-top-10">{{ $row->name }}</h5>
-                        <p>{{ \Illuminate\Support\Str::limit($row->deskripsi, $limit = 100, $end = '...') }}</p>
+                        <p>{{ \Illuminate\Support\Str::limit($row->deskripsi, $limit = 1000, $end = '...') }}</p>
                     </div>
                 @empty
-                    <div class="row text-center margin-top-40 fw-normal">
+                    <div class="row text-center margin-top-100 fw-normal">
                         <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
                             <h6>Tidak ada data yang tesedia</h6>
                         </div>

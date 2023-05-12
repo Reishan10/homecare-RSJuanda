@@ -66,7 +66,7 @@
 
                 <div class="row g-2">
                     <div class="col-12 col-md-6 text-center text-md-start">
-                        <p>&copy; 2023 Hak CIpta Dilindungi | Tim Troubleslayer Juanda.</p>
+                        <p>&copy; 2023 Hak Cipta Dilindungi | Defitri Nur Erdila.</p>
                     </div>
                     <div class="col-12 col-md-6 text-center text-md-end">
                         <ul class="list-inline">
