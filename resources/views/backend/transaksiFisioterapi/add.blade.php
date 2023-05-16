@@ -151,57 +151,6 @@
                             <div class="row">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
-                                        <label for="provinsi" class="form-label">Provinsi</label>
-                                        <select class="form-control select2" data-toggle="select2" name="provinsi"
-                                            id="provinsi">
-                                            <option value="">-- Pilih Provinsi --</option>
-                                            @foreach ($provinces as $row)
-                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback errorProvinsi"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="kabupaten" class="form-label">Kabupaten</label>
-                                        <select class="form-control select2" data-toggle="select2" name="kabupaten"
-                                            id="kabupaten">
-                                            <option value="">-- Pilih Kabupaten --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorKabupaten"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="kecamatan" class="form-label">Kecamatan</label>
-                                        <select class="form-control select2" data-toggle="select2" name="kecamatan"
-                                            id="kecamatan">
-                                            <option value="">-- Pilih Kecamatan --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorKecamatan"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="desa" class="form-label">Desa</label>
-                                        <select class="form-control select2" data-toggle="select2" name="desa"
-                                            id="desa">
-                                            <option value="">-- Pilih Desa --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorDesa"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
                                         <label for="jarak" class="form-label">Metode Pembayaran</label>
                                         <select name="pembayaran" id="pembayaran" class="form-control">
                                             <option value="">-- Pilih Metode --</option>
@@ -239,66 +188,6 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
-
-            $('#provinsi').on('change', function() {
-                let id_provinsi = $('#provinsi').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('transaksi-fisioterapi.get-kabupaten') }}",
-                    data: {
-                        id_provinsi: id_provinsi
-                    },
-                    success: function(response) {
-                        $('#kabupaten').html(response);
-                        $('#kecamatan').html('');
-                        $('#desa').html('');
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-                    }
-                });
-            });
-
-            $('#kabupaten').on('change', function() {
-                let id_kabupaten = $('#kabupaten').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('transaksi-fisioterapi.get-kecamatan') }}",
-                    data: {
-                        id_kabupaten: id_kabupaten
-                    },
-                    success: function(response) {
-                        $('#kecamatan').html(response);
-                        $('#desa').html('');
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-                    }
-                });
-            });
-
-            $('#kecamatan').on('change', function() {
-                let id_kecamatan = $('#kecamatan').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('transaksi-fisioterapi.get-desa') }}",
-                    data: {
-                        id_kecamatan: id_kecamatan
-                    },
-                    success: function(response) {
-                        $('#desa').html(response);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-                    }
-                });
             });
 
             $('#jarak').on('input', function() {
@@ -397,34 +286,6 @@
                             } else {
                                 $('#waktu').removeClass('is-invalid');
                                 $('.errorWaktu').html('');
-                            }
-                            if (response.errors.provinsi) {
-                                $('#provinsi').addClass('is-invalid');
-                                $('.errorProvinsi').html(response.errors.provinsi);
-                            } else {
-                                $('#provinsi').removeClass('is-invalid');
-                                $('.errorProvinsi').html('');
-                            }
-                            if (response.errors.kabupaten) {
-                                $('#kabupaten').addClass('is-invalid');
-                                $('.errorKabupaten').html(response.errors.kabupaten);
-                            } else {
-                                $('#kabupaten').removeClass('is-invalid');
-                                $('.errorKabupaten').html('');
-                            }
-                            if (response.errors.kecamatan) {
-                                $('#kecamatan').addClass('is-invalid');
-                                $('.errorKecamatan').html(response.errors.kecamatan);
-                            } else {
-                                $('#kecamatan').removeClass('is-invalid');
-                                $('.errorKecamatan').html('');
-                            }
-                            if (response.errors.desa) {
-                                $('#desa').addClass('is-invalid');
-                                $('.errorDesa').html(response.errors.desa);
-                            } else {
-                                $('#desa').removeClass('is-invalid');
-                                $('.errorDesa').html('');
                             }
                             if (response.errors.jarak) {
                                 $('#jarak').addClass('is-invalid');

@@ -108,24 +108,6 @@ class TransaksiFisioterapiController extends Controller
         return response()->json(['pasien' => $pasien, 'perawat' => $perawat, 'dokter' => $dokter, 'transaksiFisioterapi' => $transaksiFisioterapi, 'buktiPembayaran' => $buktiPembayaran]);
     }
 
-    public function getKabupaten(Request $request)
-    {
-        $id_provinsi = $request->id_provinsi;
-        $kabupaten = Regency::where('province_id', $id_provinsi)->get();
-        foreach ($kabupaten as $row) {
-            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
-        }
-    }
-
-    public function getKecamatan(Request $request)
-    {
-        $id_kabupaten = $request->id_kabupaten;
-        $kecamatan = District::where('regency_id', $id_kabupaten)->get();
-        foreach ($kecamatan as $row) {
-            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
-        }
-    }
-
     public function getFisioterapi(Request $request)
     {
         $id_fisioterapi = $request->id_fisioterapi;
@@ -133,23 +115,13 @@ class TransaksiFisioterapiController extends Controller
         return response()->json($fisioterapi);
     }
 
-    public function getDesa(Request $request)
-    {
-        $id_kecamatan = $request->id_kecamatan;
-        $desa = Village::where('district_id', $id_kecamatan)->get();
-        foreach ($desa as $row) {
-            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
-        }
-    }
-
     public function create()
     {
-        $provinces = Province::all();
         $pasien = Pasien::join('users', 'users.id', '=', 'pasien.user_id')->orderBy('users.name', 'asc')->get();
         $perawat = Perawat::join('users', 'users.id', '=', 'perawat.user_id')->orderBy('users.name', 'asc')->where('status', '0')->get();
         $dokter = Dokter::join('users', 'users.id', '=', 'dokter.user_id')->orderBy('users.name', 'asc')->where('status', '0')->get();
         $fisioterapi = Fisioterapi::orderBy('name', 'asc')->get();
-        return view('backend.transaksiFisioterapi.add', compact(['provinces', 'pasien', 'perawat', 'dokter', 'fisioterapi']));
+        return view('backend.transaksiFisioterapi.add', compact(['pasien', 'perawat', 'dokter', 'fisioterapi']));
     }
 
     public function store(Request $request)
@@ -162,10 +134,6 @@ class TransaksiFisioterapiController extends Controller
                 'dokter' => 'required|string',
                 'riwayat_penyakit' => 'required|string',
                 'waktu' => 'required|string',
-                'provinsi' => 'required|string',
-                'kabupaten' => 'required|string',
-                'kecamatan' => 'required|string',
-                'desa' => 'required|string',
                 'jarak' => 'required|numeric',
                 'fisioterapi' => 'required|string',
                 'bukti_pembayaran' => 'image|mimes:jpg,png,jpeg,webp,svg',
@@ -177,10 +145,6 @@ class TransaksiFisioterapiController extends Controller
                 'dokter.required' => 'Silakan pilih dokter terlebih dahulu!',
                 'riwayat_penyakit.required' => 'Silakan isi riwayat penyakit terlebih dahulu!',
                 'waktu.required' => 'Silakan isi waktu terlebih dahulu!',
-                'provinsi.required' => 'Silakan pilih provinsi terlebih dahulu!',
-                'kabupaten.required' => 'Silakan pilih kabupaten terlebih dahulu!',
-                'kecamatan.required' => 'Silakan pilih kecamatan terlebih dahulu!',
-                'desa.required' => 'Silakan pilih desa terlebih dahulu!',
                 'jarak.required' => 'Silakan isi jarak terlebih dahulu!',
                 'fisioterapi.required' => 'Silakan pilih fisioterapi terlebih dahulu!',
                 'bukti_pembayaran.image' => 'File harus berupa gambar!',
@@ -193,6 +157,7 @@ class TransaksiFisioterapiController extends Controller
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
+            $pasien = User::find($request->pasien);
             if ($request->hasFile('bukti_pembayaran')) {
                 $file = $request->file('bukti_pembayaran');
                 if ($file->isValid()) {
@@ -206,10 +171,10 @@ class TransaksiFisioterapiController extends Controller
                     $fisioterapi->fisioterapi_id = $request->fisioterapi;
                     $fisioterapi->riwayat_penyakit = $request->riwayat_penyakit;
                     $fisioterapi->waktu = $request->waktu;
-                    $fisioterapi->provinsi_id = $request->provinsi;
-                    $fisioterapi->kabupaten_id = $request->kabupaten;
-                    $fisioterapi->kecamatan_id = $request->kecamatan;
-                    $fisioterapi->desa_id = $request->desa;
+                    $fisioterapi->provinsi_id = $pasien->provinsi_id;
+                    $fisioterapi->kabupaten_id = $pasien->kabupaten_id;
+                    $fisioterapi->kecamatan_id = $pasien->kecamatan_id;
+                    $fisioterapi->desa_id = $pasien->desa_id;
                     $fisioterapi->jarak = $request->jarak;
                     $fisioterapi->metode_pembayaran = $request->pembayaran;
                     $fisioterapi->bukti_pembayaran = 'Bukti Pembayaran - ' . $request->name . date('Ymd') . '.' . $guessExtension;
@@ -228,10 +193,10 @@ class TransaksiFisioterapiController extends Controller
                 $fisioterapi->fisioterapi_id = $request->fisioterapi;
                 $fisioterapi->riwayat_penyakit = $request->riwayat_penyakit;
                 $fisioterapi->waktu = $request->waktu;
-                $fisioterapi->provinsi_id = $request->provinsi;
-                $fisioterapi->kabupaten_id = $request->kabupaten;
-                $fisioterapi->kecamatan_id = $request->kecamatan;
-                $fisioterapi->desa_id = $request->desa;
+                $fisioterapi->provinsi_id = $pasien->provinsi_id;
+                $fisioterapi->kabupaten_id = $pasien->kabupaten_id;
+                $fisioterapi->kecamatan_id = $pasien->kecamatan_id;
+                $fisioterapi->desa_id = $pasien->desa_id;
                 $fisioterapi->jarak = $request->jarak;
                 $fisioterapi->metode_pembayaran = $request->pembayaran;
                 $fisioterapi->biaya_tambahan = $request->biaya_tambahan;

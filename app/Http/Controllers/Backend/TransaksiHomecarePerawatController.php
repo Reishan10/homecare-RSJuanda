@@ -4,15 +4,11 @@ namespace App\Http\Controllers\Backend;
 
 use App\Exports\TransaksiHomecarePerawatExport;
 use App\Http\Controllers\Controller;
-use App\Models\District;
 use App\Models\Layanan;
 use App\Models\Pasien;
 use App\Models\Perawat;
-use App\Models\Province;
-use App\Models\Regency;
 use App\Models\TransaksiHomecarePerawat;
 use App\Models\User;
-use App\Models\Village;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DateTime;
@@ -98,33 +94,6 @@ class TransaksiHomecarePerawatController extends Controller
         return response()->json(['pasien' => $pasien, 'perawat' => $perawat, 'transaksiHomecare' => $transaksiHomecare, 'buktiPembayaran' => $buktiPembayaran]);
     }
 
-    public function getKabupaten(Request $request)
-    {
-        $id_provinsi = $request->id_provinsi;
-        $kabupaten = Regency::where('province_id', $id_provinsi)->get();
-        foreach ($kabupaten as $row) {
-            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
-        }
-    }
-
-    public function getKecamatan(Request $request)
-    {
-        $id_kabupaten = $request->id_kabupaten;
-        $kecamatan = District::where('regency_id', $id_kabupaten)->get();
-        foreach ($kecamatan as $row) {
-            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
-        }
-    }
-
-    public function getDesa(Request $request)
-    {
-        $id_kecamatan = $request->id_kecamatan;
-        $desa = Village::where('district_id', $id_kecamatan)->get();
-        foreach ($desa as $row) {
-            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
-        }
-    }
-
     public function getHomecarePrice(Request $request)
     {
         $homecareId = $request->homecare_id;
@@ -134,13 +103,12 @@ class TransaksiHomecarePerawatController extends Controller
 
     public function create()
     {
-        $provinces = Province::all();
         $pasien = Pasien::join('users', 'users.id', '=', 'pasien.user_id')->orderBy('users.name', 'asc')->get();
         $perawat = Perawat::join('users', 'users.id', '=', 'perawat.user_id')->orderBy('users.name', 'asc')->where('status', '0')->get()->filter(function ($perawat) {
             return $perawat->transaksi()->whereDate('waktu', date('Y-m-d'))->count() == 0;
         });
         $homecare = Layanan::orderBy('name', 'asc')->get();
-        return view('backend.transaksiHomecarePerawat.add', compact(['provinces', 'pasien', 'perawat', 'homecare']));
+        return view('backend.transaksiHomecarePerawat.add', compact(['pasien', 'perawat', 'homecare']));
     }
 
     public function store(Request $request)
@@ -152,10 +120,6 @@ class TransaksiHomecarePerawatController extends Controller
                 'perawat' => 'required|string',
                 'riwayat_penyakit' => 'required|string',
                 'waktu' => 'required|string',
-                'provinsi' => 'required|string',
-                'kabupaten' => 'required|string',
-                'kecamatan' => 'required|string',
-                'desa' => 'required|string',
                 'jarak' => 'required|numeric',
                 'homecare' => 'required|array',
                 'bukti_pembayaran' => 'image|mimes:jpg,png,jpeg,webp,svg',
@@ -166,10 +130,6 @@ class TransaksiHomecarePerawatController extends Controller
                 'perawat.required' => 'Silakan pilih perawat terlebih dahulu!',
                 'riwayat_penyakit.required' => 'Silakan isi riwayat penyakit terlebih dahulu!',
                 'waktu.required' => 'Silakan isi waktu terlebih dahulu!',
-                'provinsi.required' => 'Silakan pilih provinsi terlebih dahulu!',
-                'kabupaten.required' => 'Silakan pilih kabupaten terlebih dahulu!',
-                'kecamatan.required' => 'Silakan pilih kecamatan terlebih dahulu!',
-                'desa.required' => 'Silakan pilih desa terlebih dahulu!',
                 'jarak.required' => 'Silakan isi jarak terlebih dahulu!',
                 'homecare.required' => 'Silakan pilih homecare terlebih dahulu!',
                 'bukti_pembayaran.image' => 'File harus berupa gambar!',
@@ -182,6 +142,8 @@ class TransaksiHomecarePerawatController extends Controller
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
+            $pasien = User::find($request->pasien);
+
             if ($request->hasFile('bukti_pembayaran')) {
                 $file = $request->file('bukti_pembayaran');
                 if ($file->isValid()) {
@@ -194,10 +156,10 @@ class TransaksiHomecarePerawatController extends Controller
                     $homecare->homecare = implode(', ', $request->homecare);
                     $homecare->riwayat_penyakit = $request->riwayat_penyakit;
                     $homecare->waktu = $request->waktu;
-                    $homecare->provinsi_id = $request->provinsi;
-                    $homecare->kabupaten_id = $request->kabupaten;
-                    $homecare->kecamatan_id = $request->kecamatan;
-                    $homecare->desa_id = $request->desa;
+                    $homecare->provinsi_id = $pasien->provinsi_id;
+                    $homecare->kabupaten_id = $pasien->kabupaten_id;
+                    $homecare->kecamatan_id = $pasien->kecamatan_id;
+                    $homecare->desa_id = $pasien->desa_id;
                     $homecare->jarak = $request->jarak;
                     $homecare->metode_pembayaran = $request->pembayaran;
                     $homecare->bukti_pembayaran = 'Bukti Pembayaran - ' . $request->name . date('Ymd') . '.' . $guessExtension;
@@ -215,10 +177,10 @@ class TransaksiHomecarePerawatController extends Controller
                 $homecare->homecare = implode(', ', $request->homecare);
                 $homecare->riwayat_penyakit = $request->riwayat_penyakit;
                 $homecare->waktu = $request->waktu;
-                $homecare->provinsi_id = $request->provinsi;
-                $homecare->kabupaten_id = $request->kabupaten;
-                $homecare->kecamatan_id = $request->kecamatan;
-                $homecare->desa_id = $request->desa;
+                $homecare->provinsi_id = $pasien->provinsi_id;
+                $homecare->kabupaten_id = $pasien->kabupaten_id;
+                $homecare->kecamatan_id = $pasien->kecamatan_id;
+                $homecare->desa_id = $pasien->desa_id;
                 $homecare->jarak = $request->jarak;
                 $homecare->metode_pembayaran = $request->pembayaran;
                 $homecare->biaya_tambahan = $request->biaya_tambahan;

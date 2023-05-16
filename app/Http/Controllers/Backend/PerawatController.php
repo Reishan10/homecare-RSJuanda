@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Backend;
 use App\Exports\PerawatExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\District;
 use App\Models\Jabatan;
 use App\Models\Perawat;
+use App\Models\Province;
+use App\Models\Regency;
 use App\Models\User;
+use App\Models\Village;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -67,10 +71,39 @@ class PerawatController extends Controller
         return response()->json(['perawat' => $perawat]);
     }
 
+    public function getKabupaten(Request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+        $kabupaten = Regency::where('province_id', $id_provinsi)->get();
+        foreach ($kabupaten as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getKecamatan(Request $request)
+    {
+        $id_kabupaten = $request->id_kabupaten;
+        $kecamatan = District::where('regency_id', $id_kabupaten)->get();
+        foreach ($kecamatan as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getDesa(Request $request)
+    {
+        $id_kecamatan = $request->id_kecamatan;
+        $desa = Village::where('district_id', $id_kecamatan)->get();
+        foreach ($desa as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+
     public function create()
     {
+        $provinces = Province::all();
         $jabatan = Jabatan::orderBy('name', 'asc')->get();
-        return view('backend.perawat.add', compact('jabatan'));
+        return view('backend.perawat.add', compact('jabatan', 'provinces'));
     }
 
     public function store(Request $request)
@@ -118,6 +151,10 @@ class PerawatController extends Controller
             $user->type = 2;
             $user->gender = $request->gender;
             $user->address = $request->address;
+            $user->provinsi_id = $request->provinsi;
+            $user->kabupaten_id = $request->kabupaten;
+            $user->kecamatan_id = $request->kecamatan;
+            $user->desa_id = $request->desa;
             $user->save();
 
             $perawat = new Perawat();
@@ -144,7 +181,8 @@ class PerawatController extends Controller
         $perawat = User::with('perawat')->findOrFail($id);
         $hari = explode(",", $perawat->perawat->hari);
         $jabatan = Jabatan::orderBy('name', 'asc')->get();
-        return view('backend.perawat.edit', compact(['perawat', 'jabatan', 'hari']));
+        $provinces = Province::all();
+        return view('backend.perawat.edit', compact(['perawat', 'jabatan', 'hari', 'provinces']));
     }
 
     public function update(Request $request)
@@ -195,6 +233,10 @@ class PerawatController extends Controller
                 'no_telepon' => $request->no_telepon,
                 'gender' => $request->gender,
                 'address' => $request->address,
+                'provinsi_id' => $request->provinsi,
+                'kabupaten_id' => $request->kabupaten,
+                'kecamatan_id' => $request->kecamatan,
+                'desa_id' => $request->desa,
             ]);
 
             // Mengupdate data pada tabel perawat

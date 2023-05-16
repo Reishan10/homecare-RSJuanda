@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Backend;
 
 use App\Exports\PenggunaExport;
 use App\Http\Controllers\Controller;
+use App\Models\District;
+use App\Models\Province;
+use App\Models\Regency;
 use App\Models\User;
+use App\Models\Village;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -39,7 +43,8 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('backend.user.add');
+        $provinces = Province::all();
+        return view('backend.user.add', compact('provinces'));
     }
 
     public function store(Request $request)
@@ -84,6 +89,10 @@ class UserController extends Controller
                         'type' => 1,
                         'gender' => $request->gender,
                         'address' => $request->address,
+                        'provinsi_id' => $request->provinsi,
+                        'kabupaten_id' => $request->kabupaten,
+                        'kecamatan_id' => $request->kecamatan,
+                        'desa_id' => $request->desa,
                         'avatar' => $request->name . '.' . $guessExtension,
                     ];
                     $user = User::create($data);
@@ -98,6 +107,10 @@ class UserController extends Controller
                     'type' => 1,
                     'gender' => $request->gender,
                     'address' => $request->address,
+                    'provinsi_id' => $request->provinsi,
+                    'kabupaten_id' => $request->kabupaten,
+                    'kecamatan_id' => $request->kecamatan,
+                    'desa_id' => $request->desa,
                 ];
                 $user = User::create($data);
                 return response()->json($user);
@@ -108,7 +121,8 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-        return view('backend.user.edit', compact('user'));
+        $provinces = Province::all();
+        return view('backend.user.edit', compact('user', 'provinces'));
     }
 
     public function update(Request $request)
@@ -156,6 +170,10 @@ class UserController extends Controller
                         'no_telepon' => $request->no_telepon,
                         'gender' => $request->gender,
                         'address' => $request->address,
+                        'provinsi_id' => $request->provinsi,
+                        'kabupaten_id' => $request->kabupaten,
+                        'kecamatan_id' => $request->kecamatan,
+                        'desa_id' => $request->desa,
                         'avatar' => $request->name . '.' . $guessExtension,
                     ];
                     $user = User::where('id', $id)->update($data);
@@ -168,6 +186,10 @@ class UserController extends Controller
                     'no_telepon' => $request->no_telepon,
                     'gender' => $request->gender,
                     'address' => $request->address,
+                    'provinsi_id' => $request->provinsi,
+                    'kabupaten_id' => $request->kabupaten,
+                    'kecamatan_id' => $request->kecamatan,
+                    'desa_id' => $request->desa,
                 ];
                 $user = User::where('id', $id)->update($data);
                 return response()->json($user);
@@ -207,7 +229,35 @@ class UserController extends Controller
 
     public function profile()
     {
-        return view('backend.user.profile');
+        $provinces = Province::all();
+        return view('backend.user.profile', compact('provinces'));
+    }
+
+    public function getKabupaten(Request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+        $kabupaten = Regency::where('province_id', $id_provinsi)->get();
+        foreach ($kabupaten as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getKecamatan(Request $request)
+    {
+        $id_kabupaten = $request->id_kabupaten;
+        $kecamatan = District::where('regency_id', $id_kabupaten)->get();
+        foreach ($kecamatan as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getDesa(Request $request)
+    {
+        $id_kecamatan = $request->id_kecamatan;
+        $desa = Village::where('district_id', $id_kecamatan)->get();
+        foreach ($desa as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
     }
 
     public function updateProfile(Request $request)
@@ -249,6 +299,10 @@ class UserController extends Controller
                         'no_telepon' => $request->no_telepon,
                         'gender' => $request->gender,
                         'address' => $request->address,
+                        'provinsi_id' => $request->provinsi,
+                        'kabupaten_id' => $request->kabupaten,
+                        'kecamatan_id' => $request->kecamatan,
+                        'desa_id' => $request->desa,
                         'avatar' => $request->name . '.' . $guessExtension,
                     ];
                     $user = User::where('id', $id)->update($data);
@@ -261,6 +315,10 @@ class UserController extends Controller
                     'no_telepon' => $request->no_telepon,
                     'gender' => $request->gender,
                     'address' => $request->address,
+                    'provinsi_id' => $request->provinsi,
+                    'kabupaten_id' => $request->kabupaten,
+                    'kecamatan_id' => $request->kecamatan,
+                    'desa_id' => $request->desa,
                 ];
                 $user = User::where('id', $id)->update($data);
                 return response()->json($user);

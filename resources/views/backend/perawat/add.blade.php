@@ -88,15 +88,6 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="address" class="form-label">Alamat</label>
-                                        <textarea name="address" id="address" rows="1" class="form-control"></textarea>
-                                        <div class="invalid-feedback errorAddress">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-
-                                    <div class="mb-3">
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <label class="form-label" for="agama">Agama</label>
@@ -133,6 +124,57 @@
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback errorJabatan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label">Alamat</label>
+                                        <textarea name="address" id="address" rows="1" class="form-control"></textarea>
+                                        <div class="invalid-feedback errorAddress">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label for="provinsi" class="form-label">Provinsi</label>
+                                                <select class="form-control select2" data-toggle="select2"
+                                                    name="provinsi" id="provinsi">
+                                                    <option value="">-- Pilih Provinsi --</option>
+                                                    @foreach ($provinces as $row)
+                                                        <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="invalid-feedback errorProvinsi"></div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="kabupaten" class="form-label">Kabupaten</label>
+                                                <select class="form-control select2" data-toggle="select2"
+                                                    name="kabupaten" id="kabupaten">
+                                                    <option value="">-- Pilih Kabupaten --</option>
+                                                </select>
+                                                <div class="invalid-feedback errorKabupaten"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label for="kecamatan" class="form-label">Kecamatan</label>
+                                                <select class="form-control select2" data-toggle="select2"
+                                                    name="kecamatan" id="kecamatan">
+                                                    <option value="">-- Pilih Kecamatan --</option>
+                                                </select>
+                                                <div class="invalid-feedback errorKecamatan"></div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="desa" class="form-label">Desa</label>
+                                                <select class="form-control select2" data-toggle="select2" name="desa"
+                                                    id="desa">
+                                                    <option value="">-- Pilih Desa --</option>
+                                                </select>
+                                                <div class="invalid-feedback errorDesa"></div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -215,6 +257,66 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $('#provinsi').on('change', function() {
+                let id_provinsi = $('#provinsi').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-kabupaten') }}",
+                    data: {
+                        id_provinsi: id_provinsi
+                    },
+                    success: function(response) {
+                        $('#kabupaten').html(response);
+                        $('#kecamatan').html('');
+                        $('#desa').html('');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#kabupaten').on('change', function() {
+                let id_kabupaten = $('#kabupaten').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-kecamatan') }}",
+                    data: {
+                        id_kabupaten: id_kabupaten
+                    },
+                    success: function(response) {
+                        $('#kecamatan').html(response);
+                        $('#desa').html('');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#kecamatan').on('change', function() {
+                let id_kecamatan = $('#kecamatan').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-desa') }}",
+                    data: {
+                        id_kecamatan: id_kecamatan
+                    },
+                    success: function(response) {
+                        $('#desa').html(response);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
             });
 
             $('#form').submit(function(e) {

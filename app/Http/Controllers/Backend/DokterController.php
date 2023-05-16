@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Backend;
 
 use App\Exports\DokterExport;
 use App\Http\Controllers\Controller;
+use App\Models\District;
 use App\Models\Dokter;
 use App\Models\Jabatan;
+use App\Models\Province;
+use App\Models\Regency;
 use App\Models\User;
+use App\Models\Village;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -66,10 +70,38 @@ class DokterController extends Controller
         return response()->json(['dokter' => $dokter]);
     }
 
+    public function getKabupaten(Request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+        $kabupaten = Regency::where('province_id', $id_provinsi)->get();
+        foreach ($kabupaten as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getKecamatan(Request $request)
+    {
+        $id_kabupaten = $request->id_kabupaten;
+        $kecamatan = District::where('regency_id', $id_kabupaten)->get();
+        foreach ($kecamatan as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getDesa(Request $request)
+    {
+        $id_kecamatan = $request->id_kecamatan;
+        $desa = Village::where('district_id', $id_kecamatan)->get();
+        foreach ($desa as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
     public function create()
     {
         $jabatan = Jabatan::orderBy('name', 'asc')->get();
-        return view('backend.dokter.add', compact('jabatan'));
+        $provinces = Province::all();
+        return view('backend.dokter.add', compact('jabatan', 'provinces'));
     }
 
     public function store(Request $request)
@@ -120,6 +152,10 @@ class DokterController extends Controller
             $user->type = 3;
             $user->gender = $request->gender;
             $user->address = $request->address;
+            $user->provinsi_id = $request->provinsi;
+            $user->kabupaten_id = $request->kabupaten;
+            $user->kecamatan_id = $request->kecamatan;
+            $user->desa_id = $request->desa;
             $user->save();
 
             $dokter = new Dokter();
@@ -149,7 +185,8 @@ class DokterController extends Controller
         $dokter = Dokter::with('user', 'jabatan')->findOrFail($id);
         $hari = explode(",", $dokter->hari);
         $jabatan = Jabatan::orderBy('name', 'asc')->get();
-        return view('backend.dokter.edit', compact('jabatan', 'dokter', 'hari'));
+        $provinces = Province::all();
+        return view('backend.dokter.edit', compact('jabatan', 'dokter', 'hari', 'provinces'));
     }
 
     public function update(Request $request)
@@ -201,6 +238,10 @@ class DokterController extends Controller
             $user->no_telepon = $request->no_telepon;
             $user->gender = $request->gender;
             $user->address = $request->address;
+            $user->provinsi_id = $request->provinsi;
+            $user->kabupaten_id = $request->kabupaten;
+            $user->kecamatan_id = $request->kecamatan;
+            $user->desa_id = $request->desa;
             $user->save();
 
             $dokter = Dokter::find($id);

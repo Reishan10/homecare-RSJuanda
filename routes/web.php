@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Backend\BayarController;
 use App\Http\Controllers\Backend\ChatPaymentController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -25,9 +26,7 @@ use App\Http\Controllers\Frontend\BerandaController;
 use App\Http\Controllers\Frontend\FisioterapiController;
 use App\Http\Controllers\Frontend\HomecareController as FrontendHomecareController;
 use App\Http\Controllers\Frontend\PaketHomecareController;
-use App\Http\Controllers\Frontend\PerawatController as FrontendPerawatController;
 use App\Http\Controllers\Frontend\TelemedicineController;
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +52,10 @@ Route::get('/layanan/homecare', [FrontendHomecareController::class, 'index'])->n
 Route::get('/layanan/telemedicine', [TelemedicineController::class, 'index'])->name('frontend.telemedicine');
 Route::get('/layanan/telemedicine/detail/{telemedicine}', [TelemedicineController::class, 'detail'])->name('frontend.telemedicine.detail');
 
+Route::post('/register/getKabupaten', [RegisterController::class, 'getKabupaten'])->name('register.get-kabupaten');
+Route::post('/register/getKecamatan', [RegisterController::class, 'getKecamatan'])->name('register.get-kecamatan');
+Route::post('/register/getDesa', [RegisterController::class, 'getDesa'])->name('register.get-desa');
+
 Auth::routes();
 
 Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat,Dokter']], function () {
@@ -66,6 +69,9 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat
     //Profile
     Route::get('/pengguna/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::post('/pengguna/profile/{user}', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+    Route::post('/pengguna/getKabupaten', [TransaksiHomecareController::class, 'getKabupaten'])->name('user.get-kabupaten');
+    Route::post('/pengguna/getKecamatan', [TransaksiHomecareController::class, 'getKecamatan'])->name('user.get-kecamatan');
+    Route::post('/pengguna/getDesa', [TransaksiHomecareController::class, 'getDesa'])->name('user.get-desa');
 
     //Transaksi Paket Homecare
     Route::post('/transaksi-homecare/getKabupaten', [TransaksiHomecareController::class, 'getKabupaten'])->name('transaksi-homecare.get-kabupaten');
@@ -85,9 +91,6 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat
     Route::get('/transaksi-homecare/exportExcel', [TransaksiHomecareController::class, 'exportExcel'])->name('transaksi-homecare.exportExcel');
 
     //Transaksi Homecare
-    Route::post('/transaksi-homecare-perawat/getKabupaten', [TransaksiHomecarePerawatController::class, 'getKabupaten'])->name('transaksi-homecare-perawat.get-kabupaten');
-    Route::post('/transaksi-homecare-perawat/getKecamatan', [TransaksiHomecarePerawatController::class, 'getKecamatan'])->name('transaksi-homecare-perawat.get-kecamatan');
-    Route::post('/transaksi-homecare-perawat/getDesa', [TransaksiHomecarePerawatController::class, 'getDesa'])->name('transaksi-homecare-perawat.get-desa');
     Route::post('/transaksi-homecare-perawat/getHomecarePrice', [TransaksiHomecarePerawatController::class, 'getHomecarePrice'])->name('transaksi-homecare-perawat.get-homecare-price');
     Route::post('/transaksi-homecare-perawat/delete-multiple-transaksi-homecare-perawat', [TransaksiHomecarePerawatController::class, 'deleteMultiple'])->name('delete-multiple-transaksi-homecare-perawat');
     Route::post('/transaksi-homecare-perawat/aktif/{homecare}', [TransaksiHomecarePerawatController::class, 'aktif'])->name('transaksi-homecare-perawat.aktif');
@@ -133,7 +136,10 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter'
     Route::get('/chatpayment/printPDF', [ChatPaymentController::class, 'printPDF'])->name('chatpayment.printPDF');
     Route::get('/chatpayment/exportExcel', [ChatPaymentController::class, 'exportExcel'])->name('chatpayment.exportExcel');
 
-    //Pasien
+    // Pasien
+    Route::post('/pasien/getKabupaten', [PasienController::class, 'getKabupaten'])->name('pasien.get-kabupaten');
+    Route::post('/pasien/getKecamatan', [PasienController::class, 'getKecamatan'])->name('pasien.get-kecamatan');
+    Route::post('/pasien/getDesa', [PasienController::class, 'getDesa'])->name('pasien.get-desa');
     Route::post('/pasien/delete-multiple-pasien', [PasienController::class, 'deleteMultiple'])->name('delete-multiple-pasien');
     Route::get('/pasien', [PasienController::class, 'index'])->name('pasien.index');
     Route::get('/pasien/tambah', [PasienController::class, 'create'])->name('pasien.create');
@@ -172,7 +178,10 @@ Route::group(['middleware' => ['auth', 'user-access:Dokter']], function () {
 
 
 Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
-    //Dokter
+    // Dokter
+    Route::post('/dokter/getKabupaten', [DokterController::class, 'getKabupaten'])->name('dokter.get-kabupaten');
+    Route::post('/dokter/getKecamatan', [DokterController::class, 'getKecamatan'])->name('dokter.get-kecamatan');
+    Route::post('/dokter/getDesa', [DokterController::class, 'getDesa'])->name('dokter.get-desa');
     Route::post('/dokter/delete-multiple-dokter', [DokterController::class, 'deleteMultiple'])->name('delete-multiple-dokter');
     Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
     Route::get('/dokter/tambah', [DokterController::class, 'create'])->name('dokter.create');
@@ -185,6 +194,9 @@ Route::middleware(['auth', 'user-access:Administrator'])->group(function () {
     Route::get('/dokter/exportExcel', [DokterController::class, 'exportExcel'])->name('dokter.exportExcel');
 
     //Perawat
+    Route::post('/perawat/getKabupaten', [PerawatController::class, 'getKabupaten'])->name('perawat.get-kabupaten');
+    Route::post('/perawat/getKecamatan', [PerawatController::class, 'getKecamatan'])->name('perawat.get-kecamatan');
+    Route::post('/perawat/getDesa', [PerawatController::class, 'getDesa'])->name('perawat.get-desa');
     Route::post('/perawat/delete-multiple-perawat', [PerawatController::class, 'deleteMultiple'])->name('delete-multiple-perawat');
     Route::get('/perawat', [PerawatController::class, 'index'])->name('perawat.index');
     Route::get('/perawat/tambah', [PerawatController::class, 'create'])->name('perawat.create');

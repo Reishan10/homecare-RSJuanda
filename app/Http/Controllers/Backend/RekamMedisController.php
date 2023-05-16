@@ -4,7 +4,6 @@ namespace App\Http\Controllers\backend;
 
 use App\Exports\RekamMedisExport;
 use App\Http\Controllers\Controller;
-use App\Models\Dokter;
 use App\Models\RekamMedis;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;

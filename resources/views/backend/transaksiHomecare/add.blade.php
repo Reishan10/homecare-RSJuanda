@@ -138,119 +138,68 @@
                                 </div>
                             </div>
                             <!--<div class="row ">
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="biaya_dokter" class="form-label">Biaya Dokter</label>
-                                        <input type="text" name="biaya_dokter" id="biaya_dokter" class="form-control"
-                                            readonly>
-                                        <div class="invalid-feedback errorBiayaDokter"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="biaya_perawat" class="form-label">Biaya Perawat</label>
-                                        <input type="text" name="biaya_perawat" id="biaya_perawat"
-                                            class="form-control" readonly>
-                                        <div class="invalid-feedback errorBiayaPerawat"></div>
-                                    </div>
-                                </div>-->
-                                <!-- <div class="col-lg-4 col-md-12"> -->
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="total_biaya" class="form-label">Total Biaya</label>
-                                        <input type="text" name="total_biaya" id="total_biaya" class="form-control"
-                                            readonly>
-                                        <div class="invalid-feedback errorTotalBiaya"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="provinsi" class="form-label">Provinsi</label>
-                                        <select class="form-control select2" data-toggle="select2" name="provinsi"
-                                            id="provinsi">
-                                            <option value="">-- Pilih Provinsi --</option>
-                                            @foreach ($provinces as $row)
-                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback errorProvinsi"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="kabupaten" class="form-label">Kabupaten</label>
-                                        <select class="form-control select2" data-toggle="select2" name="kabupaten"
-                                            id="kabupaten">
-                                            <option value="">-- Pilih Kabupaten --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorKabupaten"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="kecamatan" class="form-label">Kecamatan</label>
-                                        <select class="form-control select2" data-toggle="select2" name="kecamatan"
-                                            id="kecamatan">
-                                            <option value="">-- Pilih Kecamatan --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorKecamatan"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="desa" class="form-label">Desa</label>
-                                        <select class="form-control select2" data-toggle="select2" name="desa"
-                                            id="desa">
-                                            <option value="">-- Pilih Desa --</option>
-                                        </select>
-                                        <div class="invalid-feedback errorDesa"></div>
-                                    </div>
+                                                <div class="col-lg-4 col-md-12">
+                                                    <div class="mb-3">
+                                                        <label for="biaya_dokter" class="form-label">Biaya Dokter</label>
+                                                        <input type="text" name="biaya_dokter" id="biaya_dokter" class="form-control"
+                                                            readonly>
+                                                        <div class="invalid-feedback errorBiayaDokter"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 col-md-12">
+                                                    <div class="mb-3">
+                                                        <label for="biaya_perawat" class="form-label">Biaya Perawat</label>
+                                                        <input type="text" name="biaya_perawat" id="biaya_perawat"
+                                                            class="form-control" readonly>
+                                                        <div class="invalid-feedback errorBiayaPerawat"></div>
+                                                    </div>
+                                                </div>-->
+                            <!-- <div class="col-lg-4 col-md-12"> -->
+                            <div class="col-lg-12 col-md-12">
+                                <div class="mb-3">
+                                    <label for="total_biaya" class="form-label">Total Biaya</label>
+                                    <input type="text" name="total_biaya" id="total_biaya" class="form-control"
+                                        readonly>
+                                    <div class="invalid-feedback errorTotalBiaya"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="jarak" class="form-label">Metode Pembayaran</label>
-                                        <select name="pembayaran" id="pembayaran" class="form-control">
-                                            <option value="">-- Pilih Metode --</option>
-                                            <option value="COD">COD</option>
-                                            <option value="Transfer">Transfer</option>
-                                        </select>
-                                        <div class="invalid-feedback errorPembayaran"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="bukti_pembayaran" class="form-label">Upload Bukti Pembayaran</label>
-                                        <input type="file" name="bukti_pembayaran" id="bukti_pembayaran"
-                                            class="form-control">
-                                        <div class="invalid-feedback errorBuktiPembayaran"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
-                                <button type="button" class="btn btn-secondary mb-2"
-                                    onclick="window.location='{{ route('transaksi-homecare.index') }}'">Kembali</button>
-                                <button type="submit" class="btn btn-primary mb-2" id="simpan">Simpan</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
             </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="mb-3">
+                                <label for="jarak" class="form-label">Metode Pembayaran</label>
+                                <select name="pembayaran" id="pembayaran" class="form-control">
+                                    <option value="">-- Pilih Metode --</option>
+                                    <option value="COD">COD</option>
+                                    <option value="Transfer">Transfer</option>
+                                </select>
+                                <div class="invalid-feedback errorPembayaran"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="mb-3">
+                                <label for="bukti_pembayaran" class="form-label">Upload Bukti Pembayaran</label>
+                                <input type="file" name="bukti_pembayaran" id="bukti_pembayaran"
+                                    class="form-control">
+                                <div class="invalid-feedback errorBuktiPembayaran"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
+                        <button type="button" class="btn btn-secondary mb-2"
+                            onclick="window.location='{{ route('transaksi-homecare.index') }}'">Kembali</button>
+                        <button type="submit" class="btn btn-primary mb-2" id="simpan">Simpan</button>
+                    </div>
+                </div>
+            </div>
+            </form>
         </div>
-        <!-- end page title -->
+    </div>
+    <!-- end page title -->
     </div>
 
     <script>
@@ -265,66 +214,6 @@
                 var jarak = $(this).val();
                 var biaya = Math.floor(jarak / 10) * 15000; // biaya per 10 km
                 $('#biaya_tambahan').val(biaya); // tampilkan biaya dalam format rupiah
-            });
-
-            $('#provinsi').on('change', function() {
-                let id_provinsi = $('#provinsi').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('transaksi-homecare.get-kabupaten') }}",
-                    data: {
-                        id_provinsi: id_provinsi
-                    },
-                    success: function(response) {
-                        $('#kabupaten').html(response);
-                        $('#kecamatan').html('');
-                        $('#desa').html('');
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-                    }
-                });
-            });
-
-            $('#kabupaten').on('change', function() {
-                let id_kabupaten = $('#kabupaten').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('transaksi-homecare.get-kecamatan') }}",
-                    data: {
-                        id_kabupaten: id_kabupaten
-                    },
-                    success: function(response) {
-                        $('#kecamatan').html(response);
-                        $('#desa').html('');
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-                    }
-                });
-            });
-
-            $('#kecamatan').on('change', function() {
-                let id_kecamatan = $('#kecamatan').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('transaksi-homecare.get-desa') }}",
-                    data: {
-                        id_kecamatan: id_kecamatan
-                    },
-                    success: function(response) {
-                        $('#desa').html(response);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-                    }
-                });
             });
 
             $('#homecare').on('change', function() {
@@ -410,34 +299,6 @@
                             } else {
                                 $('#waktu').removeClass('is-invalid');
                                 $('.errorWaktu').html('');
-                            }
-                            if (response.errors.provinsi) {
-                                $('#provinsi').addClass('is-invalid');
-                                $('.errorProvinsi').html(response.errors.provinsi);
-                            } else {
-                                $('#provinsi').removeClass('is-invalid');
-                                $('.errorProvinsi').html('');
-                            }
-                            if (response.errors.kabupaten) {
-                                $('#kabupaten').addClass('is-invalid');
-                                $('.errorKabupaten').html(response.errors.kabupaten);
-                            } else {
-                                $('#kabupaten').removeClass('is-invalid');
-                                $('.errorKabupaten').html('');
-                            }
-                            if (response.errors.kecamatan) {
-                                $('#kecamatan').addClass('is-invalid');
-                                $('.errorKecamatan').html(response.errors.kecamatan);
-                            } else {
-                                $('#kecamatan').removeClass('is-invalid');
-                                $('.errorKecamatan').html('');
-                            }
-                            if (response.errors.desa) {
-                                $('#desa').addClass('is-invalid');
-                                $('.errorDesa').html(response.errors.desa);
-                            } else {
-                                $('#desa').removeClass('is-invalid');
-                                $('.errorDesa').html('');
                             }
                             if (response.errors.jarak) {
                                 $('#jarak').addClass('is-invalid');

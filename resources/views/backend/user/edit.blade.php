@@ -37,8 +37,6 @@
                                         <div class="invalid-feedback errorNoTelepon">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
                                     <div class="mb-3">
                                         <label for="gender" class="form-label">Jenis Kelamin</label>
                                         <select name="gender" id="gender" class="form-control">
@@ -56,6 +54,45 @@
                                         <textarea name="address" id="address" rows="1" class="form-control">{{ $user->address }}</textarea>
                                         <div class="invalid-feedback errorAddress">
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="provinsi" class="form-label">Provinsi</label>
+                                        <select class="form-control select2" data-toggle="select2" name="provinsi"
+                                            id="provinsi">
+                                            <option value="">-- Pilih Provinsi --</option>
+                                            @foreach ($provinces as $row)
+                                                <option value="{{ $row->id }}"
+                                                    {{ $user->provinsi_id == $row->id ? 'selected' : '' }}>
+                                                    {{ $row->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback errorProvinsi"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="kabupaten" class="form-label">Kabupaten</label>
+                                        <select class="form-control select2" data-toggle="select2" name="kabupaten"
+                                            id="kabupaten">
+                                            <option value="">-- Pilih Kabupaten --</option>
+                                        </select>
+                                        <div class="invalid-feedback errorKabupaten"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="kecamatan" class="form-label">Kecamatan</label>
+                                        <select class="form-control select2" data-toggle="select2" name="kecamatan"
+                                            id="kecamatan">
+                                            <option value="">-- Pilih Kecamatan --</option>
+                                        </select>
+                                        <div class="invalid-feedback errorKecamatan"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="desa" class="form-label">Desa</label>
+                                        <select class="form-control select2" data-toggle="select2" name="desa"
+                                            id="desa">
+                                            <option value="">-- Pilih Desa --</option>
+                                        </select>
+                                        <div class="invalid-feedback errorDesa"></div>
                                     </div>
                                     <div class="mb-3">
                                         <div class="row">
@@ -106,6 +143,155 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            // Mendapatkan nilai provinsi dari database
+            let provinsiId = {{ $user->provinsi_id ?? 'null' }};
+
+            // Jika nilai provinsi tersedia, memuat kabupaten
+            if (provinsiId) {
+                // Mengisi nilai provinsi yang tersimpan di database
+                $('#provinsi').val(provinsiId).trigger('change');
+
+                // Memuat daftar kabupaten berdasarkan provinsi yang dipilih
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-kabupaten') }}",
+                    data: {
+                        id_provinsi: provinsiId
+                    },
+                    success: function(response) {
+                        // Mengisi daftar kabupaten berdasarkan provinsi yang dipilih
+                        $('#kabupaten').html(response);
+
+                        // Mendapatkan nilai kabupaten dari database
+                        let kabupatenId = {{ $user->kabupaten_id ?? 'null' }};
+
+                        // Jika nilai kabupaten tersedia, memuat kecamatan
+                        if (kabupatenId) {
+                            // Mengisi nilai kabupaten yang tersimpan di database
+                            $('#kabupaten').val(kabupatenId).trigger('change');
+
+                            // Memuat daftar kecamatan berdasarkan kabupaten yang dipilih
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('user.get-kecamatan') }}",
+                                data: {
+                                    id_kabupaten: kabupatenId
+                                },
+                                success: function(response) {
+                                    // Mengisi daftar kecamatan berdasarkan kabupaten yang dipilih
+                                    $('#kecamatan').html(response);
+
+                                    // Mendapatkan nilai kecamatan dari database
+                                    let kecamatanId =
+                                        {{ $user->kecamatan_id ?? 'null' }};
+
+                                    // Jika nilai kecamatan tersedia, memuat desa
+                                    if (kecamatanId) {
+                                        // Mengisi nilai kecamatan yang tersimpan di database
+                                        $('#kecamatan').val(kecamatanId).trigger('change');
+
+                                        // Memuat daftar desa berdasarkan kecamatan yang dipilih
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "{{ route('user.get-desa') }}",
+                                            data: {
+                                                id_kecamatan: kecamatanId
+                                            },
+                                            success: function(response) {
+                                                // Mengisi daftar desa berdasarkan kecamatan yang dipilih
+                                                $('#desa').html(response);
+
+                                                // Mengisi nilai desa yang tersimpan di database
+                                                $('#desa').val(
+                                                    {{ $user->desa_id ?? 'null' }}
+                                                );
+                                            },
+                                            error: function(xhr, ajaxOptions,
+                                                thrownError) {
+                                                console.error(xhr.status +
+                                                    "\n" + xhr
+                                                    .responseText + "\n" +
+                                                    thrownError);
+                                            }
+                                        });
+                                    }
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    console.error(xhr.status + "\n" + xhr.responseText +
+                                        "\n" +
+                                        thrownError);
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            }
+
+            $('#provinsi').on('change', function() {
+                let id_provinsi = $('#provinsi').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-kabupaten') }}",
+                    data: {
+                        id_provinsi: id_provinsi
+                    },
+                    success: function(response) {
+                        $('#kabupaten').html(response);
+                        $('#kecamatan').html('');
+                        $('#desa').html('');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#kabupaten').on('change', function() {
+                let id_kabupaten = $('#kabupaten').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-kecamatan') }}",
+                    data: {
+                        id_kabupaten: id_kabupaten
+                    },
+                    success: function(response) {
+                        $('#kecamatan').html(response);
+                        $('#desa').html('');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#kecamatan').on('change', function() {
+                let id_kecamatan = $('#kecamatan').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-desa') }}",
+                    data: {
+                        id_kecamatan: id_kecamatan
+                    },
+                    success: function(response) {
+                        $('#desa').html(response);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
 
             $('#form').submit(function(e) {
                 e.preventDefault();

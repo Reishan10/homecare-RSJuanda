@@ -15,11 +15,6 @@ class UserAccess
      */
     public function handle(Request $request, Closure $next, ...$userTypes)
     {
-        // if (auth()->user()->type == $userType) {
-        //     return $next($request);
-        // } else {
-        //     abort(403, 'Access denied');
-        // }
         $user = auth()->user();
 
         if (!in_array($user->type, $userTypes)) {

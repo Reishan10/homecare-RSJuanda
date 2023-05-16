@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Backend;
 
 use App\Exports\PasienExport;
 use App\Http\Controllers\Controller;
+use App\Models\District;
 use App\Models\Pasien;
+use App\Models\Province;
+use App\Models\Regency;
 use App\Models\User;
+use App\Models\Village;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -47,9 +51,38 @@ class PasienController extends Controller
         return response()->json(['pasien' => $pasien]);
     }
 
+    public function getKabupaten(Request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+        $kabupaten = Regency::where('province_id', $id_provinsi)->get();
+        foreach ($kabupaten as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getKecamatan(Request $request)
+    {
+        $id_kabupaten = $request->id_kabupaten;
+        $kecamatan = District::where('regency_id', $id_kabupaten)->get();
+        foreach ($kecamatan as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getDesa(Request $request)
+    {
+        $id_kecamatan = $request->id_kecamatan;
+        $desa = Village::where('district_id', $id_kecamatan)->get();
+        foreach ($desa as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+
     public function create()
     {
-        return view('backend.pasien.add');
+        $provinces = Province::all();
+        return view('backend.pasien.add', compact('provinces'));
     }
 
     public function store(Request $request)
@@ -76,7 +109,6 @@ class PasienController extends Controller
             ]
         );
 
-
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
@@ -94,6 +126,10 @@ class PasienController extends Controller
                     $user->type = 0;
                     $user->gender = $request->gender;
                     $user->address = $request->address;
+                    $user->provinsi_id = $request->provinsi;
+                    $user->kabupaten_id = $request->kabupaten;
+                    $user->kecamatan_id = $request->kecamatan;
+                    $user->desa_id = $request->desa;
                     $user->save();
 
                     $pasien = new Pasien();
@@ -118,6 +154,10 @@ class PasienController extends Controller
                 $user->type = 0;
                 $user->gender = $request->gender;
                 $user->address = $request->address;
+                $user->provinsi_id = $request->provinsi;
+                $user->kabupaten_id = $request->kabupaten;
+                $user->kecamatan_id = $request->kecamatan;
+                $user->desa_id = $request->desa;
                 $user->save();
 
                 $pasien = new Pasien();
@@ -138,7 +178,8 @@ class PasienController extends Controller
     public function edit($id)
     {
         $pasien = User::with('pasien')->find($id);
-        return view('backend.pasien.edit', compact('pasien'));
+        $provinces = Province::all();
+        return view('backend.pasien.edit', compact('pasien', 'provinces'));
     }
 
     public function update(Request $request)
@@ -188,6 +229,10 @@ class PasienController extends Controller
                     $user->type = 0;
                     $user->gender = $request->gender;
                     $user->address = $request->address;
+                    $user->provinsi_id = $request->provinsi;
+                    $user->kabupaten_id = $request->kabupaten;
+                    $user->kecamatan_id = $request->kecamatan;
+                    $user->desa_id = $request->desa;
                     $user->save();
 
                     $pasien = Pasien::find($pasien_id);
@@ -212,6 +257,10 @@ class PasienController extends Controller
                 $user->type = 0;
                 $user->gender = $request->gender;
                 $user->address = $request->address;
+                $user->provinsi_id = $request->provinsi;
+                $user->kabupaten_id = $request->kabupaten;
+                $user->kecamatan_id = $request->kecamatan;
+                $user->desa_id = $request->desa;
                 $user->save();
 
                 $pasien = Pasien::find($pasien_id);

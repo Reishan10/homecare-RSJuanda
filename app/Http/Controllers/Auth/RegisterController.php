@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\District;
+use App\Models\Regency;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Village;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,6 +58,11 @@ class RegisterController extends Controller
             'no_telepon' => ['required', 'min:11', 'max:15'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'provinsi' => ['required', 'string', 'max:255'],
+            'kabupaten' => ['required', 'string', 'max:255'],
+            'kecamatan' => ['required', 'string', 'max:255'],
+            'desa' => ['required', 'string', 'max:255'],
+            'gender' => ['required', 'string', 'max:255'],
         ], [
             'name.required' => 'Silakan isi nama terlebih dahulu',
             'email.required' => 'Silakan isi email terlebih dahulu',
@@ -63,6 +72,11 @@ class RegisterController extends Controller
             'password.required' => 'Silakan isi password terlebih dahulu',
             'password.min' => 'Password minimal 8 karakter',
             'password.confirmed' => 'Kofirmasi password gagal',
+            'provinsi.required' => 'Silakan pilih provinsi terlebih dahulu',
+            'kabupaten.required' => 'Silakan pilih kabupaten terlebih dahulu',
+            'kecamatan.required' => 'Silakan pilih kecamatan terlebih dahulu',
+            'desa.required' => 'Silakan pilih desa terlebih dahulu',
+            'gender.required' => 'Silakan pilih jenis kelamin terlebih dahulu',
         ]);
     }
 
@@ -79,7 +93,39 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'no_telepon' => $data['no_telepon'],
             'type' => 0,
+            'gender' => $data['gender'],
             'password' => Hash::make($data['password']),
+            'provinsi_id' => $data['provinsi'],
+            'kabupaten_id' => $data['kabupaten'],
+            'kecamatan_id' => $data['kecamatan'],
+            'desa_id' => $data['desa'],
         ]);
+    }
+
+    public function getKabupaten(Request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+        $kabupaten = Regency::where('province_id', $id_provinsi)->get();
+        foreach ($kabupaten as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getKecamatan(Request $request)
+    {
+        $id_kabupaten = $request->id_kabupaten;
+        $kecamatan = District::where('regency_id', $id_kabupaten)->get();
+        foreach ($kecamatan as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
+    }
+
+    public function getDesa(Request $request)
+    {
+        $id_kecamatan = $request->id_kecamatan;
+        $desa = Village::where('district_id', $id_kecamatan)->get();
+        foreach ($desa as $row) {
+            echo "<option value='" . $row->id . "'>" . $row->name . "</option>";
+        }
     }
 }

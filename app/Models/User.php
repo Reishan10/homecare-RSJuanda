@@ -52,6 +52,10 @@ class User extends Authenticatable
         'type',
         'gender',
         'address',
+        'provinsi_id',
+        'kabupaten_id',
+        'kecamatan_id',
+        'desa_id',
         'avatar',
     ];
 

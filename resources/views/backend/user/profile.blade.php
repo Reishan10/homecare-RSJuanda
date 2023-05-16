@@ -61,16 +61,18 @@
                                     <div class="invalid-feedback errorName">
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <div class="row">
-                                        <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
                                             <label for="email" class="form-label">Email</label>
                                             <input type="email" id="email" name="email" class="form-control"
                                                 value="{{ auth()->user()->email }}">
                                             <div class="invalid-feedback errorEmail">
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
                                             <label for="no_telepon" class="form-label">No Telepon</label>
                                             <input type="number" id="no_telepon" name="no_telepon" class="form-control"
                                                 value="{{ auth()->user()->no_telepon }}">
@@ -79,23 +81,28 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <div class="row">
-                                        <div class="col-lg-6">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
                                             <label for="gender" class="form-label">Jenis Kelamin</label>
                                             <select name="gender" id="gender" class="form-control">
                                                 <option value="">-- Pilih Jenis Kelamin --</option>
                                                 <option value="L"
-                                                    {{ auth()->user()->gender == 'L' ? 'selected' : '' }}>Laki-laki
+                                                    {{ auth()->user()->gender == 'L' ? 'selected' : '' }}>
+                                                    Laki-laki
                                                 </option>
                                                 <option value="P"
-                                                    {{ auth()->user()->gender == 'P' ? 'selected' : '' }}>Perempuan
+                                                    {{ auth()->user()->gender == 'P' ? 'selected' : '' }}>
+                                                    Perempuan
                                                 </option>
                                             </select>
                                             <div class="invalid-feedback errorGender">
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
                                             <label for="address" class="form-label">Alamat</label>
                                             <textarea name="address" id="address" rows="1" class="form-control">{{ auth()->user()->address }}</textarea>
                                             <div class="invalid-feedback errorAddress">
@@ -103,6 +110,58 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="provinsi" class="form-label">Provinsi</label>
+                                            <select class="form-control select2" data-toggle="select2" name="provinsi"
+                                                id="provinsi">
+                                                <option value="">-- Pilih Provinsi --</option>
+                                                @foreach ($provinces as $row)
+                                                    <option value="{{ $row->id }}">
+                                                        {{ $row->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="invalid-feedback errorProvinsi"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="kabupaten" class="form-label">Kabupaten</label>
+                                            <select class="form-control select2" data-toggle="select2" name="kabupaten"
+                                                id="kabupaten">
+                                                <option value="">-- Pilih Kabupaten --</option>
+                                            </select>
+                                            <div class="invalid-feedback errorKabupaten"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="kecamatan" class="form-label">Kecamatan</label>
+                                            <select class="form-control select2" data-toggle="select2" name="kecamatan"
+                                                id="kecamatan">
+                                                <option value="">-- Pilih Kecamatan --</option>
+                                            </select>
+                                            <div class="invalid-feedback errorKecamatan"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="desa" class="form-label">Desa</label>
+                                            <select class="form-control select2" data-toggle="select2" name="desa"
+                                                id="desa">
+                                                <option value="">-- Pilih Desa --</option>
+                                            </select>
+                                            <div class="invalid-feedback errorDesa"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <div class="mb-3">
                                     <label class="form-label" for="avatar">Foto</label>
                                     <input type="file" name="avatar" id="avatar" class="form-control"
@@ -128,6 +187,155 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            // Mendapatkan nilai provinsi dari database
+            let provinsiId = {{ auth()->user()->provinsi_id ?? 'null' }};
+
+            // Jika nilai provinsi tersedia, memuat kabupaten
+            if (provinsiId) {
+                // Mengisi nilai provinsi yang tersimpan di database
+                $('#provinsi').val(provinsiId).trigger('change');
+
+                // Memuat daftar kabupaten berdasarkan provinsi yang dipilih
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-kabupaten') }}",
+                    data: {
+                        id_provinsi: provinsiId
+                    },
+                    success: function(response) {
+                        // Mengisi daftar kabupaten berdasarkan provinsi yang dipilih
+                        $('#kabupaten').html(response);
+
+                        // Mendapatkan nilai kabupaten dari database
+                        let kabupatenId = {{ auth()->user()->kabupaten_id ?? 'null' }};
+
+                        // Jika nilai kabupaten tersedia, memuat kecamatan
+                        if (kabupatenId) {
+                            // Mengisi nilai kabupaten yang tersimpan di database
+                            $('#kabupaten').val(kabupatenId).trigger('change');
+
+                            // Memuat daftar kecamatan berdasarkan kabupaten yang dipilih
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('user.get-kecamatan') }}",
+                                data: {
+                                    id_kabupaten: kabupatenId
+                                },
+                                success: function(response) {
+                                    // Mengisi daftar kecamatan berdasarkan kabupaten yang dipilih
+                                    $('#kecamatan').html(response);
+
+                                    // Mendapatkan nilai kecamatan dari database
+                                    let kecamatanId =
+                                        {{ auth()->user()->kecamatan_id ?? 'null' }};
+
+                                    // Jika nilai kecamatan tersedia, memuat desa
+                                    if (kecamatanId) {
+                                        // Mengisi nilai kecamatan yang tersimpan di database
+                                        $('#kecamatan').val(kecamatanId).trigger('change');
+
+                                        // Memuat daftar desa berdasarkan kecamatan yang dipilih
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "{{ route('user.get-desa') }}",
+                                            data: {
+                                                id_kecamatan: kecamatanId
+                                            },
+                                            success: function(response) {
+                                                // Mengisi daftar desa berdasarkan kecamatan yang dipilih
+                                                $('#desa').html(response);
+
+                                                // Mengisi nilai desa yang tersimpan di database
+                                                $('#desa').val(
+                                                    {{ auth()->user()->desa_id ?? 'null' }}
+                                                    );
+                                            },
+                                            error: function(xhr, ajaxOptions,
+                                                thrownError) {
+                                                console.error(xhr.status +
+                                                    "\n" + xhr
+                                                    .responseText + "\n" +
+                                                    thrownError);
+                                            }
+                                        });
+                                    }
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    console.error(xhr.status + "\n" + xhr.responseText +
+                                        "\n" +
+                                        thrownError);
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            }
+
+
+            $('#provinsi').on('change', function() {
+                let id_provinsi = $('#provinsi').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-kabupaten') }}",
+                    data: {
+                        id_provinsi: id_provinsi
+                    },
+                    success: function(response) {
+                        $('#kabupaten').html(response);
+                        $('#kecamatan').html('');
+                        $('#desa').html('');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#kabupaten').on('change', function() {
+                let id_kabupaten = $('#kabupaten').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-kecamatan') }}",
+                    data: {
+                        id_kabupaten: id_kabupaten
+                    },
+                    success: function(response) {
+                        $('#kecamatan').html(response);
+                        $('#desa').html('');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#kecamatan').on('change', function() {
+                let id_kecamatan = $('#kecamatan').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.get-desa') }}",
+                    data: {
+                        id_kecamatan: id_kecamatan
+                    },
+                    success: function(response) {
+                        $('#desa').html(response);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
             });
 
             $('#form').submit(function(e) {
