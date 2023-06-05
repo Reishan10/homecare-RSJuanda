@@ -69,7 +69,7 @@
             <div class="row g-4">
                 <div class="col-12 col-md-12">
                     <!-- Snippet -->
-                    <form class="form-style-5" action="{{ route('frontend.telemedicineRating') }}" method="post">
+                    <form class="form-style-5" action="{{ route('frontend.paketHomecareRating') }}" method="post">
                         @csrf
                         <style>
                             .rating-container {

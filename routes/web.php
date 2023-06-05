@@ -17,6 +17,7 @@ use App\Http\Controllers\Backend\LayananController;
 use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PerawatController;
 use App\Http\Controllers\Backend\PoliController;
+use App\Http\Controllers\Backend\RatingTelemedicineController;
 use App\Http\Controllers\backend\RekamMedisController;
 use App\Http\Controllers\Backend\TransaksiFisioterapiController;
 use App\Http\Controllers\Backend\TransaksiHomecareController;
@@ -44,10 +45,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [BerandaController::class, 'index'])->name('beranda');
 
 Route::get('/layanan/fisioterapi', [FisioterapiController::class, 'index'])->name('frontend.fisioterapi');
+Route::get('/layanan/fisioterapi/detail/{fisioterapi}', [FisioterapiController::class, 'detail'])->name('frontend.fisioterapi.detail');
 
 Route::get('/layanan/paket-homecare', [PaketHomecareController::class, 'index'])->name('frontend.paket-homecare');
+Route::get('/layanan/paket-homecare/detail/{paketHomecare}', [PaketHomecareController::class, 'detail'])->name('frontend.paket-homecare.detail');
 
 Route::get('/layanan/homecare', [FrontendHomecareController::class, 'index'])->name('frontend.homecare');
+Route::get('/layanan/homecare/detail/{homecare}', [FrontendHomecareController::class, 'detail'])->name('frontend.homecare.detail');
 
 Route::get('/layanan/telemedicine', [TelemedicineController::class, 'index'])->name('frontend.telemedicine');
 Route::get('/layanan/telemedicine/detail/{telemedicine}', [TelemedicineController::class, 'detail'])->name('frontend.telemedicine.detail');
@@ -59,6 +63,12 @@ Route::post('/register/getDesa', [RegisterController::class, 'getDesa'])->name('
 Auth::routes();
 
 Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat,Dokter']], function () {
+    // Rating
+    Route::post('/layanan/telemedicine/rating', [TelemedicineController::class, 'store'])->name('frontend.telemedicineRating');
+    Route::post('/layanan/fisioterapi/rating', [FisioterapiController::class, 'store'])->name('frontend.fisioterapiRating');
+    Route::post('/layanan/paket-homecare/rating', [PaketHomecareController::class, 'store'])->name('frontend.paketHomecareRating');
+    Route::post('/layanan/homecare/rating', [FrontendHomecareController::class, 'store'])->name('frontend.homecareRating');
+
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
