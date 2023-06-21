@@ -50,4 +50,9 @@ class TransaksiFisioterapi extends Model
     {
         return $this->belongsTo(Fisioterapi::class, 'fisioterapi_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'perawat_id', 'id');
+    }
 }

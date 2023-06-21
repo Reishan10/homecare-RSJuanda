@@ -75,7 +75,11 @@ class TransaksiHomecarePerawatController extends Controller
                         }
                     }
                     if ($data->status != '1') {
-                        $btn = $btn .  '<a href="' . route('transaksi-homecare-perawat.print', $data->id) . '" class="btn btn-secondary btn-sm"><i class="fa-solid fa-print"></i></a>';
+                        $btn = $btn .  '<a href="' . route('transaksi-homecare-perawat.print', $data->id) . '" class="btn btn-secondary btn-sm me-1"><i class="fa-solid fa-print"></i></a>';
+                    }
+
+                    if ($data->status != '0' && $data->status != '1' && auth()->user()->type == 'Pasien' && $data->rating == null) {
+                        $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('transaksi-homecare-perawat.rating', $data->id) . '" ><i class="fa-solid fa-star"></i></a>';
                     }
                     return $btn;
                 })
@@ -287,5 +291,20 @@ class TransaksiHomecarePerawatController extends Controller
     {
         $transaksiHomecare = TransaksiHomecarePerawat::with('pasien', 'perawat')->orderBy('created_at', 'asc')->get();
         return Excel::download(new TransaksiHomecarePerawatExport($transaksiHomecare), 'data-transaksi-homecare.xlsx');
+    }
+
+    public function rating($id)
+    {
+        $transaksiHomecare = TransaksiHomecarePerawat::findOrFail($id);
+        return view('backend.transaksiHomecarePerawat.rating', compact('transaksiHomecare'));
+    }
+
+    public function prosesRating(Request $request)
+    {
+        $transaksiHomecare = TransaksiHomecarePerawat::findOrFail($request->id);
+        $transaksiHomecare->rating = $request->rating;
+        $transaksiHomecare->komen_rating = $request->komen;
+        $transaksiHomecare->save();
+        return Response()->json(['success' => 'Data berhasil disimpan']);
     }
 }

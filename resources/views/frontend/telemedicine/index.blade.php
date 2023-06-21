@@ -107,7 +107,7 @@
                         <img class="margin-bottom-30" src="{{ asset('storage/users-avatar/' . $row->user->avatar) }}"
                             alt="">
                         <p class="font-large fw-light margin-bottom-20">
-                            "{{ \Illuminate\Support\Str::limit($row->komen, $limit = 150, $end = '...') }}"</p>
+                            "{{ \Illuminate\Support\Str::limit($row->komen_rating, $limit = 150, $end = '...') }}"</p>
                         <h5 class="fw-normal margin-0 line-height-140">{{ $row->user->name }}</h5>
                         <div class="d-inline-block text-yellow">
                             <!-- Tampilkan bintang berdasarkan rata-rata rating -->

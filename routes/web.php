@@ -17,7 +17,6 @@ use App\Http\Controllers\Backend\LayananController;
 use App\Http\Controllers\Backend\PasienController;
 use App\Http\Controllers\Backend\PerawatController;
 use App\Http\Controllers\Backend\PoliController;
-use App\Http\Controllers\Backend\RatingTelemedicineController;
 use App\Http\Controllers\backend\RekamMedisController;
 use App\Http\Controllers\Backend\TransaksiFisioterapiController;
 use App\Http\Controllers\Backend\TransaksiHomecareController;
@@ -63,12 +62,6 @@ Route::post('/register/getDesa', [RegisterController::class, 'getDesa'])->name('
 Auth::routes();
 
 Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat,Dokter']], function () {
-    // Rating
-    Route::post('/layanan/telemedicine/rating', [TelemedicineController::class, 'store'])->name('frontend.telemedicineRating');
-    Route::post('/layanan/fisioterapi/rating', [FisioterapiController::class, 'store'])->name('frontend.fisioterapiRating');
-    Route::post('/layanan/paket-homecare/rating', [PaketHomecareController::class, 'store'])->name('frontend.paketHomecareRating');
-    Route::post('/layanan/homecare/rating', [FrontendHomecareController::class, 'store'])->name('frontend.homecareRating');
-
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -99,6 +92,8 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat
     Route::delete('/transaksi-homecare/{homecare}', [TransaksiHomecareController::class, 'destroy'])->name('transaksi-homecare.destroy');
     Route::get('/transaksi-homecare/printPDF', [TransaksiHomecareController::class, 'printPDF'])->name('transaksi-homecare.printPDF');
     Route::get('/transaksi-homecare/exportExcel', [TransaksiHomecareController::class, 'exportExcel'])->name('transaksi-homecare.exportExcel');
+    Route::get('/transaksi-homecare/rating/{homecare}', [TransaksiHomecareController::class, 'rating'])->name('transaksi-homecare.rating');
+    Route::post('/transaksi-homecare/proses-rating/', [TransaksiHomecareController::class, 'prosesRating'])->name('transaksi-homecare.prosesRating');
 
     //Transaksi Homecare
     Route::post('/transaksi-homecare-perawat/getHomecarePrice', [TransaksiHomecarePerawatController::class, 'getHomecarePrice'])->name('transaksi-homecare-perawat.get-homecare-price');
@@ -113,6 +108,9 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat
     Route::delete('/transaksi-homecare-perawat/{homecare}', [TransaksiHomecarePerawatController::class, 'destroy'])->name('transaksi-homecare-perawat.destroy');
     Route::get('/transaksi-homecare-perawat/printPDF', [TransaksiHomecarePerawatController::class, 'printPDF'])->name('transaksi-homecare-perawat.printPDF');
     Route::get('/transaksi-homecare-perawat/exportExcel/', [TransaksiHomecarePerawatController::class, 'exportExcel'])->name('transaksi-homecare-perawat.exportExcel');
+    Route::get('/transaksi-homecare-perawat/rating/{homecare}', [TransaksiHomecarePerawatController::class, 'rating'])->name('transaksi-homecare-perawat.rating');
+    Route::post('/transaksi-homecare-perawat/proses-rating/', [TransaksiHomecarePerawatController::class, 'prosesRating'])->name('transaksi-homecare-perawat.prosesRating');
+
 
     //Transaksi Fisioterapi
     Route::post('/transaksi-fisioterapi/getKabupaten', [TransaksiFisioterapiController::class, 'getKabupaten'])->name('transaksi-fisioterapi.get-kabupaten');
@@ -130,6 +128,8 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Perawat
     Route::delete('/transaksi-fisioterapi/{fisioterapi}', [TransaksiFisioterapiController::class, 'destroy'])->name('transaksi-fisioterapi.destroy');
     Route::get('/transaksi-fisioterapi/printPDF', [TransaksiFisioterapiController::class, 'printPDF'])->name('transaksi-fisioterapi.printPDF');
     Route::get('/transaksi-fisioterapi/exportExcel', [TransaksiFisioterapiController::class, 'exportExcel'])->name('transaksi-fisioterapi.exportExcel');
+    Route::get('/transaksi-fisioterapi/rating/{fisioterapi}', [TransaksiFisioterapiController::class, 'rating'])->name('transaksi-fisioterapi.rating');
+    Route::post('/transaksi-fisioterapi/proses-rating/', [TransaksiFisioterapiController::class, 'prosesRating'])->name('transaksi-fisioterapi.prosesRating');
 });
 
 Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter']], function () {
@@ -140,11 +140,12 @@ Route::group(['middleware' => ['auth', 'user-access:Pasien,Administrator,Dokter'
     Route::post('/chatpayment', [ChatPaymentController::class, 'store'])->name('chatpayment.store');
     Route::post('/chatpayment/bukti/{chatpayment}', [ChatPaymentController::class, 'uploadBukti'])->name('chatpayment.bukti');
     Route::get('/chatpayment/{chatpayment}/edit', [ChatPaymentController::class, 'edit'])->name('chatpayment.edit');
-    Route::post('/chatpayment/{chatpayment}', [ChatPaymentController::class, 'update'])->name('chatpayment.update');
     Route::get('/chatpayment/detail/{chatpayment}', [ChatPaymentController::class, 'detail'])->name('chatpayment.detail');
     Route::delete('chatpayment/{chatpayment}', [ChatPaymentController::class, 'destroy'])->name('chatpayment.destroy');
     Route::get('/chatpayment/printPDF', [ChatPaymentController::class, 'printPDF'])->name('chatpayment.printPDF');
     Route::get('/chatpayment/exportExcel', [ChatPaymentController::class, 'exportExcel'])->name('chatpayment.exportExcel');
+    Route::get('/chatpayment/rating/{chatpayment}', [ChatPaymentController::class, 'rating'])->name('chatpayment.rating');
+    Route::post('/chatpayment/proses-rating/', [ChatPaymentController::class, 'prosesRating'])->name('chatpayment.prosesRating');
 
     // Pasien
     Route::post('/pasien/getKabupaten', [PasienController::class, 'getKabupaten'])->name('pasien.get-kabupaten');
