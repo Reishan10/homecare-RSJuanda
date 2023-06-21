@@ -48,7 +48,7 @@
                     </div>
                     <p>{{ $perawat->deskripsi }}</p>
                     <a class="button button-reveal-right-dark button-lg margin-top-10"
-                        href="{{ route('chatpayment.index') }}"><i class="bi bi-arrow-right"></i><span>CHAT</span></a>
+                        href="{{ route('transaksi-homecare-perawat.index') }}"><i class="bi bi-arrow-right"></i><span>PESAN</span></a>
 
                 </div>
             </div><!-- end row -->
