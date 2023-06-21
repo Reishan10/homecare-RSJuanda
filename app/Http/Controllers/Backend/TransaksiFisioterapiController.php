@@ -88,7 +88,10 @@ class TransaksiFisioterapiController extends Controller
                         }
                     }
                     if ($data->status != '1') {
-                        $btn = $btn .  '<a href="' . route('transaksi-fisioterapi.print', $data->id) . '" class="btn btn-secondary btn-sm"><i class="fa-solid fa-print"></i></a>';
+                        $btn = $btn .  '<a href="' . route('transaksi-fisioterapi.print', $data->id) . '" class="btn btn-secondary btn-sm me-1"><i class="fa-solid fa-print"></i></a>';
+                    }
+                    if ($data->status != '0' && $data->status != '1' && auth()->user()->type == 'Pasien' && $data->rating == null) {
+                        $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('transaksi-fisioterapi.rating', $data->id) . '" ><i class="fa-solid fa-star"></i></a>';
                     }
                     return $btn;
                 })
@@ -307,5 +310,20 @@ class TransaksiFisioterapiController extends Controller
     {
         $transaksiFisioterapi = TransaksiFisioterapi::with('pasien', 'perawat', 'dokter', 'fisioterapi')->orderBy('created_at', 'asc')->get();
         return Excel::download(new TransaksiFisioterapiExport($transaksiFisioterapi), 'data-transaksi-fisioterapi.xlsx');
+    }
+
+    public function rating($id)
+    {
+        $transaksiFisioterapi = TransaksiFisioterapi::findOrFail($id);
+        return view('backend.transaksiFisioterapi.rating', compact('transaksiFisioterapi'));
+    }
+
+    public function prosesRating(Request $request)
+    {
+        $transaksiFisioterapi = TransaksiFisioterapi::findOrFail($request->id);
+        $transaksiFisioterapi->rating = $request->rating;
+        $transaksiFisioterapi->komen_rating = $request->komen;
+        $transaksiFisioterapi->save();
+        return Response()->json(['success' => 'Data berhasil disimpan']);
     }
 }

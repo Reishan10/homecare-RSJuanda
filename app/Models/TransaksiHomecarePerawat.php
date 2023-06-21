@@ -38,4 +38,9 @@ class TransaksiHomecarePerawat extends Model
     {
         return $this->belongsTo(User::class, 'perawat_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'perawat_id', 'id');
+    }
 }

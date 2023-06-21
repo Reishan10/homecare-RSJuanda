@@ -101,7 +101,7 @@
                             <p>{{ \Illuminate\Support\Str::limit($row->deskripsi, $limit = 100, $end = '...') }}
                             </p>
                             <a class="button button-reveal-right-dark button-lg margin-top-10"
-                                href="{{ route('transaksi-homecare-perawat.index') }}"><i
+                                href="{{ route('transaksi-homecare-perawat.create') }}"><i
                                     class="bi bi-arrow-right"></i><span>Pesan</span></a>
                         </div>
                     </div>
@@ -127,7 +127,7 @@
                         <img class="margin-bottom-30" src="{{ asset('storage/users-avatar/' . $row->user->avatar) }}"
                             alt="">
                         <p class="font-large fw-light margin-bottom-20">
-                            "{{ \Illuminate\Support\Str::limit($row->komen, $limit = 150, $end = '...') }}"</p>
+                            "{{ \Illuminate\Support\Str::limit($row->komen_rating, $limit = 150, $end = '...') }}"</p>
                         <h5 class="fw-normal margin-0 line-height-140">{{ $row->user->name }}</h5>
                         <div class="d-inline-block text-yellow">
                             <!-- Tampilkan bintang berdasarkan rata-rata rating -->

@@ -178,6 +178,6 @@
                     })
                 }
             })
-        })
+        });
     </script>
 @endsection

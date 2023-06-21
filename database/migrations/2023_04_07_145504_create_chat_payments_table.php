@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('biaya_chat');
             $table->tinyInteger('status')->default(1);
             $table->string('bukti_pembayaran')->nullable();
+            $table->integer('rating')->nullable();
+            $table->text('komen_rating')->nullable();
             $table->timestamps();
         });
     }

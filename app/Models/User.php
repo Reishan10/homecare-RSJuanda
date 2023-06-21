@@ -104,4 +104,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Chatpayment::class);
     }
+
+    public function transaksiHomecarePerawats()
+    {
+        return $this->hasMany(TransaksiHomecarePerawat::class, 'perawat_id', 'id');
+    }
+
+    public function transaksiHomecare()
+    {
+        return $this->hasMany(TransaksiHomecare::class, 'dokter_id', 'id');
+    }
+
+    public function TransaksiFisioterapi()
+    {
+        return $this->hasMany(TransaksiHomecarePerawat::class, 'perawat_id', 'id');
+    }
 }

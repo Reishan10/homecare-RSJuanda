@@ -49,4 +49,9 @@ class TransaksiHomecare extends Model
     {
         return $this->belongsTo(Homecare::class, 'homecare_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'dokter_id', 'id');
+    }
 }

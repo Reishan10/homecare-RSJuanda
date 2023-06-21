@@ -4,16 +4,12 @@ namespace App\Http\Controllers\Backend;
 
 use App\Exports\TransaksiHomecareExport;
 use App\Http\Controllers\Controller;
-use App\Models\District;
 use App\Models\Dokter;
 use App\Models\Homecare;
 use App\Models\Pasien;
 use App\Models\Perawat;
-use App\Models\Province;
-use App\Models\Regency;
 use App\Models\TransaksiHomecare;
 use App\Models\User;
-use App\Models\Village;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Carbon\Carbon;
 use DateTime;
@@ -88,7 +84,10 @@ class TransaksiHomecareController extends Controller
                         }
                     }
                     if ($data->status != '1') {
-                        $btn = $btn .  '<a href="' . route('transaksi-homecare.print', $data->id) . '" class="btn btn-secondary btn-sm"><i class="fa-solid fa-print"></i></a>';
+                        $btn = $btn .  '<a href="' . route('transaksi-homecare.print', $data->id) . '" class="btn btn-secondary btn-sm me-1"><i class="fa-solid fa-print"></i></a>';
+                    }
+                    if ($data->status != '0' && $data->status != '1' && auth()->user()->type == 'Pasien' && $data->rating == null) {
+                        $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('transaksi-homecare.rating', $data->id) . '" ><i class="fa-solid fa-star"></i></a>';
                     }
                     return $btn;
                 })
@@ -309,5 +308,20 @@ class TransaksiHomecareController extends Controller
     {
         $transaksiHomecare = TransaksiHomecare::with('pasien', 'perawat', 'dokter', 'homecare')->orderBy('created_at', 'asc')->get();
         return Excel::download(new TransaksiHomecareExport($transaksiHomecare), 'data-transaksi-paket-homecare.xlsx');
+    }
+
+    public function rating($id)
+    {
+        $transaksiHomecare = TransaksiHomecare::findOrFail($id);
+        return view('backend.transaksiHomecare.rating', compact('transaksiHomecare'));
+    }
+
+    public function prosesRating(Request $request)
+    {
+        $transaksiHomecare = TransaksiHomecare::findOrFail($request->id);
+        $transaksiHomecare->rating = $request->rating;
+        $transaksiHomecare->komen_rating = $request->komen;
+        $transaksiHomecare->save();
+        return Response()->json(['success' => 'Data berhasil disimpan']);
     }
 }

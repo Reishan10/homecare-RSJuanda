@@ -11,10 +11,9 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\DataTables;
 
 class ChatPaymentController extends Controller
 {
@@ -68,7 +67,7 @@ class ChatPaymentController extends Controller
                     return $statusWaktu;
                 })
                 ->addColumn('aksi', function ($data) {
-                    $btn = '<a class="btn btn-info btn-sm me-1" href="' . route('chatpayment.detail', $data->id) . '" ><i class="fa-solid fa-circle-info"></i></a>';
+                    $btn =  '<a class="btn btn-info btn-sm me-1" href="' . route('chatpayment.detail', $data->id) . '" ><i class="fa-solid fa-circle-info"></i></a>';
 
                     $waktuMulai = Carbon::createFromFormat('Y-m-d H:i:s', $data->waktu_mulai);
                     $waktuSelesai = Carbon::createFromFormat('Y-m-d H:i:s', $data->waktu_selesai);
@@ -79,6 +78,10 @@ class ChatPaymentController extends Controller
                         }
                         if (auth()->user()->type == 'Dokter') {
                             $btn = $btn . '<a class="btn btn-success btn-sm me-1" href="' . url('chat-RSJuanda/' . $data->user->id) . '" target="_blank"><i class="fa-solid fa-comment"></i></i></a>';
+                        }
+                    } else {
+                        if ($data->rating == null && auth()->user()->type == 'Pasien') {
+                            $btn = $btn . '<a class="btn btn-warning btn-sm me-1" href="' . route('chatpayment.rating', $data->id) . '" ><i class="fa-solid fa-star"></i></a>';
                         }
                     }
                     if (auth()->user()->type != 'Pasien') {
@@ -92,7 +95,6 @@ class ChatPaymentController extends Controller
         }
         return view('backend.chatpayment.index');
     }
-
 
     public function detail($id)
     {
@@ -177,5 +179,20 @@ class ChatPaymentController extends Controller
     {
         $chatpayments = Chatpayment::with(['user', 'dokter'])->orderBy('created_at', 'desc')->get();
         return Excel::download(new ChatpaymentExport($chatpayments), 'data-chatpayments.xlsx');
+    }
+
+    public function rating($id)
+    {
+        $chatpayment = Chatpayment::with(['user', 'dokter'])->findOrFail($id);
+        return view('backend.chatpayment.rating', compact('chatpayment'));
+    }
+
+    public function prosesRating(Request $request)
+    {
+        $chatpayment = ChatPayment::findOrFail($request->id);
+        $chatpayment->rating = $request->rating;
+        $chatpayment->komen_rating = $request->komen;
+        $chatpayment->save();
+        return Response()->json(['success' => 'Data berhasil disimpan']);
     }
 }
